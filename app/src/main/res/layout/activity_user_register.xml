@@ -1,0 +1,84 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="24dp"
+    android:background="@color/colorAccent"
+    android:paddingRight="24dp">
+
+    <ImageView
+        android:layout_marginTop="100dp"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_alignParentTop="true"
+        android:id="@+id/imageViewAppLogo"
+        android:layout_centerHorizontal="true" />
+    <!-- Signup Details Layout-->
+    <RelativeLayout
+        android:layout_below="@+id/imageViewAppLogo"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:orientation="vertical">
+
+            <EditText
+                android:background="@drawable/background_shape"
+                android:textColorHint="@color/white"
+                android:gravity="center"
+                android:layout_height="40dp"
+                android:id="@+id/editUserName"
+                android:layout_width="match_parent"
+                android:hint="@string/user_name" />
+
+
+            <EditText
+                android:layout_marginTop="10dp"
+                android:background="@drawable/background_shape"
+                android:textColorHint="@color/white"
+                android:gravity="center"
+                android:layout_height="40dp"
+                android:id="@+id/editUserEmail"
+                android:layout_width="match_parent"
+                android:hint="@string/user_email" />
+
+            <EditText
+                android:layout_marginTop="10dp"
+                android:background="@drawable/background_shape"
+                android:textColorHint="@color/white"
+                android:gravity="center"
+                android:layout_height="40dp"
+                android:id="@+id/editUserMobileNumber"
+                android:layout_width="match_parent"
+                android:hint="@string/user_mobile" />
+
+            <Spinner
+                android:id="@+id/spinnerSocietiesName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"/>
+
+            <Button
+                android:id="@+id/buttonSignup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Register"
+                android:textColor="@color/white"  />
+
+            <TextView
+                android:textColor="@color/white"
+                android:id="@+id/tvLoginLink"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/already_member_button_text" />
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>
