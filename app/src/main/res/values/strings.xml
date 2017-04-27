@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">Social Connect</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!--validator-->
+    <string name="error_phone_no_invalid">Please provide 10 digit mobile number</string>
+    <string name="error_additional_zero">Please provide number without zero</string>
+
+    <string name="error_invalid_email_id">Please provide valid email id</string>
+    <string name="error_empty_email_id">Please provide  email id</string>
+
+    <string name="label_ok_button">ok</string>
+    <string name="label_cancel_button">cancel</string>
+    <string name="user_name">Name</string>
+    <string name="user_email">Email</string>
+    <string name="user_mobile">Mobile</string>
+    <string name="already_member_button_text">Already member? SignIn</string>
+    <string name="forgot_pwd_button_text">Reset Password</string>
+</resources>
