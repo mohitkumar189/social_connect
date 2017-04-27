@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "331430439974",
+    "firebase_url": "https://social-connect-2a6e1.firebaseio.com",
+    "project_id": "social-connect-2a6e1",
+    "storage_bucket": "social-connect-2a6e1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:331430439974:android:41f2e4141a38a7ca",
+        "android_client_info": {
+          "package_name": "in.squarei.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "331430439974-telu11slf2suiu65ugf80ch6sfb4cf8s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBFGPkfSLIjTX9sV0k9bU6SiCgHXJE0BnU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

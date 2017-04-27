@@ -1,35 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="in.squarei.app">
+    package="in.squarei.socialconnect">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
+        android:name="in.squarei.socialconnect.socialConnectApplication.SocialConnectApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@mipmap/ic_launcher" />
+        <!-- Set color used with incoming notification messages. This is used when no color is set for the incoming
+             notification message. See README(https://goo.gl/6BKBk7) for more. -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/colorAccent" />
         <activity
-            android:name=".Activities.UserDashboardActivity"
+            android:name="in.squarei.socialconnect.activities.UserDashboardActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
-        </activity>
-        <activity android:name=".Activities.useraccesspackage.UserLoginActivity" />
-        <activity android:name=".Activities.useraccesspackage.UserRegisterActivity" />
-        <activity android:name=".Activities.useraccesspackage.UserPasswordResetActivity" />
-        <activity android:name=".Activities.useraccesspackage.UserPassActivity" />
-        <activity android:name=".Activities.useraccesspackage.AppIntroActivity" />
-        <activity android:name=".Activities.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name="in.squarei.socialconnect.activities.useraccesspackage.UserLoginActivity" />
+        <activity android:name="in.squarei.socialconnect.activities.useraccesspackage.UserRegisterActivity" />
+        <activity android:name="in.squarei.socialconnect.activities.useraccesspackage.UserPasswordResetActivity" />
+        <activity android:name="in.squarei.socialconnect.activities.useraccesspackage.UserPassActivity" />
+        <activity android:name="in.squarei.socialconnect.activities.useraccesspackage.AppIntroActivity" />
+        <activity android:name="in.squarei.socialconnect.activities.SplashActivity"></activity>
+
+        <service
+            android:name=".services.MyFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+        <service
+            android:name="in.squarei.socialconnect.services.MyFirebaseInstanceIDService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+            </intent-filter>
+        </service>
+        <receiver android:name=".broadcastreceivers.SmsListener">
+            <intent-filter>
+                <action android:name="android.provider.Telephony.SMS_RECEIVED"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
