@@ -11,12 +11,6 @@ public interface AppConstants {
     String APP_NAME = "social_connect";
     int APP_SPLASH_TIME=3000;
 
-    /* REQUEST METHODS  */
-    int REQUEST_POST= Request.Method.POST;
-    int REQUEST_GET=Request.Method.GET;
-    int REQUEST_PUT=Request.Method.PUT;
-    int REQUEST_DELETE=Request.Method.DELETE;
-
     /* animation type*/
     int ANIMATION_SLIDE_UP = 0x01;
     int ANIMATION_SLIDE_LEFT = 0x02;

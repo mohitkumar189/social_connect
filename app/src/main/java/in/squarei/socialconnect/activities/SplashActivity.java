@@ -41,7 +41,7 @@ public class SplashActivity extends SocialConnectBaseActivity implements SmsList
 
     private void navigateUser() {
         Logger.info(TAG, "======Navigating User======");
-         startActivity(currentActivity, UserLoginActivity.class);
+        startActivity(currentActivity, UserLoginActivity.class);
 
         Thread thread = new Thread(new Runnable() {
             @Override
@@ -60,7 +60,7 @@ public class SplashActivity extends SocialConnectBaseActivity implements SmsList
                 }
             }
         });
-     //   thread.start();
+        //   thread.start();
     }
 
     @Override
@@ -73,12 +73,9 @@ public class SplashActivity extends SocialConnectBaseActivity implements SmsList
     ////////////////////////////Receiving Message //////////////////////
     @Override
     public void onSmsReceived(String otp) {
-        try
-        {
+        try {
 
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

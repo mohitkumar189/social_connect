@@ -39,7 +39,6 @@ public class SharedPreferenceUtils implements AppConstants {
         return sharedPreferences;
     }
 
-
     public String getString(String key) {
         return getSharedPreferences().getString(key, "");
     }

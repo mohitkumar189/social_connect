@@ -1,0 +1,70 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="20dp">
+
+    <LinearLayout
+        android:id="@+id/linearDigitHolder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:background="@color/colorAccent"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/editPassDigitOne"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:background="@drawable/background_shape"
+            android:gravity="center"
+            android:hint="*"
+            android:inputType="numberPassword"
+            android:textColorHint="@color/white" />
+
+        <EditText
+            android:id="@+id/editPassDigitTwo"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:background="@drawable/background_shape"
+            android:gravity="center"
+            android:hint="*"
+            android:inputType="numberPassword"
+            android:textColorHint="@color/white" />
+
+        <EditText
+            android:id="@+id/editPassDigitThree"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:background="@drawable/background_shape"
+            android:gravity="center"
+            android:hint="*"
+            android:inputType="numberPassword"
+            android:textColorHint="@color/white" />
+
+        <EditText
+            android:id="@+id/editPassDigitFour"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:background="@drawable/background_shape"
+            android:gravity="center"
+            android:hint="*"
+            android:inputType="numberPassword"
+            android:textColorHint="@color/white" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvResendOtp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/linearDigitHolder"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:text="@string/resend_otp_text"
+        android:textColor="@color/black"/>
+
+</RelativeLayout>

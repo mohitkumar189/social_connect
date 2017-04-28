@@ -1,6 +1,8 @@
 package in.squarei.socialconnect.activities;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,6 +15,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
@@ -20,13 +23,19 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import in.squarei.socialconnect.interfaces.AppConstants;
 import in.squarei.socialconnect.R;
 import in.squarei.socialconnect.utils.ColoredSnackbar;
+import in.squarei.socialconnect.utils.DimensionUtils;
+import in.squarei.socialconnect.utils.Helper;
 
 public abstract class SocialConnectBaseActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
@@ -41,6 +50,8 @@ public abstract class SocialConnectBaseActivity extends AppCompatActivity
     public NavigationView navigationView;
     public TabLayout tabLayout;
     public CoordinatorLayout coordinatorLayout;
+    ProgressDialog pdialog;
+    Dialog customDialog;
 
     public static void log(String key, String value, int LogType) {
         if (LogType == Log.ASSERT) {
@@ -262,6 +273,68 @@ public abstract class SocialConnectBaseActivity extends AppCompatActivity
             }
         } else
             startActivityForResult(intent, requestCode);
+    }
+
+    public void progressDialog(Context context, String title, String message, boolean cancelable, boolean isTitle) {
+        if (pdialog == null) {
+            pdialog = new ProgressDialog(context);
+        }
+
+        if (isTitle) {
+            pdialog.setTitle(title);
+        }
+
+        pdialog.setMessage(message);
+
+        if (!cancelable) {
+            pdialog.setCancelable(false);
+        }
+
+        if (!pdialog.isShowing()) {
+            pdialog.show();
+
+        }
+
+    }
+
+    public void cancelProgressDialog() {
+        pdialog.cancel();
+    }
+
+    protected Dialog creatingDialog(Context context, boolean isCancelableBack, boolean isCancelableoutside, View view, int height, int width) {
+        customDialog = new Dialog(context, R.style.dialogTheme);
+        //  dialog.setCancelable(isCancelableBack);
+        if (view.getParent() != null) {
+            ViewGroup viewGroup = (ViewGroup) view.getParent();
+            viewGroup.removeView(view);
+        }
+        customDialog.setCanceledOnTouchOutside(isCancelableoutside);
+        customDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+
+      /*  WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+        layoutParams.width = Helper.toPixels(context, 200);
+        layoutParams.height = Helper.toPixels(context, 200);
+        dialog.getWindow().setAttributes(layoutParams);*/
+        customDialog.setContentView(view);
+        WindowManager.LayoutParams wmlp = customDialog.getWindow().getAttributes();
+        customDialog.getWindow().setLayout(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        wmlp.gravity = Gravity.CENTER;
+      /*  wmlp.x = 50;   //x position
+        wmlp.y = -100;*/
+        customDialog.show();
+
+        customDialog.getWindow().setLayout(DimensionUtils.toPixels(context, width), DimensionUtils.toPixels(context, height));
+        customDialog.getWindow().setAttributes(wmlp);
+        return customDialog;
+
+    }
+
+    protected void cancelCustomDialog() {
+        if (customDialog != null) {
+            customDialog.cancel();
+        }
+
     }
 
     /*

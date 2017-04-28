@@ -26,7 +26,7 @@ public class SocialConnectBaseAdapter extends RecyclerView.Adapter<SocialConnect
         return 0;
     }
 
-    class MyViewHolder extends RecyclerView.ViewHolder{
+    class MyViewHolder extends RecyclerView.ViewHolder {
         public MyViewHolder(View itemView) {
             super(itemView);
 

@@ -24,7 +24,14 @@ public class Validator {
         return validator;
     }
 
-    public static String isValidEmail(Context context, CharSequence target) {
+    public final static boolean isNetworkAvailable(Context context) {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    public String validateEmail(Context context, CharSequence target) {
         if (target == null) {
             return context.getString(R.string.error_empty_email_id);
 
@@ -32,13 +39,6 @@ public class Validator {
             return context.getString(R.string.error_invalid_email_id);
         }
         return "";
-    }
-
-    public final static boolean isNetworkAvailable(Context context) {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
     public String validateNumber(Context context, String s) {
@@ -49,6 +49,15 @@ public class Validator {
         if (s.charAt(0) == '0') {
             return context.getString(R.string.error_additional_zero);
         }
+        return "";
+    }
+
+    public String validatePassword(Context context, String s) {
+
+        if (s.length() < 4) {
+            return context.getString(R.string.error_invalid_password);
+        }
+
         return "";
     }
 

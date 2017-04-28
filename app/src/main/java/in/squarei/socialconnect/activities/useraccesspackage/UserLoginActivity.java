@@ -1,24 +1,36 @@
 package in.squarei.socialconnect.activities.useraccesspackage;
 
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+
+import org.json.JSONException;
 import org.json.JSONObject;
 
-import in.squarei.socialconnect.activities.SocialConnectBaseActivity;
-import in.squarei.socialconnect.network.ApiResponse;
-import in.squarei.socialconnect.network.NetworkRequestHandler;
-import in.squarei.socialconnect.R;
-import in.squarei.socialconnect.utils.Logger;
+import java.util.HashMap;
+import java.util.Map;
 
-public class UserLoginActivity extends SocialConnectBaseActivity implements ApiResponse {
+import in.squarei.socialconnect.activities.SocialConnectBaseActivity;
+import in.squarei.socialconnect.R;
+import in.squarei.socialconnect.network.ApiURLS;
+import in.squarei.socialconnect.network.UrlResponseListener;
+import in.squarei.socialconnect.network.VolleyNetworkRequestHandler;
+import in.squarei.socialconnect.utils.Logger;
+import in.squarei.socialconnect.utils.Validator;
+
+public class UserLoginActivity extends SocialConnectBaseActivity implements UrlResponseListener {
 
     private static final String TAG = "UserLoginActivity";
     Handler handler = new Handler() {
@@ -27,9 +39,13 @@ public class UserLoginActivity extends SocialConnectBaseActivity implements ApiR
 
         }
     };
+    AlertDialog deleteDialog;
     private EditText editLoginId, editLoginPassword;
     private Button buttonLogin;
     private TextView tvSignupUser, tvForgotPassword;
+    private TextView tvResendOtp;
+    // These are for dialog to enter OTP///
+    private EditText editPassDigitOne, editPassDigitTwo, editPassDigitThree, editPassDigitFour;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +67,7 @@ public class UserLoginActivity extends SocialConnectBaseActivity implements ApiR
     @Override
     protected void initContext() {
         context = UserLoginActivity.this;
+        currentActivity = UserLoginActivity.this;
     }
 
     @Override
@@ -100,46 +117,156 @@ public class UserLoginActivity extends SocialConnectBaseActivity implements ApiR
         Logger.info(TAG, "======onClick()======" + "something clicked----" + v.getId());
         switch (v.getId()) {
             case R.id.buttonLogin:
-                getLoginResult();
+                validateLoginDetails();
                 break;
             case R.id.tvSignupUser:
+                startActivity(currentActivity, UserRegisterActivity.class);
+                finish();
                 break;
             case R.id.tvForgotPassword:
+                startActivity(currentActivity, UserPasswordResetActivity.class);
+                break;
+            case R.id.tvResendOtp:
+                toast("otp sent", false);
                 break;
         }
     }
 
-    private void getLoginResult() {
-        String url = "http://www.google.com";
-       NetworkRequestHandler.getInstance().getquery(url);
-       // NetworkRequestHandler networkRequestHandler = new NetworkRequestHandler(AppConstants.REQUEST_GET, context, this);
-      //  networkRequestHandler.getquery(url);
+    private void getLoginResult(Map<String, String> map) {
+        VolleyNetworkRequestHandler.getInstance(context, this).getStringData(ApiURLS.LOGIN_URL, ApiURLS.ApiId.LOGIN, ApiURLS.REQUEST_POST, map, null);
+    }
 
-/*        RequestQueue queue = SocialConnectApplication.getInstance().getRequestQueue();
+    private void onLoginSuccess() {
+        toast("Login success", false);
+        showDialogForComment();
+        //   creatingDialog(context,true,true,null,200,400);
+    }
 
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Logger.info(TAG,response);
-                        // Display the first 500 characters of the response string.
-                    }
-                }, new Response.ErrorListener() {
+    @Override
+    public void onResponseReceived(ApiURLS.ApiId apiId, JSONObject jsonObjectResponse) {
+        Logger.info(TAG, "on response received===" + jsonObjectResponse);
+
+    }
+
+    @Override
+    public void onResponseReceived(ApiURLS.ApiId apiId, String stringResponse) {
+        Logger.info(TAG, "on response received===");
+        if (apiId == ApiURLS.ApiId.LOGIN) {
+            try {
+                JSONObject jsonObjectResponse = new JSONObject(stringResponse);
+                boolean error = jsonObjectResponse.getBoolean("error");
+                if (error) {
+                    JSONObject jsonObject = jsonObjectResponse.getJSONObject("commandResult");
+                    Logger.info(TAG, "Command result====" + jsonObject);
+                    String message = jsonObject.getString("message");
+                    toast(message, false);
+                } else {
+                    onLoginSuccess(); /// go to onlogin success
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public void onErrorResponse(ApiURLS.ApiId apiId, String errorData, int responseCode) {
+        Logger.info(TAG, "on error received===" + errorData);
+    }
+
+    private void validateLoginDetails() {
+        Map<String, String> map = new HashMap<>();
+        String emailValidationMessage = Validator.getInstance().validateEmail(context, editLoginId.getText().toString());
+        String passwordValidatorMessage = Validator.getInstance().validatePassword(context, editLoginPassword.getText().toString());
+
+        if (emailValidationMessage.length() > 0) {
+            toast(emailValidationMessage, false);
+            return;
+        } else if (passwordValidatorMessage.length() > 0) {
+            toast(passwordValidatorMessage, false);
+            return;
+        } else {
+            map.put("email", editLoginId.getText().toString().toLowerCase().trim());
+            map.put("password", editLoginPassword.getText().toString().toLowerCase().trim());
+            Logger.info(TAG, "==============Input  data=========" + map.toString());
+            getLoginResult(map);
+        }
+    }
+
+    private void showDialogForComment() {
+
+        LayoutInflater factory = LayoutInflater.from(this);
+        final View dialogView = factory.inflate(R.layout.dialog_enter_otp, null);
+        deleteDialog = new AlertDialog.Builder(this).create();
+        deleteDialog.setView(dialogView);
+
+        //     creatingDialog(context, false, false, dialogView, 200, 200);
+        editPassDigitOne = (EditText) dialogView.findViewById(R.id.editPassDigitOne);
+        editPassDigitTwo = (EditText) dialogView.findViewById(R.id.editPassDigitTwo);
+        editPassDigitThree = (EditText) dialogView.findViewById(R.id.editPassDigitThree);
+        editPassDigitFour = (EditText) dialogView.findViewById(R.id.editPassDigitFour);
+        tvResendOtp = (TextView) dialogView.findViewById(R.id.tvResendOtp);
+        editPassDigitOne.addTextChangedListener(new MyTextWatcher(editPassDigitOne));
+        editPassDigitTwo.addTextChangedListener(new MyTextWatcher(editPassDigitTwo));
+        editPassDigitThree.addTextChangedListener(new MyTextWatcher(editPassDigitThree));
+        editPassDigitFour.addTextChangedListener(new MyTextWatcher(editPassDigitFour));
+        tvResendOtp.setOnClickListener(this);
+/*
+        deleteDialogView.findViewById(R.id.submitButton).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onErrorResponse(VolleyError error) {
+            public void onClick(View v) {
+                //your business logic
+                deleteDialog.dismiss();
             }
         });
-        queue.add(stringRequest);*/
+        deleteDialogView.findViewById(R.id.cancelButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteDialog.dismiss();
+            }
+        });
+*/
+        deleteDialog.show();
     }
 
-    @Override
-    public void onPostFail(int method, String response) {
-        System.out.println("error is received  ===============" + response.toString());
-    }
+    private class MyTextWatcher implements TextWatcher {
 
-    @Override
-    public void onPostSuccess(int method, JSONObject response) {
+        private View view;
 
-        System.out.println("response is received  ===============" + response.toString());
+        private MyTextWatcher(View view) {
+            this.view = view;
+        }
+
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
+        public void afterTextChanged(Editable editable) {
+            String text = editable.toString();
+            switch (view.getId()) {
+                case R.id.editPassDigitOne:
+                    editPassDigitTwo.requestFocus();
+                    break;
+                case R.id.editPassDigitTwo:
+                    editPassDigitThree.requestFocus();
+                    break;
+                case R.id.editPassDigitThree:
+                    editPassDigitFour.requestFocus();
+                    break;
+                case R.id.editPassDigitFour:
+                    if (text != null || text != "") {
+                        String otp = editPassDigitOne.getText().toString() + editPassDigitTwo.getText().toString() + editPassDigitThree.getText().toString() + editPassDigitFour.getText().toString();
+                        if (otp.equals("0000")) {
+                            toast("otp correct", false);
+                            deleteDialog.dismiss();
+                        } else {
+                            toast("otp incorrect", false);
+                        }
+                    }
+                    break;
+            }
+        }
     }
 }

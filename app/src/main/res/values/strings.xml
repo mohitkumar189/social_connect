@@ -9,6 +9,8 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
+    <string name="data_downloading_message">Please wait...</string>
+
     <!--validator-->
     <string name="error_phone_no_invalid">Please provide 10 digit mobile number</string>
     <string name="error_additional_zero">Please provide number without zero</string>
@@ -23,4 +25,6 @@
     <string name="user_mobile">Mobile</string>
     <string name="already_member_button_text">Already member? SignIn</string>
     <string name="forgot_pwd_button_text">Reset Password</string>
+    <string name="error_invalid_password">Password length must be 4</string>
+    <string name="resend_otp_text">Resend OTP</string>
 </resources>

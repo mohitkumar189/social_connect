@@ -28,13 +28,12 @@ public class NetworkRequestHandler {
     private ProgressDialog pd;
     private RequestQueue queue;
     private Context context;
-    private ApiResponse listener;
     private int method;
     private Handler handler;
 
     private NetworkRequestHandler() {
     }
-
+/*
     public NetworkRequestHandler(int method, Context context, ApiResponse response) {
 
         queue = Volley.newRequestQueue(context);
@@ -109,5 +108,5 @@ public class NetworkRequestHandler {
 
     public void getStringData(String url, int requestMethod){
 
-    }
+    }*/
 }

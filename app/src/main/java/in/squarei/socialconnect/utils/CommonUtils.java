@@ -17,8 +17,34 @@ import in.squarei.socialconnect.R;
  */
 
 public class CommonUtils {
+    static ProgressDialog pdialog;
     Dialog customDialog;
-    ProgressDialog pdialog;
+
+    public static void showprogressDialog(Context context, String title, String message, boolean cancelable, boolean isTitle) {
+        if (pdialog == null) {
+            pdialog = new ProgressDialog(context);
+        }
+
+        if (isTitle) {
+            pdialog.setTitle(title);
+        }
+
+        pdialog.setMessage(message);
+
+        if (!cancelable) {
+            pdialog.setCancelable(false);
+        }
+
+        if (!pdialog.isShowing()) {
+            pdialog.show();
+
+        }
+
+    }
+
+    public static void cancelProgressDialog() {
+        pdialog.cancel();
+    }
 
     protected Dialog creatingDialog(Context context, boolean isCancelableBack, boolean isCancelableoutside, View view, int height, int width) {
         customDialog = new Dialog(context, R.style.dialogTheme);
@@ -54,31 +80,5 @@ public class CommonUtils {
             customDialog.cancel();
         }
 
-    }
-
-    public void progressDialog(Context context, String title, String message, boolean cancelable, boolean isTitle) {
-        if (pdialog == null) {
-            pdialog = new ProgressDialog(context);
-        }
-
-        if (isTitle) {
-            pdialog.setTitle(title);
-        }
-
-        pdialog.setMessage(message);
-
-        if (!cancelable) {
-            pdialog.setCancelable(false);
-        }
-
-        if (!pdialog.isShowing()) {
-            pdialog.show();
-
-        }
-
-    }
-
-    public void cancelProgressDialog() {
-        pdialog.cancel();
     }
 }

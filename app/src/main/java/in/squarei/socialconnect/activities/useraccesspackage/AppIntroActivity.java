@@ -3,6 +3,7 @@ package in.squarei.socialconnect.activities.useraccesspackage;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+
 import com.github.paolorotolo.appintro.AppIntro;
 
 import in.squarei.socialconnect.fragments.appIntro.FragmentOneAppIntro;
