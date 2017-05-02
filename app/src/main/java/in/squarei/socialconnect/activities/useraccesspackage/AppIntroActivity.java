@@ -1,5 +1,6 @@
 package in.squarei.socialconnect.activities.useraccesspackage;
 
+import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -8,6 +9,9 @@ import com.github.paolorotolo.appintro.AppIntro;
 
 import in.squarei.socialconnect.fragments.appIntro.FragmentOneAppIntro;
 import in.squarei.socialconnect.fragments.appIntro.FragmentTwoAppIntro;
+import in.squarei.socialconnect.utils.SharedPreferenceUtils;
+
+import static in.squarei.socialconnect.interfaces.AppConstants.IS_INTRO_COMPLETED;
 
 public class AppIntroActivity extends AppIntro {
 
@@ -44,6 +48,8 @@ public class AppIntroActivity extends AppIntro {
     }
 
     private void doSomeWorkOnSkip() {
-
+        SharedPreferenceUtils sharedPreferenceUtils = SharedPreferenceUtils.getInstance(this);
+        sharedPreferenceUtils.putBoolean(IS_INTRO_COMPLETED, true);
+        startActivity(new Intent(this, UserLoginActivity.class));
     }
 }

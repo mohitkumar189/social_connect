@@ -5,14 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="in.squarei.socialconnect.activities.useraccesspackage.UserPassActivity">
-    <de.hdodenhof.circleimageview.CircleImageView
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/profile_image"
         android:layout_width="96dp"
         android:layout_height="96dp"
         android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:src="@mipmap/ic_launcher"
         app:civ_border_color="@color/colorAccent"
@@ -21,5 +23,148 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.498" />
+        app:layout_constraintVertical_bias="0.109" />
+
+
+    <LinearLayout
+        android:id="@+id/container_user_pin_enter"
+        android:layout_width="368dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_marginBottom="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@color/colorAccent"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/container_user_pin_digits_reset"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profile_image"
+        app:layout_constraintVertical_bias="0.324">
+
+        <EditText
+            android:id="@+id/editPassDigitOne"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:background="@drawable/background_shape"
+            android:gravity="center"
+            android:hint="*"
+            android:inputType="numberPassword"
+            android:textColorHint="@color/white" />
+
+        <EditText
+            android:id="@+id/editPassDigitTwo"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:background="@drawable/background_shape"
+            android:gravity="center"
+            android:hint="*"
+            android:inputType="numberPassword"
+            android:textColorHint="@color/white" />
+
+        <EditText
+            android:id="@+id/editPassDigitThree"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:background="@drawable/background_shape"
+            android:gravity="center"
+            android:hint="*"
+            android:inputType="numberPassword"
+            android:textColorHint="@color/white" />
+
+        <EditText
+            android:id="@+id/editPassDigitFour"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:background="@drawable/background_shape"
+            android:gravity="center"
+            android:hint="*"
+            android:inputType="numberPassword"
+            android:textColorHint="@color/white" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/container_user_pin_digits_reset"
+        android:layout_width="368dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="112dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="-12dp"
+        android:layout_marginTop="8dp"
+        android:padding="16dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+        <LinearLayout
+            android:id="@+id/linearDigitHolder2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:background="@color/colorAccent"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/editPassDigitOne2"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:background="@drawable/background_shape"
+                android:gravity="center"
+                android:hint="*"
+                android:inputType="numberPassword"
+                android:textColorHint="@color/white" />
+
+            <EditText
+                android:id="@+id/editPassDigitTwo2"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:background="@drawable/background_shape"
+                android:gravity="center"
+                android:hint="*"
+                android:inputType="numberPassword"
+                android:textColorHint="@color/white" />
+
+            <EditText
+                android:id="@+id/editPassDigitThree2"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:background="@drawable/background_shape"
+                android:gravity="center"
+                android:hint="*"
+                android:inputType="numberPassword"
+                android:textColorHint="@color/white" />
+
+            <EditText
+                android:id="@+id/editPassDigitFour2"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:background="@drawable/background_shape"
+                android:gravity="center"
+                android:hint="*"
+                android:inputType="numberPassword"
+                android:textColorHint="@color/white" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvSetUserPin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/linearDigitHolder2"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="30dp"
+            android:text="@string/set_pin"
+            android:textColor="@color/black" />
+
+    </RelativeLayout>
+
 </android.support.constraint.ConstraintLayout>

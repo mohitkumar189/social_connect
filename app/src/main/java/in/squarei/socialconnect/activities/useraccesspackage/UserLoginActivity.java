@@ -24,11 +24,16 @@ import java.util.Map;
 
 import in.squarei.socialconnect.activities.SocialConnectBaseActivity;
 import in.squarei.socialconnect.R;
+import in.squarei.socialconnect.activities.UserDashboardActivity;
+import in.squarei.socialconnect.interfaces.AppConstants;
 import in.squarei.socialconnect.network.ApiURLS;
 import in.squarei.socialconnect.network.UrlResponseListener;
 import in.squarei.socialconnect.network.VolleyNetworkRequestHandler;
 import in.squarei.socialconnect.utils.Logger;
+import in.squarei.socialconnect.utils.SharedPreferenceUtils;
 import in.squarei.socialconnect.utils.Validator;
+
+import static in.squarei.socialconnect.interfaces.AppConstants.USER_PIN;
 
 public class UserLoginActivity extends SocialConnectBaseActivity implements UrlResponseListener {
 
@@ -44,6 +49,9 @@ public class UserLoginActivity extends SocialConnectBaseActivity implements UrlR
     private Button buttonLogin;
     private TextView tvSignupUser, tvForgotPassword;
     private TextView tvResendOtp;
+    private String apiKey;
+    private String userId;
+    private String userpinPassword;
     // These are for dialog to enter OTP///
     private EditText editPassDigitOne, editPassDigitTwo, editPassDigitThree, editPassDigitFour;
 
@@ -68,6 +76,9 @@ public class UserLoginActivity extends SocialConnectBaseActivity implements UrlR
     protected void initContext() {
         context = UserLoginActivity.this;
         currentActivity = UserLoginActivity.this;
+        SharedPreferenceUtils sharedPreferenceUtils = SharedPreferenceUtils.getInstance(context);
+        String id = sharedPreferenceUtils.getString(USER_PIN);
+        Logger.info(TAG, "=========================user pin===========" + id);
     }
 
     @Override
@@ -136,9 +147,10 @@ public class UserLoginActivity extends SocialConnectBaseActivity implements UrlR
         VolleyNetworkRequestHandler.getInstance(context, this).getStringData(ApiURLS.LOGIN_URL, ApiURLS.ApiId.LOGIN, ApiURLS.REQUEST_POST, map, null);
     }
 
-    private void onLoginSuccess() {
-        toast("Login success", false);
-        showDialogForComment();
+    private void onLoginSuccess(Intent intent) {
+        startActivity(intent);
+        //toast("Login success", false);
+        //showDialogForComment();
         //   creatingDialog(context,true,true,null,200,400);
     }
 
@@ -150,18 +162,43 @@ public class UserLoginActivity extends SocialConnectBaseActivity implements UrlR
 
     @Override
     public void onResponseReceived(ApiURLS.ApiId apiId, String stringResponse) {
+        Intent intent = new Intent(UserLoginActivity.this, UserPassActivity.class);
         Logger.info(TAG, "on response received===");
         if (apiId == ApiURLS.ApiId.LOGIN) {
             try {
                 JSONObject jsonObjectResponse = new JSONObject(stringResponse);
                 boolean error = jsonObjectResponse.getBoolean("error");
-                if (error) {
+                if (!error) {
                     JSONObject jsonObject = jsonObjectResponse.getJSONObject("commandResult");
-                    Logger.info(TAG, "Command result====" + jsonObject);
+                    int success = jsonObject.getInt("success");
                     String message = jsonObject.getString("message");
-                    toast(message, false);
+                    Logger.info(TAG, "Command result====" + jsonObject);
+                    if (success == 1) {
+                        JSONObject jsonDataObject = jsonObject.getJSONObject("data");
+                        userId = jsonDataObject.getString("id");
+                        apiKey = jsonDataObject.getString("apiKey");
+                        userpinPassword = jsonDataObject.getString("pinPassword");
+                        Logger.info(TAG, "===========================================USER PIN" + userpinPassword);
+                        toast(message, false);
+                        if (userpinPassword.length() == 0) {
+                            intent.putExtra("actionType", AppConstants.IntentTypes.SET_USER_PIN);
+                            intent.putExtra("userPin", userpinPassword);
+                            intent.putExtra("apiKey", apiKey);
+                            Logger.info(TAG, "================API KEY SENT====" + apiKey);
+                        } else {
+                            intent.putExtra("actionType", AppConstants.IntentTypes.ENTER_USER_PIN);
+                            intent.putExtra("userPin", userpinPassword);
+                            intent.putExtra("apiKey", apiKey);
+                            Logger.info(TAG, "================API KEY SENT====" + apiKey);
+                        }
+                        //  intent.putExtra("actionType", AppConstants.IntentTypes.SET_USER_PIN);
+                        onLoginSuccess(intent); /// go to onlogin success and save required properties
+                    } else {
+                        toast(message, false);
+                    }
+
                 } else {
-                    onLoginSuccess(); /// go to onlogin success
+                    toast("Something went wrong...", false);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -259,9 +296,12 @@ public class UserLoginActivity extends SocialConnectBaseActivity implements UrlR
                     if (text != null || text != "") {
                         String otp = editPassDigitOne.getText().toString() + editPassDigitTwo.getText().toString() + editPassDigitThree.getText().toString() + editPassDigitFour.getText().toString();
                         if (otp.equals("0000")) {
+                            ////////////////////////go to the user dashboard///////////////////////
                             toast("otp correct", false);
+                            startActivity(currentActivity, UserDashboardActivity.class);
                             deleteDialog.dismiss();
                         } else {
+
                             toast("otp incorrect", false);
                         }
                     }

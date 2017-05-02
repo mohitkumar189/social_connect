@@ -42,6 +42,7 @@ public class VolleyNetworkRequestHandler {
     public static VolleyNetworkRequestHandler getInstance(Context context, UrlResponseListener urlResponseListener) {
 
         pdialog = new ProgressDialog(context);
+        pdialog.setTitle("Please wait...");
         //   if (VolleyNetworkRequestHandler.mctx == null) {
         VolleyNetworkRequestHandler.mctx = context;
         //    }
@@ -91,7 +92,32 @@ public class VolleyNetworkRequestHandler {
                 //CommonUtils.cancelProgressDialog();
                 pdialog.dismiss();
                 String messageBody = null; // message received in the error
-                int responseCode = error.networkResponse.statusCode; // to get response code
+                int responseCode = 0;
+                if (error != null) {
+                    if (error.networkResponse != null) {
+                        responseCode = error.networkResponse.statusCode; // to get response code
+                        if (error.networkResponse.data != null) {
+                            try {
+                                messageBody = new String(error.networkResponse.data, "UTF-8");
+                            } catch (UnsupportedEncodingException e) {
+                                e.printStackTrace();
+                            }
+                            if (VolleyNetworkRequestHandler.urlResponseListener != null) {
+                                Logger.info(TAG, "===Object not null on error block===");
+                                urlResponseListener.onErrorResponse(apiId, messageBody, responseCode);
+                            } else {
+                                Logger.info(TAG, "===Object null on error block===");
+                            }
+                        } else {
+                            if (VolleyNetworkRequestHandler.urlResponseListener != null) {
+                                Logger.info(TAG, "===Object not null on error block===");
+                                urlResponseListener.onErrorResponse(apiId, messageBody, responseCode);
+                            } else {
+                                Logger.info(TAG, "===Object null on error block===");
+                            }
+                        }
+                    }
+                }
 /*
                 Log.d("abd", "Error: " + error
                         + ">>" + error.networkResponse.statusCode
@@ -99,34 +125,15 @@ public class VolleyNetworkRequestHandler {
                         + ">>" + error.getCause()
                         + ">>" + error.getMessage() +
                         ">>" + error.networkResponse.toString());*/
-
-                if (error.networkResponse.data != null) {
-                    try {
-                        messageBody = new String(error.networkResponse.data, "UTF-8");
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
-                    }
-                    if (VolleyNetworkRequestHandler.urlResponseListener != null) {
-                        Logger.info(TAG, "===Object not null on error block===");
-                        urlResponseListener.onErrorResponse(apiId, messageBody, responseCode);
-                    } else {
-                        Logger.info(TAG, "===Object null on error block===");
-                    }
-                } else {
-                    if (VolleyNetworkRequestHandler.urlResponseListener != null) {
-                        Logger.info(TAG, "===Object not null on error block===");
-                        urlResponseListener.onErrorResponse(apiId, messageBody, responseCode);
-                    } else {
-                        Logger.info(TAG, "===Object null on error block===");
-                    }
-                }
             }
         }) {
+
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
-                Logger.info(TAG, "==============Input  data=========" + postParams.toString());
                 if (postParams != null) {
+                    Logger.info(TAG, "==============Data for sending=========" + postParams.toString());
+
                     params.putAll(postParams);
                 }
                 return params;
@@ -134,8 +141,18 @@ public class VolleyNetworkRequestHandler {
 
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> params = super.getHeaders();
+                Map<String, String> params = new HashMap<>();
+
                 if (headerParams != null) {
+                    Logger.info(TAG, "==============Data for Headers=========" + headerParams.toString());
+
+                    //     params.put("Content-Type", "application/json; charset=UTF-8");
+                    // params.put("client-id", "a34a80616d17600d32c78473bb1ef4c5");
+
+                    for (Map.Entry<String, String> entry : headerParams.entrySet()) {
+                        //    params.put(entry.getKey(), entry.getValue());
+                        //     System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
+                    }
                     params.putAll(headerParams);
                 }
                 return params;

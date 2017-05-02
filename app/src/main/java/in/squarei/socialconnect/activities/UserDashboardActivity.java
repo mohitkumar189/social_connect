@@ -16,8 +16,11 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import in.squarei.socialconnect.R;
 import in.squarei.socialconnect.utils.Logger;
 
+import static in.squarei.socialconnect.interfaces.AppConstants.MENU_PROFILE_ID;
+
 public class UserDashboardActivity extends SocialConnectBaseActivity {
     private static final String TAG = "UserDashboardActivity";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,20 +32,24 @@ public class UserDashboardActivity extends SocialConnectBaseActivity {
         navigationView.getMenu().clear();
         //  navigationView.removeAllViews();
         final Menu menu = navigationView.getMenu();
-        for (int i = 1; i <= 3; i++) {
+        //    menu.add("Profile");
+        menu.add(1, MENU_PROFILE_ID, 100, "Profile"); //(int groupId,int itemId, int, int order, CharSequence title )
+        menu.add(1, 2, 200, "Profile1");
+        menu.add(1, 3, 300, "Profile2");
+/*        for (int i = 1; i <= 3; i++) {
             menu.add("Runtime item " + i);
             menu.add(1,1,100,"1");
-        }
+        }*/
         LayoutInflater factory = LayoutInflater.from(context);
         final View deleteDialogView = factory.inflate(R.layout.nav_header_social_connect_base, null);
         navigationView.addHeaderView(deleteDialogView);
 
 
         // adding a section and items into it
-        final SubMenu subMenu = menu.addSubMenu("SubMenu Title");
+ /*       final SubMenu subMenu = menu.addSubMenu("SubMenu Title");
         for (int i = 1; i <= 2; i++) {
             subMenu.add("SubMenu Item " + i);
-        }
+        }*/
         for (int i = 0, count = navigationView.getChildCount(); i < count; i++) {
             final View child = navigationView.getChildAt(i);
             if (child != null && child instanceof ListView) {
@@ -58,12 +65,13 @@ public class UserDashboardActivity extends SocialConnectBaseActivity {
     @Override
     protected void initViews() {
         String token = FirebaseInstanceId.getInstance().getToken();
-        Logger.info(TAG,"============Token=========="+token);
+        Logger.info(TAG, "============Token==========" + token);
     }
 
     @Override
     protected void initContext() {
         context = UserDashboardActivity.this;
+        currentActivity = UserDashboardActivity.this;
     }
 
     @Override
@@ -103,6 +111,15 @@ public class UserDashboardActivity extends SocialConnectBaseActivity {
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case MENU_PROFILE_ID:
+                drawer.closeDrawer(navigationView);
+                toast("profile", false);
+                break;
+            default:
+                drawer.closeDrawer(navigationView);
+                break;
+        }
         return true;
     }
 

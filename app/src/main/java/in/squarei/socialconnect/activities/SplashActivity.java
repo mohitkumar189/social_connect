@@ -1,5 +1,6 @@
 package in.squarei.socialconnect.activities;
 
+import android.content.Intent;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
@@ -8,12 +9,18 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
+import in.squarei.socialconnect.activities.useraccesspackage.AppIntroActivity;
 import in.squarei.socialconnect.activities.useraccesspackage.UserLoginActivity;
+import in.squarei.socialconnect.activities.useraccesspackage.UserPassActivity;
 import in.squarei.socialconnect.broadcastreceivers.SmsListener;
 import in.squarei.socialconnect.interfaces.AppConstants;
 import in.squarei.socialconnect.R;
 import in.squarei.socialconnect.utils.Logger;
+import in.squarei.socialconnect.utils.SharedPreferenceUtils;
 
+import static in.squarei.socialconnect.interfaces.AppConstants.IS_INTRO_COMPLETED;
+import static in.squarei.socialconnect.interfaces.AppConstants.PIN_STATUS;
+import static in.squarei.socialconnect.interfaces.AppConstants.USER_PIN;
 import static java.lang.Thread.sleep;
 
 public class SplashActivity extends SocialConnectBaseActivity implements SmsListener.OnSmsReceivedListener {
@@ -33,7 +40,23 @@ public class SplashActivity extends SocialConnectBaseActivity implements SmsList
             @Override
             public void run() {
                 Logger.info(TAG, "======Timer finished======");
-                navigateUser();
+                SharedPreferenceUtils sharedPreferenceUtils = SharedPreferenceUtils.getInstance(context);
+                if (sharedPreferenceUtils.getBoolean(IS_INTRO_COMPLETED)) {
+                    if (sharedPreferenceUtils.getBoolean(PIN_STATUS)) {
+                        // open activity to enter the pin
+                        Intent intent = new Intent(currentActivity, UserPassActivity.class);
+                        intent.putExtra("actionType", AppConstants.IntentTypes.ENTER_USER_PIN);
+                        intent.putExtra("userPin", sharedPreferenceUtils.getString(USER_PIN));
+                        startActivity(intent);
+                    } else {
+                        // open Login activity
+                        startActivity(currentActivity, UserLoginActivity.class);
+
+                    }
+                } else {
+                    startActivity(currentActivity, AppIntroActivity.class);
+                }
+                //  navigateUser();
             }
         }, AppConstants.APP_SPLASH_TIME);
 
@@ -83,6 +106,7 @@ public class SplashActivity extends SocialConnectBaseActivity implements SmsList
     @Override
     protected void initContext() {
         currentActivity = SplashActivity.this;
+        context = SplashActivity.this;
     }
 
     @Override

@@ -149,13 +149,20 @@ public class UserRegisterActivity extends SocialConnectBaseActivity implements U
             try {
                 JSONObject jsonObjectResponse = new JSONObject(stringResponse);
                 boolean error = jsonObjectResponse.getBoolean("error");
-                if (error) {
+                if (!error) {
                     JSONObject jsonObject = jsonObjectResponse.getJSONObject("commandResult");
                     Logger.info(TAG, "Command result====" + jsonObject);
                     String message = jsonObject.getString("message");
-                    toast(message, false);
+                    boolean success = jsonObject.getBoolean("error");
+                    if (!success) {
+                        toast(message, false);
+                        onSignupSuccess(); /// go to onSignup success
+                    } else {
+                        toast(message, false);
+                    }
+
                 } else {
-                    onSignupSuccess(); /// go to onSignup success
+                    toast("Something went wrong...", false);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
