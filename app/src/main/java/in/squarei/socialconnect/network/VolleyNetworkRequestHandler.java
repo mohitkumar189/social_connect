@@ -129,7 +129,7 @@ public class VolleyNetworkRequestHandler {
         }) {
 
             @Override
-            protected Map<String, String> getParams() {
+            protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<String, String>();
                 if (postParams != null) {
                     Logger.info(TAG, "==============Data for sending=========" + postParams.toString());
@@ -208,7 +208,7 @@ public class VolleyNetworkRequestHandler {
             }
         }) {
             @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
+            protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
 
                 Logger.info(TAG, "==============Input  data=========" + postParams.toString());
@@ -220,7 +220,7 @@ public class VolleyNetworkRequestHandler {
 
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> params = super.getHeaders();
+                Map<String, String> params = new HashMap<String, String>();
                 if (headerParams != null) {
                     params.putAll(headerParams);
                 }

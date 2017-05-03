@@ -25,7 +25,7 @@ public class UserDashboardActivity extends SocialConnectBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_dashboard);
-        settingNavigationView();
+        // settingNavigationView();
     }
 
     private void settingNavigationView() {
@@ -86,7 +86,7 @@ public class UserDashboardActivity extends SocialConnectBaseActivity {
 
     @Override
     protected boolean isHomeButton() {
-        return true;
+        return false;
     }
 
     @Override
@@ -112,9 +112,10 @@ public class UserDashboardActivity extends SocialConnectBaseActivity {
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
-            case MENU_PROFILE_ID:
+            case R.id.nav_user_profile:
                 drawer.closeDrawer(navigationView);
                 toast("profile", false);
+                startActivity(this, UserProfileActivity.class);
                 break;
             default:
                 drawer.closeDrawer(navigationView);

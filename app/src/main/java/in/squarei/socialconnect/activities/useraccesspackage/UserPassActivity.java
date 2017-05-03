@@ -43,7 +43,7 @@ public class UserPassActivity extends SocialConnectBaseActivity implements UrlRe
     private String userPin;
     private String enteredUserPin;
     private String apiKey;
-    private String pinToBeSaved;
+    private SharedPreferenceUtils sharedPreferenceUtils = SharedPreferenceUtils.getInstance(context);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +52,10 @@ public class UserPassActivity extends SocialConnectBaseActivity implements UrlRe
         Intent intent = getIntent();
         if (intent.getExtras().get("actionType").equals(AppConstants.IntentTypes.ENTER_USER_PIN)) {
             userPin = intent.getStringExtra("userPin");
-            //apiKey = intent.getStringExtra("apiKey");
+            apiKey = intent.getStringExtra("apiKey");
+            saveDataInSf();
             Logger.info(TAG, "================USER PIN RECEIVED====" + userPin);
+            Logger.info(TAG, "================API KEY RECEIVED====" + apiKey);
             if (container_user_pin_enter.getVisibility() == View.GONE) {
                 container_user_pin_enter.setVisibility(View.VISIBLE);
                 if (container_user_pin_digits_reset.getVisibility() == View.VISIBLE)
@@ -63,6 +65,7 @@ public class UserPassActivity extends SocialConnectBaseActivity implements UrlRe
             userPin = intent.getStringExtra("userPin");
             apiKey = intent.getStringExtra("apiKey");
             Logger.info(TAG, "================API KEY RECEIVED====" + apiKey);
+            Logger.info(TAG, "================USER PIN RECEIVED====" + userPin);
             if (container_user_pin_digits_reset.getVisibility() == View.GONE) {
                 container_user_pin_digits_reset.setVisibility(View.VISIBLE);
                 if (container_user_pin_enter.getVisibility() == View.VISIBLE)
@@ -146,13 +149,30 @@ public class UserPassActivity extends SocialConnectBaseActivity implements UrlRe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tvSetUserPin:
-                if (enteredUserPin != null) {
+                String digi1 = editPassDigitOne2.getText().toString();
+                String digi2 = editPassDigitTwo2.getText().toString();
+                String digi3 = editPassDigitThree2.getText().toString();
+                String digi4 = editPassDigitFour2.getText().toString();
+                if (digi1 == null) {
+                    editPassDigitOne2.requestFocus();
+                } else if (digi2 == null) {
+                    editPassDigitTwo2.requestFocus();
+                } else if (digi3 == null) {
+                    editPassDigitThree2.requestFocus();
+                } else if (digi4 == null) {
+                    editPassDigitFour2.requestFocus();
+                } else {
+                    enteredUserPin = digi1 + digi2 + digi3 + digi4;
+                }
+                if (enteredUserPin.length() == 4) {
                     Map<String, String> mapParams = new HashMap<>();
                     Map<String, String> mapHeader = new HashMap<>();
                     mapParams.put("pin", enteredUserPin);
                     //     mapParams.put("client-id", apiKey);
                     mapHeader.put("client-id", apiKey);
                     getPinUpdateResult(mapParams, mapHeader);
+                } else {
+                    toast("Enter a valid pin", false);
                 }
                 break;
             default:
@@ -180,7 +200,7 @@ public class UserPassActivity extends SocialConnectBaseActivity implements UrlRe
                 JSONObject commandResult = jsonObject.getJSONObject("commandResult");
                 int success = commandResult.getInt("success");
                 String message = commandResult.getString("message");
-                pinToBeSaved = jsonObject.getJSONObject("input").getString("pin");
+                //pinToBeSaved = jsonObject.getJSONObject("input").getString("pin");
                 if (success == 1) {
                     goToDashboardActivity();
                     toast(message, false);
@@ -201,12 +221,38 @@ public class UserPassActivity extends SocialConnectBaseActivity implements UrlRe
     }
 
     private void goToDashboardActivity() {
-        Logger.info(TAG, "=========================user pin===========" + pinToBeSaved + " " + apiKey + " " + userPin);
-        SharedPreferenceUtils sharedPreferenceUtils = SharedPreferenceUtils.getInstance(context);
-        sharedPreferenceUtils.putString(USER_PIN, userPin);
+        Logger.info(TAG, "===================Dashboard Activity navigation=================");
+        String digi1 = editPassDigitOne.getText().toString();
+        String digi2 = editPassDigitTwo.getText().toString();
+        String digi3 = editPassDigitThree.getText().toString();
+        String digi4 = editPassDigitFour.getText().toString();
+        if (digi1 == null) {
+            editPassDigitOne.requestFocus();
+        } else if (digi2 == null) {
+            editPassDigitTwo.requestFocus();
+        } else if (digi3 == null) {
+            editPassDigitThree.requestFocus();
+        } else if (digi4 == null) {
+            editPassDigitFour.requestFocus();
+        } else {
+            enteredUserPin = digi1 + digi2 + digi3 + digi4;
+        }
+        if (enteredUserPin.equals(sharedPreferenceUtils.getString(USER_PIN))) {
+            //   goToDashboardActivity();
+            startActivity(currentActivity, UserDashboardActivity.class);
+        } else {
+            toast("Wrong Pin...", false);
+        }
+        //   startActivity(currentActivity, UserDashboardActivity.class);
+    }
+
+    private void saveDataInSf() {
+        Logger.info(TAG, "==============saving data in preferences=============" + userPin + " " + apiKey);
+        if (userPin != null) sharedPreferenceUtils.putString(USER_PIN, userPin);
+
         sharedPreferenceUtils.putBoolean(PIN_STATUS, true);
-        sharedPreferenceUtils.putString(API_KEY, apiKey);
-        startActivity(currentActivity, UserDashboardActivity.class);
+        if (apiKey != null) sharedPreferenceUtils.putString(API_KEY, apiKey);
+
     }
 
     private class MyTextWatcher implements TextWatcher {
@@ -227,43 +273,39 @@ public class UserPassActivity extends SocialConnectBaseActivity implements UrlRe
             String text = editable.toString();
             switch (view.getId()) {
                 case R.id.editPassDigitOne:
-                    editPassDigitTwo.requestFocus();
+                    if (text != null || text != "")
+                        editPassDigitTwo.requestFocus();
                     break;
                 case R.id.editPassDigitTwo:
-                    editPassDigitThree.requestFocus();
+                    if (text != null || text != "")
+                        editPassDigitThree.requestFocus();
                     break;
                 case R.id.editPassDigitThree:
-                    editPassDigitFour.requestFocus();
+                    if (text != null || text != "")
+                        editPassDigitFour.requestFocus();
                     break;
                 case R.id.editPassDigitFour:
-                    if (text != null || text != "") {
-                        String otp = editPassDigitOne.getText().toString() + editPassDigitTwo.getText().toString() + editPassDigitThree.getText().toString() + editPassDigitFour.getText().toString();
-                        enteredUserPin = otp;
-                        if (enteredUserPin.length() != 0) {
-                            if (enteredUserPin.equals(userPin)) {
-                                goToDashboardActivity();
-                            }
-                        } else {
-                            toast("Enter a valid pin", false);
-                        }
-                    }
+                    if (text != null || text != "") goToDashboardActivity();
                     break;
 
                 case R.id.editPassDigitOne2:
-                    editPassDigitTwo2.requestFocus();
+                    if (editPassDigitOne2.getText() != null)
+                        editPassDigitTwo2.requestFocus();
                     break;
                 case R.id.editPassDigitTwo2:
-                    editPassDigitThree2.requestFocus();
+                    if (editPassDigitTwo2.getText() != null)
+                        editPassDigitThree2.requestFocus();
                     break;
                 case R.id.editPassDigitThree2:
-                    editPassDigitFour2.requestFocus();
+                    if (editPassDigitThree2.getText() != null)
+                        editPassDigitFour2.requestFocus();
                     break;
                 case R.id.editPassDigitFour2:
-                    if (text != null || text != "") {
+                    if (editPassDigitFour2.getText() != null) toast("From reset pin", false);
+      /*                  if (text != null || text != "") {
                         toast("From reset pin", false);
-                        String otp = editPassDigitOne2.getText().toString() + editPassDigitTwo2.getText().toString() + editPassDigitThree2.getText().toString() + editPassDigitFour2.getText().toString();
-                        enteredUserPin = otp;
-                    }
+                        //   String otp = editPassDigitOne2.getText().toString() + editPassDigitTwo2.getText().toString() + editPassDigitThree2.getText().toString() + editPassDigitFour2.getText().toString();
+                    }*/
                     break;
             }
         }

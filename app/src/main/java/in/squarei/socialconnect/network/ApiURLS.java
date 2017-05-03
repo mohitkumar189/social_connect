@@ -20,9 +20,10 @@ public class ApiURLS {
     public static final String REGISTER_URL = BASE_URL + "register ";
     public static final String RESET_PASSWORD_URL = BASE_URL + "forgot";
     public static final String USER_PIN_UPDATE = BASE_URL + "pin";
+    public static final String USER_PROFILE = BASE_URL + "profile";
 
     public enum ApiId {
-        LOGIN, REGISTER, FORGOT,PIN_UPDATE
+        LOGIN, REGISTER, FORGOT, PIN_UPDATE, USER_PROFILE
     }
 
 }
