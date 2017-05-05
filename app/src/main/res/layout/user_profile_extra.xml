@@ -43,10 +43,12 @@
 
             <RatingBar
                 android:id="@+id/ratingBar"
+                style="@style/Base.Widget.AppCompat.RatingBar.Small"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tvUserCategory"
-                android:layout_centerHorizontal="true" />
+                android:layout_centerHorizontal="true"
+                android:rating="4.5" />
 
             <LinearLayout
                 android:layout_width="match_parent"

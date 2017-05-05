@@ -5,9 +5,9 @@ package in.squarei.socialconnect.modals;
  */
 
 public class UserProfiledata {
-    private String userName, userMobile, userAddress, userCity, userZipcode, userState, userLandmark, userCountry, userProfilePic;
+    private String userName, userMobile, userAddress, userCity, userZipcode, userState, userLandmark, userCountry, userProfilePic, userFirstName, userLastName, userEmailAddress, userGender;
 
-    public UserProfiledata(String userName, String userMobile, String userAddress, String userCity, String userZipcode, String userState, String userLandmark, String userCountry, String userProfilePic) {
+    public UserProfiledata(String userName, String userMobile, String userAddress, String userCity, String userZipcode, String userState, String userLandmark, String userCountry, String userProfilePic, String userFirstName, String userLastName, String userEmailAddress, String userGender) {
         this.userName = userName;
         this.userMobile = userMobile;
         this.userAddress = userAddress;
@@ -17,6 +17,10 @@ public class UserProfiledata {
         this.userLandmark = userLandmark;
         this.userCountry = userCountry;
         this.userProfilePic = userProfilePic;
+        this.userFirstName = userFirstName;
+        this.userLastName = userLastName;
+        this.userEmailAddress = userEmailAddress;
+        this.userGender = userGender;
     }
 
     public String getUserName() {
@@ -81,5 +85,45 @@ public class UserProfiledata {
 
     public void setUserCountry(String userCountry) {
         this.userCountry = userCountry;
+    }
+
+    public String getUserProfilePic() {
+        return userProfilePic;
+    }
+
+    public void setUserProfilePic(String userProfilePic) {
+        this.userProfilePic = userProfilePic;
+    }
+
+    public String getUserFirstName() {
+        return userFirstName;
+    }
+
+    public void setUserFirstName(String userFirstName) {
+        this.userFirstName = userFirstName;
+    }
+
+    public String getUserLastName() {
+        return userLastName;
+    }
+
+    public void setUserLastName(String userLastName) {
+        this.userLastName = userLastName;
+    }
+
+    public String getUserEmailAddress() {
+        return userEmailAddress;
+    }
+
+    public void setUserEmailAddress(String userEmailAddress) {
+        this.userEmailAddress = userEmailAddress;
+    }
+
+    public String getUserGender() {
+        return userGender;
+    }
+
+    public void setUserGender(String userGender) {
+        this.userGender = userGender;
     }
 }

@@ -237,6 +237,23 @@ public abstract class SocialConnectBaseActivity extends AppCompatActivity
         ft.commit();
     }
 
+    public void switchContent(int containerId,Fragment fragment, boolean addToBackStack,
+                              boolean add, String tag) {
+
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+
+        if (!add) {
+
+            ft.replace(containerId, fragment, tag);
+        } else {
+            ft.add(containerId, fragment, tag);
+        }
+        if (addToBackStack) {
+            ft.addToBackStack(tag);
+        }
+        ft.commit();
+    }
+
     public void popBackStack(String tag) {
         if (getSupportFragmentManager().getBackStackEntryCount() >= 0) {
             getSupportFragmentManager().popBackStack(tag, FragmentManager.POP_BACK_STACK_INCLUSIVE);
@@ -426,5 +443,10 @@ public abstract class SocialConnectBaseActivity extends AppCompatActivity
 
     public void askForPermission(int permissionRequestCode, String... permissions) {
 
+    }
+
+    public void hideStatusBar() {
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN); // hiding status bar
     }
 }

@@ -65,7 +65,7 @@ public class UserLoginActivity extends SocialConnectBaseActivity implements UrlR
     @Override
     protected void initViews() {
         editLoginId = (EditText) findViewById(R.id.editLoginId);
-        editLoginPassword = (EditText) findViewById(R.id.editLoginPassword);
+        // editLoginPassword = (EditText) findViewById(R.id.editLoginPassword);
         buttonLogin = (Button) findViewById(R.id.buttonLogin);
         tvSignupUser = (TextView) findViewById(R.id.tvSignupUser);
         tvForgotPassword = (TextView) findViewById(R.id.tvForgotPassword);
@@ -132,7 +132,7 @@ public class UserLoginActivity extends SocialConnectBaseActivity implements UrlR
                 break;
             case R.id.tvSignupUser:
                 startActivity(currentActivity, UserRegisterActivity.class);
-                finish();
+                //    finish();
                 break;
             case R.id.tvForgotPassword:
                 startActivity(currentActivity, UserPasswordResetActivity.class);
@@ -180,7 +180,7 @@ public class UserLoginActivity extends SocialConnectBaseActivity implements UrlR
                         userpinPassword = jsonDataObject.getString("pinPassword");
                         Logger.info(TAG, "===========================================USER PIN" + userpinPassword);
                         toast(message, false);
-                        if (userpinPassword.length() == 0) {
+                        if (userpinPassword == "null" || userpinPassword.length() == 0) {
                             intent.putExtra("actionType", AppConstants.IntentTypes.SET_USER_PIN);
                             intent.putExtra("userPin", userpinPassword);
                             intent.putExtra("apiKey", apiKey);
@@ -214,17 +214,17 @@ public class UserLoginActivity extends SocialConnectBaseActivity implements UrlR
     private void validateLoginDetails() {
         Map<String, String> map = new HashMap<>();
         String emailValidationMessage = Validator.getInstance().validateEmail(context, editLoginId.getText().toString());
-        String passwordValidatorMessage = Validator.getInstance().validatePassword(context, editLoginPassword.getText().toString());
+//        String passwordValidatorMessage = Validator.getInstance().validatePassword(context, editLoginPassword.getText().toString());
 
         if (emailValidationMessage.length() > 0) {
             toast(emailValidationMessage, false);
             return;
-        } else if (passwordValidatorMessage.length() > 0) {
+        }/* else if (passwordValidatorMessage.length() > 0) {
             toast(passwordValidatorMessage, false);
             return;
-        } else {
+        }*/ else {
             map.put("email", editLoginId.getText().toString().toLowerCase().trim());
-            map.put("password", editLoginPassword.getText().toString().toLowerCase().trim());
+            // map.put("password", editLoginPassword.getText().toString().toLowerCase().trim());
             Logger.info(TAG, "==============Input  data=========" + map.toString());
             getLoginResult(map);
         }

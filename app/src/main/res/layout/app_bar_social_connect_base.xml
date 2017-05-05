@@ -8,11 +8,11 @@
     tools:context="in.squarei.socialconnect.activities.SocialConnectBaseActivity">
 
     <android.support.design.widget.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:theme="@style/AppTheme.AppBarOverlay">
 
-<include layout="@layout/base_toolbar"/>
+    <include layout="@layout/base_toolbar"/>
 
         <android.support.design.widget.TabLayout
             android:id="@+id/tabs"

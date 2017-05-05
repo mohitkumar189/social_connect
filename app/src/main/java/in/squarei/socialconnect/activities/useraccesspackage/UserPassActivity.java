@@ -1,6 +1,7 @@
 package in.squarei.socialconnect.activities.useraccesspackage;
 
 import android.content.Intent;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
 import android.text.Editable;
@@ -29,25 +30,30 @@ import in.squarei.socialconnect.utils.Logger;
 import in.squarei.socialconnect.utils.SharedPreferenceUtils;
 
 import static in.squarei.socialconnect.interfaces.AppConstants.API_KEY;
+import static in.squarei.socialconnect.interfaces.AppConstants.IS_INTRO_COMPLETED;
 import static in.squarei.socialconnect.interfaces.AppConstants.PIN_STATUS;
 import static in.squarei.socialconnect.interfaces.AppConstants.USER_PIN;
 
 public class UserPassActivity extends SocialConnectBaseActivity implements UrlResponseListener {
 
     private static final String TAG = "UserPassActivity";
-    private RelativeLayout container_user_pin_digits_reset;
+    private LinearLayout container_user_pin_digits_reset;
     private LinearLayout container_user_pin_enter;
     private TextView tvSetUserPin;
     private EditText editPassDigitOne, editPassDigitTwo, editPassDigitThree, editPassDigitFour;
     private EditText editPassDigitOne2, editPassDigitTwo2, editPassDigitThree2, editPassDigitFour2;
+    private EditText editPassDigitOne3, editPassDigitTwo3, editPassDigitThree3, editPassDigitFour3;
+
     private String userPin;
     private String enteredUserPin;
     private String apiKey;
     private SharedPreferenceUtils sharedPreferenceUtils = SharedPreferenceUtils.getInstance(context);
+    private boolean canExit = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        hideStatusBar();
         setContentView(R.layout.activity_user_pass);
         Intent intent = getIntent();
         if (intent.getExtras().get("actionType").equals(AppConstants.IntentTypes.ENTER_USER_PIN)) {
@@ -76,7 +82,7 @@ public class UserPassActivity extends SocialConnectBaseActivity implements UrlRe
 
     @Override
     protected void initViews() {
-        container_user_pin_digits_reset = (RelativeLayout) findViewById(R.id.container_user_pin_digits_reset);
+        container_user_pin_digits_reset = (LinearLayout) findViewById(R.id.container_user_pin_digits_reset);
         container_user_pin_enter = (LinearLayout) findViewById(R.id.container_user_pin_enter);
         tvSetUserPin = (TextView) findViewById(R.id.tvSetUserPin);
         editPassDigitOne = (EditText) findViewById(R.id.editPassDigitOne);
@@ -88,6 +94,12 @@ public class UserPassActivity extends SocialConnectBaseActivity implements UrlRe
         editPassDigitTwo2 = (EditText) findViewById(R.id.editPassDigitTwo2);
         editPassDigitThree2 = (EditText) findViewById(R.id.editPassDigitThree2);
         editPassDigitFour2 = (EditText) findViewById(R.id.editPassDigitFour2);
+
+
+        editPassDigitOne3 = (EditText) findViewById(R.id.editPassDigitOne3);
+        editPassDigitTwo3 = (EditText) findViewById(R.id.editPassDigitTwo3);
+        editPassDigitThree3 = (EditText) findViewById(R.id.editPassDigitThree3);
+        editPassDigitFour3 = (EditText) findViewById(R.id.editPassDigitFour3);
     }
 
     @Override
@@ -108,6 +120,11 @@ public class UserPassActivity extends SocialConnectBaseActivity implements UrlRe
         editPassDigitTwo2.addTextChangedListener(new UserPassActivity.MyTextWatcher(editPassDigitTwo2));
         editPassDigitThree2.addTextChangedListener(new UserPassActivity.MyTextWatcher(editPassDigitThree2));
         editPassDigitFour2.addTextChangedListener(new UserPassActivity.MyTextWatcher(editPassDigitFour2));
+
+        editPassDigitOne3.addTextChangedListener(new UserPassActivity.MyTextWatcher(editPassDigitOne3));
+        editPassDigitTwo3.addTextChangedListener(new UserPassActivity.MyTextWatcher(editPassDigitTwo3));
+        editPassDigitThree3.addTextChangedListener(new UserPassActivity.MyTextWatcher(editPassDigitThree3));
+        editPassDigitFour3.addTextChangedListener(new UserPassActivity.MyTextWatcher(editPassDigitFour3));
     }
 
     @Override
@@ -153,6 +170,9 @@ public class UserPassActivity extends SocialConnectBaseActivity implements UrlRe
                 String digi2 = editPassDigitTwo2.getText().toString();
                 String digi3 = editPassDigitThree2.getText().toString();
                 String digi4 = editPassDigitFour2.getText().toString();
+
+                String verifyPin = editPassDigitOne3.getText().toString() + editPassDigitTwo3.getText().toString() + editPassDigitThree3.getText().toString() + editPassDigitFour3.getText().toString();
+
                 if (digi1 == null) {
                     editPassDigitOne2.requestFocus();
                 } else if (digi2 == null) {
@@ -165,12 +185,17 @@ public class UserPassActivity extends SocialConnectBaseActivity implements UrlRe
                     enteredUserPin = digi1 + digi2 + digi3 + digi4;
                 }
                 if (enteredUserPin.length() == 4) {
-                    Map<String, String> mapParams = new HashMap<>();
-                    Map<String, String> mapHeader = new HashMap<>();
-                    mapParams.put("pin", enteredUserPin);
-                    //     mapParams.put("client-id", apiKey);
-                    mapHeader.put("client-id", apiKey);
-                    getPinUpdateResult(mapParams, mapHeader);
+                    if (enteredUserPin.equals(verifyPin)) {
+                        Map<String, String> mapParams = new HashMap<>();
+                        Map<String, String> mapHeader = new HashMap<>();
+                        mapParams.put("pin", enteredUserPin);
+                        //     mapParams.put("client-id", apiKey);
+                        mapHeader.put("client-id", apiKey);
+                        getPinUpdateResult(mapParams, mapHeader);
+                    } else {
+                        toast("Please enter same pin", false);
+                    }
+
                 } else {
                     toast("Enter a valid pin", false);
                 }
@@ -255,6 +280,25 @@ public class UserPassActivity extends SocialConnectBaseActivity implements UrlRe
 
     }
 
+    @Override
+    public void onBackPressed() {
+
+        if (canExit) {
+            super.onBackPressed();
+            return;
+        }
+        canExit = true;
+        toast("Press back again", false);
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Logger.info(TAG, "======Timer finished======");
+                canExit = false;
+            }
+        }, AppConstants.BACK_EXIT_TIME);
+    }
+
     private class MyTextWatcher implements TextWatcher {
 
         private View view;
@@ -288,6 +332,7 @@ public class UserPassActivity extends SocialConnectBaseActivity implements UrlRe
                     if (text != null || text != "") goToDashboardActivity();
                     break;
 
+
                 case R.id.editPassDigitOne2:
                     if (editPassDigitOne2.getText() != null)
                         editPassDigitTwo2.requestFocus();
@@ -302,10 +347,23 @@ public class UserPassActivity extends SocialConnectBaseActivity implements UrlRe
                     break;
                 case R.id.editPassDigitFour2:
                     if (editPassDigitFour2.getText() != null) toast("From reset pin", false);
-      /*                  if (text != null || text != "") {
-                        toast("From reset pin", false);
-                        //   String otp = editPassDigitOne2.getText().toString() + editPassDigitTwo2.getText().toString() + editPassDigitThree2.getText().toString() + editPassDigitFour2.getText().toString();
-                    }*/
+                    break;
+
+
+                case R.id.editPassDigitOne3:
+                    if (text != null || text != "")
+                        editPassDigitTwo3.requestFocus();
+                    break;
+                case R.id.editPassDigitTwo3:
+                    if (text != null || text != "")
+                        editPassDigitThree3.requestFocus();
+                    break;
+                case R.id.editPassDigitThree3:
+                    if (text != null || text != "")
+                        editPassDigitFour3.requestFocus();
+                    break;
+                case R.id.editPassDigitFour3:
+                    if (text != null || text != "") goToDashboardActivity();
                     break;
             }
         }

@@ -32,8 +32,7 @@ public class SplashActivity extends SocialConnectBaseActivity implements SmsList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Logger.info(TAG, "======onCreate()======");
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN); // hiding status bar
+        hideStatusBar();
         setContentView(R.layout.activity_splash);
 
         new Handler().postDelayed(new Runnable() {

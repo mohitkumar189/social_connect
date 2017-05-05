@@ -26,6 +26,7 @@ public interface AppConstants {
 
     //Menu IDs
     int MENU_PROFILE_ID = 2000;
+    long BACK_EXIT_TIME = 3000;
 
     enum IntentTypes {
         SET_USER_PIN, ENTER_USER_PIN

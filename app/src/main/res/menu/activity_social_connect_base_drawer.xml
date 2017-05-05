@@ -3,9 +3,29 @@
 
     <group android:checkableBehavior="single">
         <item
+            android:id="@+id/nav_user_feeds"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="Feeds" />
+        <item
+            android:id="@+id/nav_user_chat"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="CHAT" />
+        <item
+            android:id="@+id/nav_user_friends"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="FRIENDS" />
+        <item
+            android:id="@+id/nav_user_notice"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="NOTICE" />
+        <item
+            android:id="@+id/nav_user_updates"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="UPDATES" />
+        <item
             android:id="@+id/nav_user_profile"
             android:icon="@drawable/ic_menu_camera"
-            android:title="Profile" />
+            android:title="PROFILE" />
 
     </group>
 

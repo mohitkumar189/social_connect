@@ -32,4 +32,11 @@
 
     <!--dashboard-->
     <dimen name="circle_profile_image_size">80dp</dimen>
+    <dimen name="input_icon_size">25dp</dimen>
+    <dimen name="dp_50">50dp</dimen>
+    <dimen name="margin_50">50dp</dimen>
+    <dimen name="font_8">8sp</dimen>
+    <dimen name="margin_8">8dp</dimen>
+    <dimen name="font_10">10sp</dimen>
+    <dimen name="font_15">15sp</dimen>
 </resources>

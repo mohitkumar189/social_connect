@@ -100,6 +100,8 @@ public class UserRegisterActivity extends SocialConnectBaseActivity implements U
                 validateSignupDetails();
                 break;
             case R.id.tvLoginLink:
+                startActivity(currentActivity, UserLoginActivity.class);
+                finish();
                 break;
         }
     }
@@ -110,20 +112,21 @@ public class UserRegisterActivity extends SocialConnectBaseActivity implements U
 
     private void validateSignupDetails() {
         Map<String, String> map = new HashMap<>();
-        String name = editUserName.getText().toString();
+        //  String name = editUserName.getText().toString();
         String emailValidationMessage = Validator.getInstance().validateEmail(context, editUserEmail.getText().toString());
         String mobileValidateMessage = Validator.getInstance().validateNumber(context, editUserMobileNumber.getText().toString());
-
+/*
         if (name.length() < 3) {
             toast("too short name", false);
-        } else if (emailValidationMessage.length() > 0) {
+        } else */
+        if (emailValidationMessage.length() > 0) {
             toast(emailValidationMessage, false);
             return;
         } else if (mobileValidateMessage.length() > 0) {
             toast(mobileValidateMessage, false);
             return;
         } else {
-            map.put("name", editUserName.getText().toString().toLowerCase().trim());
+           // map.put("name", editUserName.getText().toString().toLowerCase().trim());
             map.put("email", editUserEmail.getText().toString().toLowerCase().trim());
             map.put("mobile", editUserMobileNumber.getText().toString().toLowerCase().trim());
             Logger.info(TAG, "==============Input  data=========" + map.toString());

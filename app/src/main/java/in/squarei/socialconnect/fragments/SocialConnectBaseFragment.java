@@ -21,10 +21,10 @@ import android.widget.Toast;
  */
 public abstract class SocialConnectBaseFragment extends Fragment {
 
-    ProgressDialog pdialog;
+    public ProgressDialog pdialog;
+    public Activity currentActivity;
+    public Context context;
     View view;
-    Activity currentActivity;
-    Context context;
     Bundle bundle;
 
     public SocialConnectBaseFragment() {
@@ -43,9 +43,14 @@ public abstract class SocialConnectBaseFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        return super.onCreateView(inflater, container, savedInstanceState);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         currentActivity = getActivity();
         context = getActivity();
-        return super.onCreateView(inflater, container, savedInstanceState);
     }
 
     public void alert(Context context, String title, String message, String positivebutton, String negativeButton, boolean isNegativeButton) {
