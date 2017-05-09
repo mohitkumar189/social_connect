@@ -7,7 +7,7 @@ import com.android.volley.Request;
  */
 
 public class ApiURLS {
-    //friend/posts/[post_id]/comments
+
     /* REQUEST METHODS  */
     public static final int REQUEST_POST = Request.Method.POST;
     public static final int REQUEST_GET = Request.Method.GET;
@@ -27,10 +27,13 @@ public class ApiURLS {
     public static final String USER_SUGGESTION_FRIENDS_LIST = BASE_URL + "friend/suggestions";
     public static final String POST_COMMENTS = BASE_URL + "friend/posts/";
     public static final String To_POST_COMMENT = BASE_URL + "friend/posts/comment";
-
+    public static final String SEND_FRIEND_REQUEST = BASE_URL + "friend/request";
+    public static final String TO_LIKE_POST = BASE_URL + "friend/posts/like/";
+    public static final String GET_FRIENDS_REQUESTS = BASE_URL + "friend/requests";
 
     public enum ApiId {
-        LOGIN, REGISTER, FORGOT, PIN_UPDATE, USER_PROFILE, USER_PROFILE_UPDATE, FRIENDS_POST, USER_FRIENDS_LIST, OTHER_USER_PROFILE, USER_FRIEND_SUGGESTIONS, POST_COMMENTS, To_POST_COMMENT
+        LOGIN, REGISTER, FORGOT, PIN_UPDATE, USER_PROFILE, USER_PROFILE_UPDATE, FRIENDS_POST, USER_FRIENDS_LIST,
+        OTHER_USER_PROFILE, USER_FRIEND_SUGGESTIONS, POST_COMMENTS, To_POST_COMMENT, SEND_FRIEND_REQUEST, LIKE_POST, GET_FRIENDS_REQUESTS
     }
 
 }

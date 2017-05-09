@@ -68,7 +68,8 @@
         <activity
             android:name=".activities.UserProfileActivity"
             android:windowSoftInputMode="stateHidden" />
-        <activity android:name=".activities.FriendProfileActivity"></activity>
+        <activity android:name=".activities.FriendProfileActivity" />
+        <activity android:name=".activities.UploadPostActivity"></activity>
     </application>
 
 </manifest>

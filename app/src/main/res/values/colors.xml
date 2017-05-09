@@ -9,7 +9,7 @@
     <color name="text_hint_color">#8e8e8e</color>
     <color name="text_input_color">#3c3c3c</color>
     <color name="text_color">#2c2c2c</color>
-    <color name="background">#dcdcdc</color>
+    <color name="background">#dbdee3</color>
     <color name="text_color_grey">#9ea1aa</color>
 
 </resources>

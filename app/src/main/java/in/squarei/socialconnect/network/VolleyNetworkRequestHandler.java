@@ -56,7 +56,7 @@ public class VolleyNetworkRequestHandler {
     }
 
     public void getStringData(final String requestUrl, final ApiURLS.ApiId apiId, int requestMethod, final Map<String, String> postParams, final Map<String, String> headerParams) {
-        Logger.info(TAG, "======================On Network Request=====================");
+        Logger.info(TAG, "======================On Network Request=================url is======" + requestUrl);
         pdialog.setTitle(mctx.getResources().getString(R.string.data_downloading_message));
         pdialog.show();
         // CommonUtils.showprogressDialog(mctx, null, mctx.getResources().getString(R.string.data_downloading_message), false, false);

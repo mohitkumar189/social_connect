@@ -6,13 +6,23 @@ package in.squarei.socialconnect.modals;
 
 public class UsersListData {
     private String userId, userName, userStatus, userProfilePic, userType;
+    private boolean isFriend;
 
-    public UsersListData(String userId, String userName, String userStatus, String userProfilePic, String userType) {
+    public UsersListData(String userId, String userName, String userStatus, String userProfilePic, String userType, boolean isFriend) {
         this.userId = userId;
         this.userName = userName;
         this.userStatus = userStatus;
         this.userProfilePic = userProfilePic;
         this.userType = userType;
+        this.isFriend = isFriend;
+    }
+
+    public boolean isFriend() {
+        return isFriend;
+    }
+
+    public void setFriend(boolean friend) {
+        isFriend = friend;
     }
 
     public String getUserId() {

@@ -5,9 +5,10 @@ package in.squarei.socialconnect.modals;
  */
 
 public class UserProfiledata {
-    private String userName, userMobile, userAddress, userCity, userZipcode, userState, userLandmark, userCountry, userProfilePic, userFirstName, userLastName, userEmailAddress, userGender, userProfilePolicy,userMobilePolicy;
+    private String userName, userMobile, userAddress, userCity, userZipcode, userState, userLandmark, userCountry, userProfilePic, userFirstName, userLastName, userEmailAddress, userGender, userProfilePolicy,userMobilePolicy,userProfileStatus;
 
-    public UserProfiledata(String userName, String userMobile, String userAddress, String userCity, String userZipcode, String userState, String userLandmark, String userCountry, String userProfilePic, String userFirstName, String userLastName, String userEmailAddress, String userGender, String userProfilePolicy, String userMobilePolicy) {
+    public UserProfiledata(String userName, String userMobile, String userAddress, String userCity, String userZipcode, String userState, String userLandmark, String userCountry,
+                           String userProfilePic, String userFirstName, String userLastName, String userEmailAddress, String userGender, String userProfilePolicy, String userMobilePolicy, String userProfileStatus) {
         this.userName = userName;
         this.userMobile = userMobile;
         this.userAddress = userAddress;
@@ -23,7 +24,16 @@ public class UserProfiledata {
         this.userGender = userGender;
         this.userProfilePolicy=userProfilePolicy;
         this.userMobilePolicy=userMobilePolicy;
+        this.userProfileStatus=userProfileStatus;
 
+    }
+
+    public String getUserProfileStatus() {
+        return userProfileStatus;
+    }
+
+    public void setUserProfileStatus(String userProfileStatus) {
+        this.userProfileStatus = userProfileStatus;
     }
 
     public String getUserMobilePolicy() {

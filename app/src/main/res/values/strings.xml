@@ -34,4 +34,7 @@
     <string name="email_title">Email Address</string>
     <string name="mobile_title">Mobile No</string>
     <string name="user_status_update_text">Write something to share...</string>
+    <string name="social_connect_status">I am using social connect app...</string>
+    <string name="is_friend_title">Friends</string>
+    <string name="add_friend_title">Add Friends</string>
 </resources>

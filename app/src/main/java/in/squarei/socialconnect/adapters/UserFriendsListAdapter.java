@@ -87,11 +87,22 @@ public class UserFriendsListAdapter extends RecyclerView.Adapter<UserFriendsList
                     .placeholder(ctx.getResources().getDrawable(R.drawable.man)) //this is optional the image to display while the url image is downloading
                     .error(ctx.getResources().getDrawable(R.drawable.man))         //this is also optional if some error has occurred in downloading the image this image would be displayed
                     .into(ivUserProfile);
+
+            if(usersListData.isFriend()){
+
+            }else {
+
+            }
         }
 
         @Override
         public void onClick(View v) {
-            itemClickListener.onItemClickCallback(getAdapterPosition(), 0);
+            if(usersListData.get(getAdapterPosition()).isFriend()){
+                itemClickListener.onItemClickCallback(getAdapterPosition(), 0);// 0 if already friend, 1 if not friend
+            }else {
+                itemClickListener.onItemClickCallback(getAdapterPosition(), 1);
+            }
+
         }
     }
 }

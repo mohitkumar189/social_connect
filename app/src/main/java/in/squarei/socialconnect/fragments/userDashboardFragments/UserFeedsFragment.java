@@ -2,7 +2,9 @@ package in.squarei.socialconnect.fragments.userDashboardFragments;
 
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -36,6 +38,7 @@ import in.squarei.socialconnect.utils.Logger;
 import in.squarei.socialconnect.utils.SharedPreferenceUtils;
 
 import static in.squarei.socialconnect.network.ApiURLS.ApiId.FRIENDS_POST;
+import static in.squarei.socialconnect.network.ApiURLS.ApiId.LIKE_POST;
 import static in.squarei.socialconnect.network.ApiURLS.ApiId.POST_COMMENTS;
 import static in.squarei.socialconnect.network.ApiURLS.ApiId.To_POST_COMMENT;
 
@@ -48,6 +51,9 @@ public class UserFeedsFragment extends SocialConnectBaseFragment implements UrlR
     private List<PostCommentsData> postCommentsData;
     private boolean isDismissable = false;
     private AlertDialog b;
+    private String clientiD;
+    private SwipeRefreshLayout swiperefresh;
+    private UserFeedsAdapter userFeedAdapter;
 
     public UserFeedsFragment() {
         // Required empty public constructor
@@ -61,6 +67,7 @@ public class UserFeedsFragment extends SocialConnectBaseFragment implements UrlR
     @Override
     protected void initViews() {
         recyclerViewUserFeeds = (RecyclerView) currentActivity.findViewById(R.id.recyclerViewUserFeeds);
+        swiperefresh = (SwipeRefreshLayout) currentActivity.findViewById(R.id.swiperefresh);
     }
 
     @Override
@@ -71,6 +78,26 @@ public class UserFeedsFragment extends SocialConnectBaseFragment implements UrlR
 
     @Override
     protected void initListners() {
+        swiperefresh.setOnRefreshListener(
+                new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                swiperefresh.setRefreshing(false);
+                                updateFeedsListOnRefresh();
+                            }
+                        }, 1000);
+
+                    }
+                });
+    }
+
+    private void updateFeedsListOnRefresh() {
+        userFeedData.clear();
+        userFeedAdapter.notifyDataSetChanged();
+        loadDataForFeeds();
 
     }
 
@@ -89,10 +116,14 @@ public class UserFeedsFragment extends SocialConnectBaseFragment implements UrlR
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Map<String, String> headerParams = new HashMap<>();
-        String clientiD = SharedPreferenceUtils.getInstance(context).getString(AppConstants.API_KEY);
-
+        clientiD = SharedPreferenceUtils.getInstance(context).getString(AppConstants.API_KEY);
         Logger.info(TAG, "===================client id==========" + clientiD);
+        loadDataForFeeds();
+    }
+
+    private void loadDataForFeeds() {
+        Map<String, String> headerParams = new HashMap<>();
+
         headerParams.put("client-id", clientiD);// 8887e71887f2f2b8dc191ff238ad5a4f
         VolleyNetworkRequestHandler volleyNetworkRequestHolder = VolleyNetworkRequestHandler.getInstance(context, this);
         volleyNetworkRequestHolder.getStringData(ApiURLS.FRIENDS_POSTS, FRIENDS_POST, ApiURLS.REQUEST_GET, null, headerParams);
@@ -106,7 +137,26 @@ public class UserFeedsFragment extends SocialConnectBaseFragment implements UrlR
     @Override
     public void onResponseReceived(ApiURLS.ApiId apiId, String stringResponse) {
         Logger.info(TAG, "===================onResponseReceived==========" + stringResponse);
-        if (apiId == To_POST_COMMENT) {
+        if (apiId == LIKE_POST) {
+            try {
+                JSONObject jsonObject = new JSONObject(stringResponse);
+                Boolean error = jsonObject.getBoolean("error");
+                if (!error) {
+                    JSONObject commandResult = jsonObject.getJSONObject("commandResult");
+                    String message = commandResult.getString("message");
+                    switch (message) {
+                        case "Liked":
+                            break;
+                        case "Disliked":
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        } else if (apiId == To_POST_COMMENT) {
             try {
                 JSONObject jsonObject = new JSONObject(stringResponse);
                 Boolean error = jsonObject.getBoolean("error");
@@ -125,8 +175,7 @@ public class UserFeedsFragment extends SocialConnectBaseFragment implements UrlR
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        }
-        if (apiId == POST_COMMENTS) {
+        } else if (apiId == POST_COMMENTS) {
             try {
                 JSONObject jsonObject = new JSONObject(stringResponse);
                 Boolean error = jsonObject.getBoolean("error");
@@ -164,8 +213,7 @@ public class UserFeedsFragment extends SocialConnectBaseFragment implements UrlR
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        }
-        if (apiId == FRIENDS_POST) {
+        } else if (apiId == FRIENDS_POST) {
 
             try {
                 JSONObject jsonObject = new JSONObject(stringResponse);
@@ -196,7 +244,7 @@ public class UserFeedsFragment extends SocialConnectBaseFragment implements UrlR
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            UserFeedsAdapter userFeedAdapter = new UserFeedsAdapter(userFeedData, context, this);
+            userFeedAdapter = new UserFeedsAdapter(userFeedData, context, this);
             recyclerViewUserFeeds.setLayoutManager(new LinearLayoutManager(context));
             recyclerViewUserFeeds.setAdapter(userFeedAdapter);
             recyclerViewUserFeeds.setNestedScrollingEnabled(false);
@@ -215,14 +263,24 @@ public class UserFeedsFragment extends SocialConnectBaseFragment implements UrlR
             case 1:
                 getPostComments(position);
                 break;
+            case 2:
+                likeUserPost(position);
+                break;
             default:
                 break;
         }
     }
 
+    private void likeUserPost(int position) {
+        Map<String, String> headerParams = new HashMap<>();
+        headerParams.put("client-id", clientiD);
+        String postId = userFeedData.get(position).getPostId();
+        VolleyNetworkRequestHandler volleyNetworkRequestHolder = VolleyNetworkRequestHandler.getInstance(context, this);
+        volleyNetworkRequestHolder.getStringData(ApiURLS.TO_LIKE_POST + postId, LIKE_POST, ApiURLS.REQUEST_POST, null, headerParams);
+    }
+
     private void getPostComments(int position) {
         Map<String, String> headerParams = new HashMap<>();
-        String clientiD = SharedPreferenceUtils.getInstance(context).getString(AppConstants.API_KEY);
         String postId = userFeedData.get(position).getPostId();
         postIdd = postId;
         Logger.info(TAG, "===================client id==========" + clientiD);
@@ -264,7 +322,6 @@ public class UserFeedsFragment extends SocialConnectBaseFragment implements UrlR
     private void postComment(String comment) {
         Map<String, String> headerParams = new HashMap<>();
         Map<String, String> postParams = new HashMap<>();
-        String clientiD = SharedPreferenceUtils.getInstance(context).getString(AppConstants.API_KEY);
         postParams.put("comment", comment);
         postParams.put("post_id", postIdd);
         Logger.info(TAG, "===================client id==========" + clientiD);

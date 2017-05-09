@@ -82,6 +82,7 @@ public class UserFeedsAdapter extends RecyclerView.Adapter<UserFeedsAdapter.MyVi
             ivPostImage = (ImageView) itemView.findViewById(R.id.ivPostImage);
 
             relativeCommentLayout.setOnClickListener(this);
+            relativeLikeLayout.setOnClickListener(this);
         }
 
         public void bind(UserFeedsData userFeedsData, int position, ItemClickListener itemClickListener) {
@@ -97,12 +98,14 @@ public class UserFeedsAdapter extends RecyclerView.Adapter<UserFeedsAdapter.MyVi
                     .into(ivPostImage);
         }
 
-
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.relativeCommentLayout:
-                    itemClickListener.onItemClickCallback(getAdapterPosition(), 1); //0 for the row, 1 for the comments
+                    itemClickListener.onItemClickCallback(getAdapterPosition(), 1); // 1 for the comments
+                    break;
+                case R.id.relativeLikeLayout:
+                    itemClickListener.onItemClickCallback(getAdapterPosition(), 2); // 2 for likes
                     break;
                 default:
                     break;

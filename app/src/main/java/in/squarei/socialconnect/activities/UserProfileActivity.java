@@ -41,7 +41,7 @@ public class UserProfileActivity extends SocialConnectBaseActivity implements Ur
 
     private static final String TAG = "UserProfileActivity";
     private ImageView ivEditProfile;
-    private TextView tvUserProfileName;
+    private TextView tvUserProfileName, tvUserStatus;
     private EditText editUserAddress, editUserLandmark, editUserCity, editUserState, editUserCountry, editUserZipcode, editUserMobilenumber, editFirstName, editLastName, editEmailAddress;
     private UserProfiledata userProfiledata;
     private Toolbar toolbar;
@@ -75,6 +75,7 @@ public class UserProfileActivity extends SocialConnectBaseActivity implements Ur
         editLastName = (EditText) findViewById(R.id.editLastName);
         editEmailAddress = (EditText) findViewById(R.id.editEmailAddress);
         tvUserProfileName = (TextView) findViewById(R.id.tvUserProfileName);
+        tvUserStatus = (TextView) findViewById(R.id.tvUserStatus);
         btnSubmitProfile = (TextView) findViewById(R.id.btnSubmitProfile);
         profile_image = (CircleImageView) findViewById(R.id.profile_image);
 
@@ -308,7 +309,9 @@ public class UserProfileActivity extends SocialConnectBaseActivity implements Ur
                         String userProfilePic = data.getString("profilePic");
                         String userEmailAddress = data.getString("alternateEmail");
                         String userGender = data.getString("gender");
-                        userProfiledata = new UserProfiledata(userFirstName + " " + userLastName, userMobileNumber, userAddress, userCity, userZipcode, userState, userLandmark, userCountry, userProfilePic, userFirstName, userLastName, userEmailAddress, userGender, profilePolicy, mobilePolicy);
+                        String profileStatus = data.getString("prof_status");
+                        userProfiledata = new UserProfiledata(userFirstName + " " + userLastName, userMobileNumber, userAddress, userCity, userZipcode, userState, userLandmark, userCountry, userProfilePic,
+                                userFirstName, userLastName, userEmailAddress, userGender, profilePolicy, mobilePolicy, profileStatus);
                         setUserDetails(userProfiledata);
                     }
                 }
@@ -336,6 +339,8 @@ public class UserProfileActivity extends SocialConnectBaseActivity implements Ur
         editLastName.setText(userDetails.getUserLastName());
         editEmailAddress.setText(userDetails.getUserEmailAddress());
         tvUserProfileName.setText(userDetails.getUserName());
+        tvUserStatus.setText(userDetails.getUserProfileStatus());
+
         switch (userDetails.getUserGender()) {
             case "Male":
                 radioBtnMale.setChecked(true);
@@ -363,6 +368,7 @@ public class UserProfileActivity extends SocialConnectBaseActivity implements Ur
                 radioBtnPublic.setChecked(true);
                 break;
         }
+
         switch (userDetails.getUserMobilePolicy()) {
             case "public":
                 switchPhonePolicy.setChecked(true);
@@ -382,7 +388,6 @@ public class UserProfileActivity extends SocialConnectBaseActivity implements Ur
                     .error(context.getResources().getDrawable(R.drawable.man))         //this is also optional if some error has occurred in downloading the image this image would be displayed
                     .into(profile_image);
         }
-
     }
 
     private void enableAllEditBoxes() {

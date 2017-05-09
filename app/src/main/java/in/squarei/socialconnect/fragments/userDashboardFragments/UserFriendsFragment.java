@@ -141,7 +141,7 @@ public class UserFriendsFragment extends SocialConnectBaseFragment implements Ur
                             //        shared = userData.getString("shared");
                             prof_status = userData.getString("prof_status");
                             //    user_type = userData.getString("user_type");
-                            usersSuggestionListData.add(new UsersListData(userid, firstName + " " + lastName, prof_status, profilePic, user_type));
+                            usersSuggestionListData.add(new UsersListData(userid, firstName + " " + lastName, prof_status, profilePic, user_type, false));
                         }
                         userSuggestionFriendListAdapter = new UserFriendsListAdapter(usersSuggestionListData, context, this);
                         recyclerViewSuggestedFriendsList.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
@@ -187,7 +187,7 @@ public class UserFriendsFragment extends SocialConnectBaseFragment implements Ur
                             shared = userData.getString("shared");
                             prof_status = userData.getString("prof_status");
                             user_type = userData.getString("user_type");
-                            usersListData.add(new UsersListData(userid, firstName + " " + lastName, prof_status, profilePic, user_type));
+                            usersListData.add(new UsersListData(userid, firstName + " " + lastName, prof_status, profilePic, user_type, true));
                         }
                         //   updateUsersList();
                         userFriendListAdapter = new UserFriendsListAdapter(usersListData, context, this);
@@ -210,10 +210,19 @@ public class UserFriendsFragment extends SocialConnectBaseFragment implements Ur
 
     @Override
     public void onItemClickCallback(int position, int flag) {
-        toast(context, "item clicked " + position);
-        Intent intent = new Intent(currentActivity, FriendProfileActivity.class);
-        intent.putExtra("userId", usersListData.get(position).getUserId());
-        startActivity(intent);
+        //   toast(context, "item clicked " + position);
         Logger.info(TAG, "==================user id to be passed===========" + usersListData.get(position).getUserId());
+        Intent intent = new Intent(currentActivity, FriendProfileActivity.class);
+        if (flag == 0) {
+            intent.putExtra("userId", usersListData.get(position).getUserId());
+            intent.putExtra("userType", flag);
+            startActivity(intent);
+        }
+        if (flag == 1) {
+            intent.putExtra("userId", usersSuggestionListData.get(position).getUserId());
+            intent.putExtra("userType", flag);
+            startActivity(intent);
+        }
+
     }
 }
