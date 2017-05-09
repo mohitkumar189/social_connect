@@ -263,7 +263,7 @@ public class UserPassActivity extends SocialConnectBaseActivity implements UrlRe
             enteredUserPin = digi1 + digi2 + digi3 + digi4;
         }
         if (enteredUserPin.equals(sharedPreferenceUtils.getString(USER_PIN))) {
-            //   goToDashboardActivity();
+            //  goToDashboardActivity();
             startActivity(currentActivity, UserDashboardActivity.class);
         } else {
             toast("Wrong Pin...", false);
@@ -346,7 +346,7 @@ public class UserPassActivity extends SocialConnectBaseActivity implements UrlRe
                         editPassDigitFour2.requestFocus();
                     break;
                 case R.id.editPassDigitFour2:
-                    if (editPassDigitFour2.getText() != null) toast("From reset pin", false);
+                    //if (editPassDigitFour2.getText() != null) toast("From reset pin", false);
                     break;
 
 
@@ -363,8 +363,9 @@ public class UserPassActivity extends SocialConnectBaseActivity implements UrlRe
                         editPassDigitFour3.requestFocus();
                     break;
                 case R.id.editPassDigitFour3:
-                    if (text != null || text != "") goToDashboardActivity();
-                    break;
+                    if (text != null || text != "")
+                        //goToDashboardActivity();
+                        break;
             }
         }
     }

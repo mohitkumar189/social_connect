@@ -5,14 +5,24 @@ package in.squarei.socialconnect.modals;
  */
 
 public class UserFeedsData {
-    private String postSenderName, postTitleComment, userLikes, userComments, usershares, postImageUrl;
+    private String postSenderName, postTitleComment, userLikes, userComments, usershares, postImageUrl, postId;
 
-    public UserFeedsData(String postSenderName, String postTitleComment, String userLikes, String userComments, String postImageUrl) {
+    public UserFeedsData(String postSenderName, String postTitleComment, String userLikes, String userComments, String postImageUrl, String postId) {
         this.postSenderName = postSenderName;
         this.postTitleComment = postTitleComment;
         this.userLikes = userLikes;
         this.userComments = userComments;
         this.postImageUrl = postImageUrl;
+        this.postId=postId;
+
+    }
+
+    public String getPostId() {
+        return postId;
+    }
+
+    public void setPostId(String postId) {
+        this.postId = postId;
     }
 
     public String getPostSenderName() {

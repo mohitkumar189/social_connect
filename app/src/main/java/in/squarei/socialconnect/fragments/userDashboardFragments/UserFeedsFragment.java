@@ -1,16 +1,16 @@
 package in.squarei.socialconnect.fragments.userDashboardFragments;
 
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.ImageView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,9 +22,12 @@ import java.util.List;
 import java.util.Map;
 
 import in.squarei.socialconnect.R;
+import in.squarei.socialconnect.adapters.PostCommentsAdapter;
 import in.squarei.socialconnect.adapters.UserFeedsAdapter;
 import in.squarei.socialconnect.fragments.SocialConnectBaseFragment;
 import in.squarei.socialconnect.interfaces.AppConstants;
+import in.squarei.socialconnect.interfaces.ItemClickListener;
+import in.squarei.socialconnect.modals.PostCommentsData;
 import in.squarei.socialconnect.modals.UserFeedsData;
 import in.squarei.socialconnect.network.ApiURLS;
 import in.squarei.socialconnect.network.UrlResponseListener;
@@ -32,11 +35,19 @@ import in.squarei.socialconnect.network.VolleyNetworkRequestHandler;
 import in.squarei.socialconnect.utils.Logger;
 import in.squarei.socialconnect.utils.SharedPreferenceUtils;
 
-public class UserFeedsFragment extends SocialConnectBaseFragment implements UrlResponseListener {
+import static in.squarei.socialconnect.network.ApiURLS.ApiId.FRIENDS_POST;
+import static in.squarei.socialconnect.network.ApiURLS.ApiId.POST_COMMENTS;
+import static in.squarei.socialconnect.network.ApiURLS.ApiId.To_POST_COMMENT;
+
+public class UserFeedsFragment extends SocialConnectBaseFragment implements UrlResponseListener, ItemClickListener {
 
     private static final String TAG = "UserFeedsFragment";
+    String postIdd;
     private RecyclerView recyclerViewUserFeeds;
     private List<UserFeedsData> userFeedData;
+    private List<PostCommentsData> postCommentsData;
+    private boolean isDismissable = false;
+    private AlertDialog b;
 
     public UserFeedsFragment() {
         // Required empty public constructor
@@ -63,7 +74,6 @@ public class UserFeedsFragment extends SocialConnectBaseFragment implements UrlR
 
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -85,7 +95,7 @@ public class UserFeedsFragment extends SocialConnectBaseFragment implements UrlR
         Logger.info(TAG, "===================client id==========" + clientiD);
         headerParams.put("client-id", clientiD);// 8887e71887f2f2b8dc191ff238ad5a4f
         VolleyNetworkRequestHandler volleyNetworkRequestHolder = VolleyNetworkRequestHandler.getInstance(context, this);
-        volleyNetworkRequestHolder.getStringData(ApiURLS.FRIENDS_POSTS, ApiURLS.ApiId.FRIENDS_POST, ApiURLS.REQUEST_GET, null, headerParams);
+        volleyNetworkRequestHolder.getStringData(ApiURLS.FRIENDS_POSTS, FRIENDS_POST, ApiURLS.REQUEST_GET, null, headerParams);
     }
 
     @Override
@@ -95,40 +105,102 @@ public class UserFeedsFragment extends SocialConnectBaseFragment implements UrlR
 
     @Override
     public void onResponseReceived(ApiURLS.ApiId apiId, String stringResponse) {
-        userFeedData = new ArrayList<>();
         Logger.info(TAG, "===================onResponseReceived==========" + stringResponse);
-        try {
-            JSONObject jsonObject = new JSONObject(stringResponse);
-            Boolean error = jsonObject.getBoolean("error");
-            if (!error) {
-                JSONObject commandResult = jsonObject.getJSONObject("commandResult");
-                int success = commandResult.getInt("success");
-                if (success == 1) {
-                    JSONArray data = commandResult.getJSONArray("data");
-                    for (int i = 0; i < data.length(); i++) {
-                        JSONObject jsonFeed = data.getJSONObject(i);
-                        String postId = jsonFeed.getString("id");
-                        String postedBy = "Posted By " + jsonFeed.getString("postedBy");
-                        String postTitle = jsonFeed.getString("title");
-                        String postImageUrl = jsonFeed.getString("postURL");
-                        String postDescription = jsonFeed.getString("description");
-                        String userId = jsonFeed.getString("user_id");
-                        String postTime = jsonFeed.getString("posted_on");
-                        String postType = jsonFeed.getString("post_type");
-                        String postLikes = String.valueOf(jsonFeed.getLong("likes"));
-                        String postComments = String.valueOf(jsonFeed.getLong("comments"));
-                        // String postShares = String.valueOf(jsonFeed.getLong("shares"));
-                        userFeedData.add(new UserFeedsData(postedBy, postTitle, postLikes, postComments, postImageUrl));
+        if (apiId == To_POST_COMMENT) {
+            try {
+                JSONObject jsonObject = new JSONObject(stringResponse);
+                Boolean error = jsonObject.getBoolean("error");
+                if (!error) {
+                    JSONObject commandResult = jsonObject.getJSONObject("commandResult");
+                    int success = commandResult.getInt("success");
+                    String message = commandResult.getString("message");
+                    if (success == 1) {
+                        toast(context, message);
+                        b.dismiss();
+                    } else {
+                        toast(context, message);
+                    }
+
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        if (apiId == POST_COMMENTS) {
+            try {
+                JSONObject jsonObject = new JSONObject(stringResponse);
+                Boolean error = jsonObject.getBoolean("error");
+                if (!error) {
+                    JSONObject commandResult = jsonObject.getJSONObject("commandResult");
+                    int success = commandResult.getInt("success");
+                    if (success == 1) {
+                        JSONArray data = new JSONArray(commandResult.getString("data"));
+                        postCommentsData = new ArrayList<>();
+
+                        // JSONArray data = commandResult.getJSONArray("data");
+                        Logger.info(TAG, "================length=============" + data.length() + " ====data===" + data);
+                        if (data.length() > 0) {
+                            postCommentsData = new ArrayList<>();
+                            for (int i = 0; i < data.length(); i++) {
+                                JSONObject comment = data.getJSONObject(i);
+                                String postId = comment.getString("id");
+                                String postComment = comment.getString("comment");
+                                String commentOn = comment.getString("commentOn");
+                                String commentBy = comment.getString("commentBy");
+                                String profilePic = comment.getString("profilePic");
+                                String commentByName = comment.getString("firstName") + " " + comment.getString("lastName");
+                                postCommentsData.add(new PostCommentsData(postId, postComment, commentOn, commentBy, profilePic, commentByName));
+                            }
+                            showUserCommentsDialog();
+
+                        } else {
+                            toast(context, "No Records Found");
+                            showUserCommentsDialog();
+                        }
+                    } else {
+
                     }
                 }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
         }
-        UserFeedsAdapter userFeedAdapter = new UserFeedsAdapter(userFeedData, context);
-        recyclerViewUserFeeds.setLayoutManager(new LinearLayoutManager(context));
-        recyclerViewUserFeeds.setAdapter(userFeedAdapter);
-        recyclerViewUserFeeds.setNestedScrollingEnabled(false);
+        if (apiId == FRIENDS_POST) {
+
+            try {
+                JSONObject jsonObject = new JSONObject(stringResponse);
+                Boolean error = jsonObject.getBoolean("error");
+                if (!error) {
+                    JSONObject commandResult = jsonObject.getJSONObject("commandResult");
+                    int success = commandResult.getInt("success");
+                    if (success == 1) {
+                        userFeedData = new ArrayList<>();
+                        JSONArray data = commandResult.getJSONArray("data");
+                        for (int i = 0; i < data.length(); i++) {
+                            JSONObject jsonFeed = data.getJSONObject(i);
+                            String postId = jsonFeed.getString("id");
+                            String postedBy = "Posted By " + jsonFeed.getString("postedBy");
+                            String postTitle = jsonFeed.getString("title");
+                            String postImageUrl = jsonFeed.getString("postURL");
+                            String postDescription = jsonFeed.getString("description");
+                            String userId = jsonFeed.getString("user_id");
+                            String postTime = jsonFeed.getString("posted_on");
+                            String postType = jsonFeed.getString("post_type");
+                            String postLikes = jsonFeed.getString("likes");
+                            String postComments = jsonFeed.getString("comments");
+                            // String postShares = String.valueOf(jsonFeed.getLong("shares"));
+                            userFeedData.add(new UserFeedsData(postedBy, postTitle, postLikes, postComments, postImageUrl, postId));
+                        }
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            UserFeedsAdapter userFeedAdapter = new UserFeedsAdapter(userFeedData, context, this);
+            recyclerViewUserFeeds.setLayoutManager(new LinearLayoutManager(context));
+            recyclerViewUserFeeds.setAdapter(userFeedAdapter);
+            recyclerViewUserFeeds.setNestedScrollingEnabled(false);
+        }
     }
 
     @Override
@@ -136,4 +208,69 @@ public class UserFeedsFragment extends SocialConnectBaseFragment implements UrlR
         Logger.info(TAG, "===================onErrorResponse==========" + errorData);
         if (errorData != null) toast(context, "Something went wrong");
     }
+
+    @Override
+    public void onItemClickCallback(int position, int flag) {
+        switch (flag) {
+            case 1:
+                getPostComments(position);
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void getPostComments(int position) {
+        Map<String, String> headerParams = new HashMap<>();
+        String clientiD = SharedPreferenceUtils.getInstance(context).getString(AppConstants.API_KEY);
+        String postId = userFeedData.get(position).getPostId();
+        postIdd = postId;
+        Logger.info(TAG, "===================client id==========" + clientiD);
+        headerParams.put("client-id", clientiD);// 8887e71887f2f2b8dc191ff238ad5a4f
+        VolleyNetworkRequestHandler volleyNetworkRequestHolder = VolleyNetworkRequestHandler.getInstance(context, this);
+        volleyNetworkRequestHolder.getStringData(ApiURLS.POST_COMMENTS + postId + "/comments", POST_COMMENTS, ApiURLS.REQUEST_GET, null, headerParams);
+        toast(context, "comments clicked " + postId);
+    }
+
+    private void showUserCommentsDialog() {
+
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
+        LayoutInflater inflater = currentActivity.getLayoutInflater();
+        final View dialogView = inflater.inflate(R.layout.dialog_post_comments, null);
+        dialogBuilder.setView(dialogView);
+        dialogBuilder.setCancelable(true);
+        dialogBuilder.setTitle("Comments");
+        b = dialogBuilder.create();
+        RecyclerView recyclerUserComments = (RecyclerView) dialogView.findViewById(R.id.recyclerUserComments);
+        final EditText editEnteredComment = (EditText) dialogView.findViewById(R.id.editEnteredComment);
+        ImageView ivCommentSend = (ImageView) dialogView.findViewById(R.id.ivCommentSend);
+
+        if (postCommentsData.size() > 0) {
+            PostCommentsAdapter postCommentsAdapter = new PostCommentsAdapter(postCommentsData, context, this);
+            recyclerUserComments.setLayoutManager(new LinearLayoutManager(context));
+            recyclerUserComments.setAdapter(postCommentsAdapter);
+        }
+        b.show();
+
+        ivCommentSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String comment = editEnteredComment.getText().toString();
+                postComment(comment);
+            }
+        });
+    }
+
+    private void postComment(String comment) {
+        Map<String, String> headerParams = new HashMap<>();
+        Map<String, String> postParams = new HashMap<>();
+        String clientiD = SharedPreferenceUtils.getInstance(context).getString(AppConstants.API_KEY);
+        postParams.put("comment", comment);
+        postParams.put("post_id", postIdd);
+        Logger.info(TAG, "===================client id==========" + clientiD);
+        headerParams.put("client-id", clientiD);// 8887e71887f2f2b8dc191ff238ad5a4f
+        VolleyNetworkRequestHandler volleyNetworkRequestHolder = VolleyNetworkRequestHandler.getInstance(context, this);
+        volleyNetworkRequestHolder.getStringData(ApiURLS.To_POST_COMMENT, To_POST_COMMENT, ApiURLS.REQUEST_POST, postParams, headerParams);
+    }
+
 }

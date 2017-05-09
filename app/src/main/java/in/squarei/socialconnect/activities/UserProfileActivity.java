@@ -7,9 +7,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -35,7 +37,7 @@ import in.squarei.socialconnect.utils.Validator;
 import static in.squarei.socialconnect.network.ApiURLS.REQUEST_GET;
 
 
-public class UserProfileActivity extends SocialConnectBaseActivity implements UrlResponseListener {
+public class UserProfileActivity extends SocialConnectBaseActivity implements UrlResponseListener, CompoundButton.OnCheckedChangeListener {
 
     private static final String TAG = "UserProfileActivity";
     private ImageView ivEditProfile;
@@ -45,8 +47,12 @@ public class UserProfileActivity extends SocialConnectBaseActivity implements Ur
     private Toolbar toolbar;
     private TextView btnSubmitProfile;
     private RadioButton radioBtnMale, radioBtnFemale;
+    private RadioButton radioBtnPublic, radioBtnPrivate, radioBtnOnlyMe;
     private String checkedGender;
+    private String checkedPrivacy;
+    private String phonePolicy;
     private CircleImageView profile_image;
+    private Switch switchPhonePolicy;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +80,12 @@ public class UserProfileActivity extends SocialConnectBaseActivity implements Ur
 
         radioBtnMale = (RadioButton) findViewById(R.id.radioBtnMale);
         radioBtnFemale = (RadioButton) findViewById(R.id.radioBtnFemale);
+
+        radioBtnPublic = (RadioButton) findViewById(R.id.radioBtnPublic);
+        radioBtnPrivate = (RadioButton) findViewById(R.id.radioBtnPrivate);
+        radioBtnOnlyMe = (RadioButton) findViewById(R.id.radioBtnOnlyMe);
+
+        switchPhonePolicy = (Switch) findViewById(R.id.switchPhonePolicy);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
@@ -93,6 +105,13 @@ public class UserProfileActivity extends SocialConnectBaseActivity implements Ur
         btnSubmitProfile.setOnClickListener(this);
         radioBtnMale.setOnClickListener(this);
         radioBtnFemale.setOnClickListener(this);
+
+        radioBtnPublic.setOnClickListener(this);
+        radioBtnPrivate.setOnClickListener(this);
+        radioBtnOnlyMe.setOnClickListener(this);
+
+
+        switchPhonePolicy.setOnCheckedChangeListener(this);
         VolleyNetworkRequestHandler volleyNetworkRequestHandler = VolleyNetworkRequestHandler.getInstance(context, this);
         Map<String, String> headerParams = new HashMap<>();
         String clientiD = SharedPreferenceUtils.getInstance(context).getString(AppConstants.API_KEY);
@@ -149,6 +168,15 @@ public class UserProfileActivity extends SocialConnectBaseActivity implements Ur
             case R.id.radioBtnFemale:
                 checkedGender = "Female";
                 break;
+            case R.id.radioBtnPublic:
+                checkedPrivacy = "0";
+                break;
+            case R.id.radioBtnPrivate:
+                checkedPrivacy = "1";
+                break;
+            case R.id.radioBtnOnlyMe:
+                checkedPrivacy = "2";
+                break;
             case R.id.btnSubmitProfile:
                 String validateMessage = validateUserInputs();
                 if (validateMessage == null) {
@@ -191,11 +219,14 @@ public class UserProfileActivity extends SocialConnectBaseActivity implements Ur
                         paramPost.put("zipCode", zipCode);
                     }
                     if (phone != null) {
-                        String phoneData = "{" + "ph:" + phone + "," + "policy:" + "private" + "}";
+                        String phoneData = "{" + "ph:" + phone + "," + "policy:" + phonePolicy + "}";
                         paramPost.put("phone", phoneData);
                     }
                     if (checkedGender != null) {
                         paramPost.put("gender", checkedGender);
+                    }
+                    if (checkedPrivacy != null) {
+                        paramPost.put("privacy", checkedPrivacy);
                     }
 
 
@@ -265,7 +296,8 @@ public class UserProfileActivity extends SocialConnectBaseActivity implements Ur
                         String phoneString = data.getString("phone"); //json object
                         JSONObject phone = new JSONObject(phoneString);
                         String userMobileNumber = phone.getString("ph"); //mobile number
-                        String privacy = phone.getString("policy"); // policy
+                        String mobilePolicy = phone.getString("policy");
+                        String profilePolicy = data.getString("privacy");// policy---->public , private, onlyMe
                         String userLastName = data.getString("lastName");
                         String userAddress = data.getString("address");
                         String userLandmark = data.getString("landmark");
@@ -273,10 +305,10 @@ public class UserProfileActivity extends SocialConnectBaseActivity implements Ur
                         String userState = data.getString("state");
                         String userCountry = data.getString("country");
                         String userZipcode = data.getString("zipCode");
-                        String userProfilePic = data.getString("proficPic");
+                        String userProfilePic = data.getString("profilePic");
                         String userEmailAddress = data.getString("alternateEmail");
                         String userGender = data.getString("gender");
-                        userProfiledata = new UserProfiledata(userFirstName + " " + userLastName, userMobileNumber, userAddress, userCity, userZipcode, userState, userLandmark, userCountry, userProfilePic, userFirstName, userLastName, userEmailAddress, userGender);
+                        userProfiledata = new UserProfiledata(userFirstName + " " + userLastName, userMobileNumber, userAddress, userCity, userZipcode, userState, userLandmark, userCountry, userProfilePic, userFirstName, userLastName, userEmailAddress, userGender, profilePolicy, mobilePolicy);
                         setUserDetails(userProfiledata);
                     }
                 }
@@ -316,6 +348,32 @@ public class UserProfileActivity extends SocialConnectBaseActivity implements Ur
                 radioBtnFemale.setChecked(false);
                 break;
         }
+
+        switch (userDetails.getUserProfilePolicy()) {
+            case "0":
+                radioBtnPublic.setChecked(true);
+                break;
+            case "1":
+                radioBtnPrivate.setChecked(true);
+                break;
+            case "2":
+                radioBtnOnlyMe.setChecked(true);
+                break;
+            default:
+                radioBtnPublic.setChecked(true);
+                break;
+        }
+        switch (userDetails.getUserMobilePolicy()) {
+            case "public":
+                switchPhonePolicy.setChecked(true);
+                switchPhonePolicy.setText("Public");
+                break;
+            case "private":
+                switchPhonePolicy.setChecked(false);
+                switchPhonePolicy.setText("Private");
+                break;
+            default:
+        }
         String imageUrl = userDetails.getUserProfilePic();
         if (imageUrl != "null" || imageUrl != null || imageUrl.length() != 0) {
             Picasso.with(context)
@@ -340,6 +398,11 @@ public class UserProfileActivity extends SocialConnectBaseActivity implements Ur
         radioBtnMale.setEnabled(true);
         radioBtnFemale.setEnabled(true);
 
+        radioBtnPublic.setEnabled(true);
+        radioBtnPrivate.setEnabled(true);
+        radioBtnOnlyMe.setEnabled(true);
+
+        switchPhonePolicy.setEnabled(true);
         editFirstName.requestFocus();
         if (btnSubmitProfile.getVisibility() == View.GONE)
             btnSubmitProfile.setVisibility(View.VISIBLE);
@@ -357,6 +420,13 @@ public class UserProfileActivity extends SocialConnectBaseActivity implements Ur
         editLastName.setEnabled(false);
         radioBtnMale.setEnabled(false);
         radioBtnFemale.setEnabled(false);
+        switchPhonePolicy.setEnabled(false);
+
+
+        radioBtnPublic.setEnabled(false);
+        radioBtnPrivate.setEnabled(false);
+        radioBtnOnlyMe.setEnabled(false);
+
         if (btnSubmitProfile.getVisibility() == View.VISIBLE)
             btnSubmitProfile.setVisibility(View.GONE);
     }
@@ -380,5 +450,21 @@ public class UserProfileActivity extends SocialConnectBaseActivity implements Ur
         }*/
 
         return null;
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        switch (buttonView.getId()) {
+            case R.id.switchPhonePolicy:
+                if (switchPhonePolicy.isChecked()) {
+                    phonePolicy = "public";
+                    switchPhonePolicy.setText("Public");
+                } else {
+                    phonePolicy = "private";
+                    switchPhonePolicy.setText("Private");
+                }
+
+                break;
+        }
     }
 }

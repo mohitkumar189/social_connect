@@ -15,7 +15,9 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import in.squarei.socialconnect.R;
+import in.squarei.socialconnect.interfaces.ItemClickListener;
 import in.squarei.socialconnect.modals.UserFeedsData;
+import in.squarei.socialconnect.modals.UsersListData;
 
 /**
  * Created by mohit kumar on 5/5/2017.
@@ -25,10 +27,12 @@ public class UserFeedsAdapter extends RecyclerView.Adapter<UserFeedsAdapter.MyVi
 
     private List<UserFeedsData> userFeedsData;
     private Context context;
+    private ItemClickListener itemClickListener;
 
-    public UserFeedsAdapter(List<UserFeedsData> userFeedsData, Context context) {
+    public UserFeedsAdapter(List<UserFeedsData> userFeedsData, Context context, ItemClickListener itemClickListener) {
         this.userFeedsData = userFeedsData;
         this.context = context;
+        this.itemClickListener = itemClickListener;
     }
 
     @Override
@@ -41,16 +45,17 @@ public class UserFeedsAdapter extends RecyclerView.Adapter<UserFeedsAdapter.MyVi
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        holder.tvPostedBy.setText(userFeedsData.get(position).getPostSenderName());
+/*        holder.tvPostedBy.setText(userFeedsData.get(position).getPostSenderName());
         holder.tvPostTitle.setText(userFeedsData.get(position).getPostTitleComment());
         holder.tvUserLikes.setText(userFeedsData.get(position).getUserLikes() + " likes");
         holder.tvUserComments.setText(userFeedsData.get(position).getUserComments() + " comments");
 
         Picasso.with(context)
                 .load(userFeedsData.get(position).getPostImageUrl())
-                .placeholder(context.getResources().getDrawable(R.drawable.man)) //this is optional the image to display while the url image is downloading
-                .error(context.getResources().getDrawable(R.drawable.man))         //this is also optional if some error has occurred in downloading the image this image would be displayed
-                .into(holder.ivPostImage);
+                .placeholder(context.getResources().getDrawable(R.drawable.picture)) //this is optional the image to display while the url image is downloading
+                .error(context.getResources().getDrawable(R.drawable.picture))         //this is also optional if some error has occurred in downloading the image this image would be displayed
+                .into(holder.ivPostImage);*/
+        holder.bind(userFeedsData.get(position), position, itemClickListener);
     }
 
     @Override
@@ -58,7 +63,7 @@ public class UserFeedsAdapter extends RecyclerView.Adapter<UserFeedsAdapter.MyVi
         return userFeedsData.size();
     }
 
-    class MyViewHolder extends RecyclerView.ViewHolder {
+    class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView tvPostedBy, tvPostTitle, tvUserComments, tvUserLikes, tvUserShares;
         RelativeLayout relativeLikeLayout, relativeCommentLayout, relativeShareLayout;
         ImageView ivUserPostOption, ivPostImage;
@@ -76,7 +81,32 @@ public class UserFeedsAdapter extends RecyclerView.Adapter<UserFeedsAdapter.MyVi
             ivUserPostOption = (ImageView) itemView.findViewById(R.id.ivUserPostOption);
             ivPostImage = (ImageView) itemView.findViewById(R.id.ivPostImage);
 
+            relativeCommentLayout.setOnClickListener(this);
         }
 
+        public void bind(UserFeedsData userFeedsData, int position, ItemClickListener itemClickListener) {
+            tvPostedBy.setText(userFeedsData.getPostSenderName());
+            tvPostTitle.setText(userFeedsData.getPostTitleComment());
+            tvUserLikes.setText(userFeedsData.getUserLikes() + " likes");
+            tvUserComments.setText(userFeedsData.getUserComments() + " comments");
+
+            Picasso.with(context)
+                    .load(userFeedsData.getPostImageUrl())
+                    .placeholder(context.getResources().getDrawable(R.drawable.picture)) //this is optional the image to display while the url image is downloading
+                    .error(context.getResources().getDrawable(R.drawable.picture))         //this is also optional if some error has occurred in downloading the image this image would be displayed
+                    .into(ivPostImage);
+        }
+
+
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.relativeCommentLayout:
+                    itemClickListener.onItemClickCallback(getAdapterPosition(), 1); //0 for the row, 1 for the comments
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 }

@@ -67,7 +67,8 @@
 
         <activity
             android:name=".activities.UserProfileActivity"
-            android:windowSoftInputMode="stateHidden"></activity>
+            android:windowSoftInputMode="stateHidden" />
+        <activity android:name=".activities.FriendProfileActivity"></activity>
     </application>
 
 </manifest>

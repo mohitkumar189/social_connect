@@ -1,13 +1,51 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="in.squarei.socialconnect.fragments.userDashboardFragments.UserFriendsFragment">
+    android:layout_height="match_parent">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="user friends" />
+        android:background="@color/white">
 
-</FrameLayout>
+        <TextView
+            android:id="@+id/tvPeopleSuggestion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/margin_5"
+            android:text="People You May Know"
+            android:textSize="@dimen/font_16" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerViewSuggestedFriendsList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvPeopleSuggestion"></android.support.v7.widget.RecyclerView>
+
+        <RelativeLayout
+            android:id="@+id/relativeGroupCreateContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/recyclerViewSuggestedFriendsList">
+
+            <ImageView
+                android:id="@+id/ivCreateGroup"
+                android:layout_width="50dp"
+                android:layout_height="50dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/ivCreateGroup"
+                android:text="Create Group"
+                android:textSize="@dimen/font_16" />
+        </RelativeLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerViewFriendsList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/relativeGroupCreateContainer"
+            android:layout_marginTop="@dimen/margin_10" />
+    </RelativeLayout>
+</android.support.v4.widget.NestedScrollView>

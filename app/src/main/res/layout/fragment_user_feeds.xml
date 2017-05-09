@@ -23,7 +23,8 @@
                     android:id="@+id/ivUserProfileInStatus"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:padding="@dimen/margin_10" />
+                    android:padding="@dimen/margin_5"
+                    android:src="@drawable/user" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -56,11 +57,14 @@
 
                     <ImageView
                         android:layout_width="30dp"
-                        android:layout_height="30dp" />
+                        android:layout_height="30dp"
+                        android:padding="3dp"
+                        android:src="@drawable/checkbox_pen" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
                         android:layout_marginLeft="@dimen/margin_5"
                         android:text="Write Post"
                         android:textColor="@color/black"
@@ -76,7 +80,9 @@
 
                     <ImageView
                         android:layout_width="30dp"
-                        android:layout_height="30dp" />
+                        android:layout_height="30dp"
+                        android:padding="3dp"
+                        android:src="@drawable/images_symbol" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -99,6 +105,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/linearPostUpdate"
-            android:layout_marginTop="@dimen/margin_10"/>
+            android:layout_marginTop="@dimen/margin_10"
+            android:background="@color/background" />
     </RelativeLayout>
 </android.support.v4.widget.NestedScrollView>

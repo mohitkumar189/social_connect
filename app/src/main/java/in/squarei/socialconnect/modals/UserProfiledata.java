@@ -5,9 +5,9 @@ package in.squarei.socialconnect.modals;
  */
 
 public class UserProfiledata {
-    private String userName, userMobile, userAddress, userCity, userZipcode, userState, userLandmark, userCountry, userProfilePic, userFirstName, userLastName, userEmailAddress, userGender;
+    private String userName, userMobile, userAddress, userCity, userZipcode, userState, userLandmark, userCountry, userProfilePic, userFirstName, userLastName, userEmailAddress, userGender, userProfilePolicy,userMobilePolicy;
 
-    public UserProfiledata(String userName, String userMobile, String userAddress, String userCity, String userZipcode, String userState, String userLandmark, String userCountry, String userProfilePic, String userFirstName, String userLastName, String userEmailAddress, String userGender) {
+    public UserProfiledata(String userName, String userMobile, String userAddress, String userCity, String userZipcode, String userState, String userLandmark, String userCountry, String userProfilePic, String userFirstName, String userLastName, String userEmailAddress, String userGender, String userProfilePolicy, String userMobilePolicy) {
         this.userName = userName;
         this.userMobile = userMobile;
         this.userAddress = userAddress;
@@ -21,6 +21,25 @@ public class UserProfiledata {
         this.userLastName = userLastName;
         this.userEmailAddress = userEmailAddress;
         this.userGender = userGender;
+        this.userProfilePolicy=userProfilePolicy;
+        this.userMobilePolicy=userMobilePolicy;
+
+    }
+
+    public String getUserMobilePolicy() {
+        return userMobilePolicy;
+    }
+
+    public void setUserMobilePolicy(String userMobilePolicy) {
+        this.userMobilePolicy = userMobilePolicy;
+    }
+
+    public String getUserProfilePolicy() {
+        return userProfilePolicy;
+    }
+
+    public void setUserProfilePolicy(String userProfilePolicy) {
+        this.userProfilePolicy = userProfilePolicy;
     }
 
     public String getUserName() {
