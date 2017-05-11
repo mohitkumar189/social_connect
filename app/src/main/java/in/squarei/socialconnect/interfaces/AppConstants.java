@@ -22,6 +22,9 @@ public interface AppConstants {
     String USER_PIN = "userPin";
     String PIN_STATUS = "pinStatus"; // true if set, false is not set
     String IS_INTRO_COMPLETED = "introStatus";
+    String PROFILE_STATUS = "profileStatus";
+    String USER_FIRST_NAME = "userFirstName";
+    String USER_LAST_NAME = "userLasttName";
     String API_KEY = "apiKey";
 
     //Menu IDs

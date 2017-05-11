@@ -75,6 +75,8 @@ public class UserFriendsListAdapter extends RecyclerView.Adapter<UserFriendsList
             user_view_container = (LinearLayout) itemView.findViewById(R.id.user_view_container);
             ivUserProfile = (ImageView) itemView.findViewById(R.id.ivUserProfile);
             itemView.setOnClickListener(this);
+            tvAddFriend.setOnClickListener(this);
+            tvRemoveFriend.setOnClickListener(this);
 
         }
 
@@ -88,19 +90,31 @@ public class UserFriendsListAdapter extends RecyclerView.Adapter<UserFriendsList
                     .error(ctx.getResources().getDrawable(R.drawable.man))         //this is also optional if some error has occurred in downloading the image this image would be displayed
                     .into(ivUserProfile);
 
-            if(usersListData.isFriend()){
-
-            }else {
-
+            if (!usersListData.isFriend()) {
+                linearActionViewHolder.setVisibility(View.VISIBLE);
+            } else {
+                if (linearActionViewHolder.getVisibility() == View.VISIBLE) {
+                    linearActionViewHolder.setVisibility(View.GONE);
+                }
             }
         }
 
         @Override
         public void onClick(View v) {
-            if(usersListData.get(getAdapterPosition()).isFriend()){
-                itemClickListener.onItemClickCallback(getAdapterPosition(), 0);// 0 if already friend, 1 if not friend
-            }else {
-                itemClickListener.onItemClickCallback(getAdapterPosition(), 1);
+            switch (v.getId()) {
+                case R.id.tvAddFriend:
+                    itemClickListener.onItemClickCallback(getAdapterPosition(), 2); // 2 to accept friend request
+                    break;
+                case R.id.tvRemoveFriend:
+                    itemClickListener.onItemClickCallback(getAdapterPosition(), 3);// 3 to reject friend request
+                    break;
+                default:
+                    if (usersListData.get(getAdapterPosition()).isFriend()) {
+                        itemClickListener.onItemClickCallback(getAdapterPosition(), 0);// 0 if friend request received, 1 if friend
+                    } else {
+                        itemClickListener.onItemClickCallback(getAdapterPosition(), 0);
+                    }
+                    break;
             }
 
         }

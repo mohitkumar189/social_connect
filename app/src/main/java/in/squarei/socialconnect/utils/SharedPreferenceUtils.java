@@ -64,7 +64,7 @@ public class SharedPreferenceUtils implements AppConstants {
         return getSharedPreferences().getInt(key, 0);
     }
 
-    public void clearALl() {
+    public void clearAll() {
         getSharedPreferences().edit().clear().commit();
     }
 

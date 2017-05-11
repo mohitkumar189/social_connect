@@ -5,27 +5,27 @@
         <item
             android:id="@+id/nav_user_feeds"
             android:icon="@drawable/ic_menu_camera"
-            android:title="Feeds" />
+            android:title="@string/feed_fragment" />
         <item
             android:id="@+id/nav_user_chat"
             android:icon="@drawable/ic_menu_camera"
-            android:title="CHAT" />
+            android:title="@string/chat_fragment" />
         <item
             android:id="@+id/nav_user_friends"
             android:icon="@drawable/ic_menu_camera"
-            android:title="FRIENDS" />
+            android:title="@string/friends_fragment" />
         <item
             android:id="@+id/nav_user_notice"
             android:icon="@drawable/ic_menu_camera"
-            android:title="NOTICE" />
+            android:title="@string/notice_fragment" />
         <item
             android:id="@+id/nav_user_updates"
             android:icon="@drawable/ic_menu_camera"
-            android:title="UPDATES" />
+            android:title="@string/update_fragment" />
         <item
             android:id="@+id/nav_user_profile"
             android:icon="@drawable/ic_menu_camera"
-            android:title="PROFILE" />
+            android:title="@string/proflile_activity" />
 
     </group>
 
@@ -41,5 +41,9 @@
                 android:title="Send" />
         </menu>
     </item>
+    <item
+        android:id="@+id/nav_logout"
+        android:icon="@drawable/ic_menu_send"
+        android:title="Logout" />
 
 </menu>

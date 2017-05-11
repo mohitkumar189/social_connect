@@ -39,4 +39,9 @@
     <dimen name="margin_8">8dp</dimen>
     <dimen name="font_10">10sp</dimen>
     <dimen name="font_15">15sp</dimen>
+    <dimen name="margin_12">12dp</dimen>
+    <dimen name="text_size_15">15sp</dimen>
+    <dimen name="dp5">5dp</dimen>
+    <dimen name="logo_height">120dp</dimen>
+    <dimen name="logo_width">100dp</dimen>
 </resources>

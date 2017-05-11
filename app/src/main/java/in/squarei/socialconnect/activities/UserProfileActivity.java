@@ -1,12 +1,10 @@
 package in.squarei.socialconnect.activities;
 
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -29,7 +27,6 @@ import in.squarei.socialconnect.modals.UserProfiledata;
 import in.squarei.socialconnect.network.ApiURLS;
 import in.squarei.socialconnect.network.UrlResponseListener;
 import in.squarei.socialconnect.network.VolleyNetworkRequestHandler;
-import in.squarei.socialconnect.utils.Helper;
 import in.squarei.socialconnect.utils.Logger;
 import in.squarei.socialconnect.utils.SharedPreferenceUtils;
 import in.squarei.socialconnect.utils.Validator;
@@ -90,6 +87,7 @@ public class UserProfileActivity extends SocialConnectBaseActivity implements Ur
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setTitle(getResources().getString(R.string.proflile_activity));
 
     }
 
@@ -111,15 +109,22 @@ public class UserProfileActivity extends SocialConnectBaseActivity implements Ur
         radioBtnPrivate.setOnClickListener(this);
         radioBtnOnlyMe.setOnClickListener(this);
 
-
         switchPhonePolicy.setOnCheckedChangeListener(this);
-        VolleyNetworkRequestHandler volleyNetworkRequestHandler = VolleyNetworkRequestHandler.getInstance(context, this);
-        Map<String, String> headerParams = new HashMap<>();
+
         String clientiD = SharedPreferenceUtils.getInstance(context).getString(AppConstants.API_KEY);
+        Map<String, String> headerParams = new HashMap<>();
+        headerParams.put("client-id", clientiD);// 8887e71887f2f2b8dc191ff238ad5a4f
+
+        if (Validator.getInstance().isNetworkAvailable(context)) {
+            VolleyNetworkRequestHandler volleyNetworkRequestHandler = VolleyNetworkRequestHandler.getInstance(context, this);
+            volleyNetworkRequestHandler.getStringData(ApiURLS.USER_PROFILE, ApiURLS.ApiId.USER_PROFILE, REQUEST_GET, null, headerParams);
+        } else {
+            toast(getResources().getString(R.string.network_error), false);
+        }
+
 
         Logger.info(TAG, "===================client id==========" + clientiD);
-        headerParams.put("client-id", clientiD);// 8887e71887f2f2b8dc191ff238ad5a4f
-        volleyNetworkRequestHandler.getStringData(ApiURLS.USER_PROFILE, ApiURLS.ApiId.USER_PROFILE, REQUEST_GET, null, headerParams);
+
     }
 
     @Override
@@ -234,8 +239,11 @@ public class UserProfileActivity extends SocialConnectBaseActivity implements Ur
                     String clientiD = SharedPreferenceUtils.getInstance(context).getString(AppConstants.API_KEY);
                     Map<String, String> headerParams = new HashMap<>();
                     headerParams.put("client-id", clientiD);// 8887e71887f2f2b8dc191ff238ad5a4f
-
-                    VolleyNetworkRequestHandler.getInstance(context, this).getStringData(ApiURLS.USER_PROFILE, ApiURLS.ApiId.USER_PROFILE_UPDATE, ApiURLS.REQUEST_PUT, paramPost, headerParams);
+                    if (Validator.getInstance().isNetworkAvailable(context)) {
+                        VolleyNetworkRequestHandler.getInstance(context, this).getStringData(ApiURLS.USER_PROFILE, ApiURLS.ApiId.USER_PROFILE_UPDATE, ApiURLS.REQUEST_PUT, paramPost, headerParams);
+                    } else {
+                        toast(getResources().getString(R.string.network_error), false);
+                    }
                 } else {
                     toast(validateMessage, false);
                 }
@@ -307,7 +315,7 @@ public class UserProfileActivity extends SocialConnectBaseActivity implements Ur
                         String userCountry = data.getString("country");
                         String userZipcode = data.getString("zipCode");
                         String userProfilePic = data.getString("profilePic");
-                        String userEmailAddress = data.getString("alternateEmail");
+                        String userEmailAddress = data.getString("email");
                         String userGender = data.getString("gender");
                         String profileStatus = data.getString("prof_status");
                         userProfiledata = new UserProfiledata(userFirstName + " " + userLastName, userMobileNumber, userAddress, userCity, userZipcode, userState, userLandmark, userCountry, userProfilePic,

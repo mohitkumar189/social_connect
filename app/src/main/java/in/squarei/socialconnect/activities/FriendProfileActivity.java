@@ -1,9 +1,8 @@
 package in.squarei.socialconnect.activities;
 
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -25,6 +24,7 @@ import in.squarei.socialconnect.network.UrlResponseListener;
 import in.squarei.socialconnect.network.VolleyNetworkRequestHandler;
 import in.squarei.socialconnect.utils.Logger;
 import in.squarei.socialconnect.utils.SharedPreferenceUtils;
+import in.squarei.socialconnect.utils.Validator;
 
 import static in.squarei.socialconnect.network.ApiURLS.ApiId.OTHER_USER_PROFILE;
 import static in.squarei.socialconnect.network.ApiURLS.ApiId.SEND_FRIEND_REQUEST;
@@ -45,15 +45,21 @@ public class FriendProfileActivity extends SocialConnectBaseActivity implements 
         userId = intent.getStringExtra("userId");
         userType = intent.getIntExtra("userType", -1);
         setContentView(R.layout.activity_friend_profile);
-
+        settingTitle(getResources().getString(R.string.friend_profile_activity));
 
         Map<String, String> headerParams = new HashMap<>();
         clientiD = SharedPreferenceUtils.getInstance(context).getString(AppConstants.API_KEY);
 
         Logger.info(TAG, "===================client id==========" + clientiD + "=============userid=====" + userId + "======userType=====" + userType);
         headerParams.put("client-id", clientiD);// 8887e71887f2f2b8dc191ff238ad5a4f
-        VolleyNetworkRequestHandler volleyNetworkRequestHolder = VolleyNetworkRequestHandler.getInstance(context, this);
-        volleyNetworkRequestHolder.getStringData(ApiURLS.OTHER_USER_PROFILE + userId, OTHER_USER_PROFILE, ApiURLS.REQUEST_GET, null, headerParams);
+
+        if (Validator.getInstance().isNetworkAvailable(context)) {
+            VolleyNetworkRequestHandler volleyNetworkRequestHolder = VolleyNetworkRequestHandler.getInstance(context, this);
+            volleyNetworkRequestHolder.getStringData(ApiURLS.OTHER_USER_PROFILE + userId, OTHER_USER_PROFILE, ApiURLS.REQUEST_GET, null, headerParams);
+        } else {
+            toast(getResources().getString(R.string.network_error), false);
+        }
+
     }
 
     @Override
@@ -146,8 +152,13 @@ public class FriendProfileActivity extends SocialConnectBaseActivity implements 
         Logger.info(TAG, "===================client id==========" + clientiD + "=============userid=====" + userId + "======userType=====" + userType);
         headerParams.put("client-id", clientiD);// 8887e71887f2f2b8dc191ff238ad5a4f
         postParams.put("connection_id", conncetionId);
-        VolleyNetworkRequestHandler volleyNetworkRequestHolder = VolleyNetworkRequestHandler.getInstance(context, this);
-        volleyNetworkRequestHolder.getStringData(ApiURLS.SEND_FRIEND_REQUEST, SEND_FRIEND_REQUEST, ApiURLS.REQUEST_POST, postParams, headerParams);
+
+        if (Validator.getInstance().isNetworkAvailable(context)) {
+            VolleyNetworkRequestHandler volleyNetworkRequestHolder = VolleyNetworkRequestHandler.getInstance(context, this);
+            volleyNetworkRequestHolder.getStringData(ApiURLS.UPDATE_FRIEND_STATUS, SEND_FRIEND_REQUEST, ApiURLS.REQUEST_POST, postParams, headerParams);
+        } else {
+            toast(getResources().getString(R.string.network_error), false);
+        }
     }
 
     @Override
@@ -202,7 +213,11 @@ public class FriendProfileActivity extends SocialConnectBaseActivity implements 
                         String country = profileData.getString("country");
                         String zipCode = profileData.getString("zipCode");
                         String profilePic = profileData.getString("profilePic");
-                        String phone = profileData.getString("phone");
+                        //  String phone = profileData.getString("phone");
+                        String phoneString = profileData.getString("phone"); //json object
+                        JSONObject phone = new JSONObject(phoneString);
+                        String userMobileNumber = phone.getString("ph"); //mobile number
+                        String mobilePolicy = phone.getString("policy");
                         String profileStatus = profileData.getString("prof_status");
                         String privacy = profileData.getString("privacy");
                         String email = profileData.getString("alternateEmail");
@@ -211,7 +226,8 @@ public class FriendProfileActivity extends SocialConnectBaseActivity implements 
                         if (profileStatus != null) tvUserStatus.setText(profileStatus);
 
                         if (address != null) tvUserAddress.setText(address);
-                        if (phone != null) tvUserMobileNumber.setText(phone);
+                        if (!phone.equals("null") || phone.length() != 0 || phone != null)
+                            tvUserMobileNumber.setText(userMobileNumber);
                         if (email != null) tvUserEmailAddress.setText(email);
                         Picasso.with(context)
                                 .load(profilePic)

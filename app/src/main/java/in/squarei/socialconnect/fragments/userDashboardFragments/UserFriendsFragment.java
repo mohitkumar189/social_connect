@@ -4,7 +4,6 @@ package in.squarei.socialconnect.fragments.userDashboardFragments;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -32,6 +31,12 @@ import in.squarei.socialconnect.network.UrlResponseListener;
 import in.squarei.socialconnect.network.VolleyNetworkRequestHandler;
 import in.squarei.socialconnect.utils.Logger;
 import in.squarei.socialconnect.utils.SharedPreferenceUtils;
+import in.squarei.socialconnect.utils.Validator;
+
+import static in.squarei.socialconnect.network.ApiURLS.ApiId.ACCEPT_FRIEND;
+import static in.squarei.socialconnect.network.ApiURLS.ApiId.GET_FRIENDS_REQUESTS;
+import static in.squarei.socialconnect.network.ApiURLS.ApiId.REJECT_FRIEND;
+import static in.squarei.socialconnect.network.ApiURLS.ApiId.SEND_FRIEND_REQUEST;
 
 
 /**
@@ -45,6 +50,8 @@ public class UserFriendsFragment extends SocialConnectBaseFragment implements Ur
     private UserFriendsListAdapter userFriendListAdapter;
     private UserFriendsListAdapter userSuggestionFriendListAdapter;
     private List<UsersListData> usersSuggestionListData;
+    private String clientiD;
+    private int adapterPosition;
 
     public UserFriendsFragment() {
         // Required empty public constructor
@@ -75,16 +82,28 @@ public class UserFriendsFragment extends SocialConnectBaseFragment implements Ur
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        fetchAllFriendsData();
+    }
+
+    private void fetchAllFriendsData() {
         usersListData = new ArrayList<>();
         usersSuggestionListData = new ArrayList<>();
         Map<String, String> headerParams = new HashMap<>();
-        String clientiD = SharedPreferenceUtils.getInstance(context).getString(AppConstants.API_KEY);
+        clientiD = SharedPreferenceUtils.getInstance(context).getString(AppConstants.API_KEY);
 
         Logger.info(TAG, "===================client id==========" + clientiD);
         headerParams.put("client-id", clientiD);// 8887e71887f2f2b8dc191ff238ad5a4f
-        VolleyNetworkRequestHandler volleyNetworkRequestHolder = VolleyNetworkRequestHandler.getInstance(context, this);
-        volleyNetworkRequestHolder.getStringData(ApiURLS.USER_FRIENDS_LIST, ApiURLS.ApiId.USER_FRIENDS_LIST, ApiURLS.REQUEST_GET, null, headerParams);
-        volleyNetworkRequestHolder.getStringData(ApiURLS.USER_SUGGESTION_FRIENDS_LIST, ApiURLS.ApiId.USER_FRIEND_SUGGESTIONS, ApiURLS.REQUEST_GET, null, headerParams);
+
+        if (Validator.getInstance().isNetworkAvailable(context)) {
+            VolleyNetworkRequestHandler volleyNetworkRequestHolder = VolleyNetworkRequestHandler.getInstance(context, this);
+            volleyNetworkRequestHolder.getStringData(ApiURLS.USER_FRIENDS_LIST, ApiURLS.ApiId.USER_FRIENDS_LIST, ApiURLS.REQUEST_GET, null, headerParams);
+            volleyNetworkRequestHolder.getStringData(ApiURLS.USER_SUGGESTION_FRIENDS_LIST, ApiURLS.ApiId.USER_FRIEND_SUGGESTIONS, ApiURLS.REQUEST_GET, null, headerParams);
+            volleyNetworkRequestHolder.getStringData(ApiURLS.GET_FRIENDS_REQUESTS, ApiURLS.ApiId.GET_FRIENDS_REQUESTS, ApiURLS.REQUEST_GET, null, headerParams);
+        } else {
+            toast(context, currentActivity.getResources().getString(R.string.network_error));
+        }
+
     }
 
     @Override
@@ -105,11 +124,77 @@ public class UserFriendsFragment extends SocialConnectBaseFragment implements Ur
 
         if (apiId == ApiURLS.ApiId.USER_FRIENDS_LIST) {
             updateUsersList(stringResponse);
-        }
-        if (apiId == ApiURLS.ApiId.USER_FRIEND_SUGGESTIONS) {
+        } else if (apiId == ApiURLS.ApiId.USER_FRIEND_SUGGESTIONS) {
             updateUsersSuggestionList(stringResponse);
-        }
+        } else if (apiId == GET_FRIENDS_REQUESTS) {
+            updateUserFriendsRequestsList(stringResponse);
+        } else if (apiId == ACCEPT_FRIEND) {
+            updateAdapter(stringResponse, true);
+        } else if (apiId == REJECT_FRIEND) {
+            updateAdapter(stringResponse, false);
+        } else if (apiId == SEND_FRIEND_REQUEST) {
 
+        }
+    }
+
+    private void updateAdapter(String response, boolean b) {
+        Logger.info(TAG, "================updateAdapter()=============");
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            boolean error = jsonObject.getBoolean("error");
+            if (!error) {
+                JSONObject commandResult = jsonObject.getJSONObject("commandResult");
+                String message = commandResult.getString("message");
+                int success = commandResult.getInt("success");
+                if (success == 1) {
+                    if (b) {
+                        usersListData.remove(adapterPosition);
+                    } else {
+                        usersListData.remove(adapterPosition);
+                    }
+                    userFriendListAdapter.notifyDataSetChanged();
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void updateUserFriendsRequestsList(String stringResponse) {
+        try {
+            JSONObject jsonObject = new JSONObject(stringResponse);
+            boolean error = jsonObject.getBoolean("error");
+            if (!error) {
+                JSONObject commandResult = jsonObject.getJSONObject("commandResult");
+                String message = commandResult.getString("message");
+                int success = commandResult.getInt("success");
+                if (success == 1) {
+                    String requestId = null;
+                    String firstName = null;
+                    String lastName = null;
+                    String profilePic = null;
+                    String shared = null;
+                    String connectedOn = null;
+                    String updatedOn = null;// 0==>friend request, 1==>friend
+                    JSONArray data = commandResult.getJSONArray("data");
+                    if (data.length() > 0) {
+                        for (int i = 0; i < data.length(); i++) {
+                            JSONObject userData = data.getJSONObject(i);
+                            requestId = userData.getString("id");
+                            firstName = userData.getString("firstName");
+                            lastName = userData.getString("lastName");
+                            profilePic = userData.getString("profilePic");
+                            updatedOn = userData.getString("updatedOn");
+                            connectedOn = userData.getString("connectedOn");
+                            usersListData.add(new UsersListData(requestId, firstName + " " + lastName, null, profilePic, null, false));
+                        }
+                        userFriendListAdapter.notifyDataSetChanged();
+                    }
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     private void updateUsersSuggestionList(String stringResponse) {
@@ -175,7 +260,7 @@ public class UserFriendsFragment extends SocialConnectBaseFragment implements Ur
                     String profilePic = null;
                     String shared = null;
                     String prof_status = null;
-                    String user_type = null;// 0==>individual, 1==>group
+                    String user_type = null;// 0==>friend request, 1==>friend
                     JSONArray data = commandResult.getJSONArray("data");
                     if (data.length() > 0) {
                         for (int i = 0; i < data.length(); i++) {
@@ -188,6 +273,12 @@ public class UserFriendsFragment extends SocialConnectBaseFragment implements Ur
                             prof_status = userData.getString("prof_status");
                             user_type = userData.getString("user_type");
                             usersListData.add(new UsersListData(userid, firstName + " " + lastName, prof_status, profilePic, user_type, true));
+/*
+                            if (user_type.equals("0")) {
+                                usersListData.add(new UsersListData(userid, firstName + " " + lastName, prof_status, profilePic, user_type, false));
+                            } else {
+                                usersListData.add(new UsersListData(userid, firstName + " " + lastName, prof_status, profilePic, user_type, true));
+                            }*/
                         }
                         //   updateUsersList();
                         userFriendListAdapter = new UserFriendsListAdapter(usersListData, context, this);
@@ -210,18 +301,66 @@ public class UserFriendsFragment extends SocialConnectBaseFragment implements Ur
 
     @Override
     public void onItemClickCallback(int position, int flag) {
+        adapterPosition = position;
         //   toast(context, "item clicked " + position);
-        Logger.info(TAG, "==================user id to be passed===========" + usersListData.get(position).getUserId());
         Intent intent = new Intent(currentActivity, FriendProfileActivity.class);
-        if (flag == 0) {
-            intent.putExtra("userId", usersListData.get(position).getUserId());
-            intent.putExtra("userType", flag);
-            startActivity(intent);
+        switch (flag) {
+            case 0:
+                Logger.info(TAG, "==================user id to be passed===========" + usersListData.get(position).getUserId());
+                intent.putExtra("userId", usersListData.get(position).getUserId());
+                intent.putExtra("userType", flag);
+                startActivity(intent);
+                break;
+            case 1:
+                Logger.info(TAG, "==================user id to be passed===========" + usersSuggestionListData.get(position).getUserId());
+                intent.putExtra("userId", usersSuggestionListData.get(position).getUserId());
+                intent.putExtra("userType", flag);
+                startActivity(intent);
+                break;
+            case 2:
+                toast(context, "add");
+                acceptFriendRequest(usersListData.get(position).getUserId());
+                break;
+            case 3:
+                toast(context, "remove");
+                rejectFriendRequest(usersListData.get(position).getUserId());
+                break;
         }
-        if (flag == 1) {
-            intent.putExtra("userId", usersSuggestionListData.get(position).getUserId());
-            intent.putExtra("userType", flag);
-            startActivity(intent);
+    }
+
+    private void acceptFriendRequest(String conncetionId) {
+        Map<String, String> headerParams = new HashMap<>();
+        Map<String, String> postParams = new HashMap<>();
+        String clientiD = SharedPreferenceUtils.getInstance(context).getString(AppConstants.API_KEY);
+        Logger.info(TAG, "===================client id==========" + clientiD + "=============userid=====" + conncetionId);
+        headerParams.put("client-id", clientiD);// 8887e71887f2f2b8dc191ff238ad5a4f
+        postParams.put("id", conncetionId);
+        postParams.put("action", "1");
+        postParams.put("status", "1");
+
+        if (Validator.getInstance().isNetworkAvailable(context)) {
+            VolleyNetworkRequestHandler volleyNetworkRequestHolder = VolleyNetworkRequestHandler.getInstance(context, this);
+            volleyNetworkRequestHolder.getStringData(ApiURLS.UPDATE_FRIEND_STATUS, ACCEPT_FRIEND, ApiURLS.REQUEST_PUT, postParams, headerParams);
+        } else {
+            toast(context, currentActivity.getResources().getString(R.string.network_error));
+        }
+
+    }
+
+    private void rejectFriendRequest(String conncetionId) {
+        Map<String, String> headerParams = new HashMap<>();
+        Map<String, String> postParams = new HashMap<>();
+        Logger.info(TAG, "===================client id==========" + clientiD + "=============userid=====" + conncetionId);
+        headerParams.put("client-id", clientiD);// 8887e71887f2f2b8dc191ff238ad5a4f
+        postParams.put("id", conncetionId);
+        postParams.put("action", "2");
+        postParams.put("status", "0");
+
+        if (Validator.getInstance().isNetworkAvailable(context)) {
+            VolleyNetworkRequestHandler volleyNetworkRequestHolder = VolleyNetworkRequestHandler.getInstance(context, this);
+            volleyNetworkRequestHolder.getStringData(ApiURLS.UPDATE_FRIEND_STATUS, REJECT_FRIEND, ApiURLS.REQUEST_PUT, postParams, headerParams);
+        } else {
+            toast(context, currentActivity.getResources().getString(R.string.network_error));
         }
 
     }

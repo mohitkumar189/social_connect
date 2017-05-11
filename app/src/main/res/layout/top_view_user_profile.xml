@@ -61,7 +61,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
                 android:orientation="vertical"
-                android:visibility="gone">
+                android:visibility="visible">
 
                 <TextView
                     android:id="@+id/tvUserType"
@@ -70,7 +70,8 @@
                     android:layout_gravity="center_horizontal"
                     android:text="Group"
                     android:textColor="@color/text_color_grey"
-                    android:textSize="@dimen/font_14" />
+                    android:textSize="@dimen/font_14"
+                    android:visibility="invisible" />
 
                 <LinearLayout
                     android:id="@+id/linearActionViewHolder"
@@ -86,7 +87,7 @@
                         android:layout_weight="1"
                         android:background="@drawable/background_shape"
                         android:gravity="center"
-                        android:text="ADD" />
+                        android:text="Accept" />
 
                     <TextView
                         android:id="@+id/tvRemoveFriend"
@@ -95,7 +96,7 @@
                         android:layout_weight="1"
                         android:background="@drawable/background_shape"
                         android:gravity="center"
-                        android:text="Remove" />
+                        android:text="Reject" />
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>

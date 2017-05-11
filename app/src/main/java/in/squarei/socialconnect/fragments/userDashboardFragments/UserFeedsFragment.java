@@ -1,6 +1,7 @@
 package in.squarei.socialconnect.fragments.userDashboardFragments;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import in.squarei.socialconnect.R;
+import in.squarei.socialconnect.activities.UploadPostActivity;
 import in.squarei.socialconnect.adapters.PostCommentsAdapter;
 import in.squarei.socialconnect.adapters.UserFeedsAdapter;
 import in.squarei.socialconnect.fragments.SocialConnectBaseFragment;
@@ -36,6 +39,7 @@ import in.squarei.socialconnect.network.UrlResponseListener;
 import in.squarei.socialconnect.network.VolleyNetworkRequestHandler;
 import in.squarei.socialconnect.utils.Logger;
 import in.squarei.socialconnect.utils.SharedPreferenceUtils;
+import in.squarei.socialconnect.utils.Validator;
 
 import static in.squarei.socialconnect.network.ApiURLS.ApiId.FRIENDS_POST;
 import static in.squarei.socialconnect.network.ApiURLS.ApiId.LIKE_POST;
@@ -54,6 +58,7 @@ public class UserFeedsFragment extends SocialConnectBaseFragment implements UrlR
     private String clientiD;
     private SwipeRefreshLayout swiperefresh;
     private UserFeedsAdapter userFeedAdapter;
+    private LinearLayout linearWritePost;
 
     public UserFeedsFragment() {
         // Required empty public constructor
@@ -68,6 +73,7 @@ public class UserFeedsFragment extends SocialConnectBaseFragment implements UrlR
     protected void initViews() {
         recyclerViewUserFeeds = (RecyclerView) currentActivity.findViewById(R.id.recyclerViewUserFeeds);
         swiperefresh = (SwipeRefreshLayout) currentActivity.findViewById(R.id.swiperefresh);
+        linearWritePost = (LinearLayout) currentActivity.findViewById(R.id.linearWritePost);
     }
 
     @Override
@@ -78,6 +84,13 @@ public class UserFeedsFragment extends SocialConnectBaseFragment implements UrlR
 
     @Override
     protected void initListners() {
+        linearWritePost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, UploadPostActivity.class);
+                startActivity(intent);
+            }
+        });
         swiperefresh.setOnRefreshListener(
                 new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
@@ -95,8 +108,10 @@ public class UserFeedsFragment extends SocialConnectBaseFragment implements UrlR
     }
 
     private void updateFeedsListOnRefresh() {
-        userFeedData.clear();
-        userFeedAdapter.notifyDataSetChanged();
+        if (userFeedData != null) {
+            userFeedData.clear();
+            userFeedAdapter.notifyDataSetChanged();
+        }
         loadDataForFeeds();
 
     }
@@ -123,10 +138,15 @@ public class UserFeedsFragment extends SocialConnectBaseFragment implements UrlR
 
     private void loadDataForFeeds() {
         Map<String, String> headerParams = new HashMap<>();
-
         headerParams.put("client-id", clientiD);// 8887e71887f2f2b8dc191ff238ad5a4f
-        VolleyNetworkRequestHandler volleyNetworkRequestHolder = VolleyNetworkRequestHandler.getInstance(context, this);
-        volleyNetworkRequestHolder.getStringData(ApiURLS.FRIENDS_POSTS, FRIENDS_POST, ApiURLS.REQUEST_GET, null, headerParams);
+
+        if (Validator.getInstance().isNetworkAvailable(context)) {
+            VolleyNetworkRequestHandler volleyNetworkRequestHolder = VolleyNetworkRequestHandler.getInstance(context, this);
+            volleyNetworkRequestHolder.getStringData(ApiURLS.FRIENDS_POSTS, FRIENDS_POST, ApiURLS.REQUEST_GET, null, headerParams);
+        } else {
+            toast(context, currentActivity.getResources().getString(R.string.network_error));
+        }
+
     }
 
     @Override
@@ -182,14 +202,12 @@ public class UserFeedsFragment extends SocialConnectBaseFragment implements UrlR
                 if (!error) {
                     JSONObject commandResult = jsonObject.getJSONObject("commandResult");
                     int success = commandResult.getInt("success");
+                    postCommentsData = new ArrayList<>();
                     if (success == 1) {
                         JSONArray data = new JSONArray(commandResult.getString("data"));
-                        postCommentsData = new ArrayList<>();
-
                         // JSONArray data = commandResult.getJSONArray("data");
                         Logger.info(TAG, "================length=============" + data.length() + " ====data===" + data);
                         if (data.length() > 0) {
-                            postCommentsData = new ArrayList<>();
                             for (int i = 0; i < data.length(); i++) {
                                 JSONObject comment = data.getJSONObject(i);
                                 String postId = comment.getString("id");
@@ -221,8 +239,8 @@ public class UserFeedsFragment extends SocialConnectBaseFragment implements UrlR
                 if (!error) {
                     JSONObject commandResult = jsonObject.getJSONObject("commandResult");
                     int success = commandResult.getInt("success");
+                    userFeedData = new ArrayList<>();
                     if (success == 1) {
-                        userFeedData = new ArrayList<>();
                         JSONArray data = commandResult.getJSONArray("data");
                         for (int i = 0; i < data.length(); i++) {
                             JSONObject jsonFeed = data.getJSONObject(i);
@@ -275,8 +293,13 @@ public class UserFeedsFragment extends SocialConnectBaseFragment implements UrlR
         Map<String, String> headerParams = new HashMap<>();
         headerParams.put("client-id", clientiD);
         String postId = userFeedData.get(position).getPostId();
-        VolleyNetworkRequestHandler volleyNetworkRequestHolder = VolleyNetworkRequestHandler.getInstance(context, this);
-        volleyNetworkRequestHolder.getStringData(ApiURLS.TO_LIKE_POST + postId, LIKE_POST, ApiURLS.REQUEST_POST, null, headerParams);
+        if (Validator.getInstance().isNetworkAvailable(context)) {
+            VolleyNetworkRequestHandler volleyNetworkRequestHolder = VolleyNetworkRequestHandler.getInstance(context, this);
+            volleyNetworkRequestHolder.getStringData(ApiURLS.TO_LIKE_POST + postId, LIKE_POST, ApiURLS.REQUEST_POST, null, headerParams);
+        } else {
+            toast(context, currentActivity.getResources().getString(R.string.network_error));
+        }
+
     }
 
     private void getPostComments(int position) {
@@ -285,9 +308,15 @@ public class UserFeedsFragment extends SocialConnectBaseFragment implements UrlR
         postIdd = postId;
         Logger.info(TAG, "===================client id==========" + clientiD);
         headerParams.put("client-id", clientiD);// 8887e71887f2f2b8dc191ff238ad5a4f
-        VolleyNetworkRequestHandler volleyNetworkRequestHolder = VolleyNetworkRequestHandler.getInstance(context, this);
-        volleyNetworkRequestHolder.getStringData(ApiURLS.POST_COMMENTS + postId + "/comments", POST_COMMENTS, ApiURLS.REQUEST_GET, null, headerParams);
-        toast(context, "comments clicked " + postId);
+
+        if (Validator.getInstance().isNetworkAvailable(context)) {
+            VolleyNetworkRequestHandler volleyNetworkRequestHolder = VolleyNetworkRequestHandler.getInstance(context, this);
+            volleyNetworkRequestHolder.getStringData(ApiURLS.POST_COMMENTS + postId + "/comments", POST_COMMENTS, ApiURLS.REQUEST_GET, null, headerParams);
+        } else {
+            toast(context, currentActivity.getResources().getString(R.string.network_error));
+        }
+
+
     }
 
     private void showUserCommentsDialog() {
@@ -326,8 +355,12 @@ public class UserFeedsFragment extends SocialConnectBaseFragment implements UrlR
         postParams.put("post_id", postIdd);
         Logger.info(TAG, "===================client id==========" + clientiD);
         headerParams.put("client-id", clientiD);// 8887e71887f2f2b8dc191ff238ad5a4f
-        VolleyNetworkRequestHandler volleyNetworkRequestHolder = VolleyNetworkRequestHandler.getInstance(context, this);
-        volleyNetworkRequestHolder.getStringData(ApiURLS.To_POST_COMMENT, To_POST_COMMENT, ApiURLS.REQUEST_POST, postParams, headerParams);
+        if (Validator.getInstance().isNetworkAvailable(context)) {
+            VolleyNetworkRequestHandler volleyNetworkRequestHolder = VolleyNetworkRequestHandler.getInstance(context, this);
+            volleyNetworkRequestHolder.getStringData(ApiURLS.To_POST_COMMENT, To_POST_COMMENT, ApiURLS.REQUEST_POST, postParams, headerParams);
+        } else {
+            toast(context, currentActivity.getResources().getString(R.string.network_error));
+        }
     }
 
 }

@@ -2,17 +2,14 @@ package in.squarei.socialconnect.network;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
-import com.android.volley.NetworkResponse;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
@@ -21,7 +18,6 @@ import java.util.Map;
 
 import in.squarei.socialconnect.R;
 import in.squarei.socialconnect.socialConnectApplication.SocialConnectApplication;
-import in.squarei.socialconnect.utils.CommonUtils;
 import in.squarei.socialconnect.utils.Logger;
 
 /**
@@ -31,7 +27,7 @@ import in.squarei.socialconnect.utils.Logger;
 public class VolleyNetworkRequestHandler {
     private static final String TAG = "VolleyNetworkRequestHandler";
     private static Context mctx;
-    private static VolleyNetworkRequestHandler volleyNetworkRequestHandler;
+    private static VolleyNetworkRequestHandler volleyNetworkRequestHandler = new VolleyNetworkRequestHandler();
     private static UrlResponseListener urlResponseListener;
     private static ProgressDialog pdialog;
 
@@ -56,7 +52,7 @@ public class VolleyNetworkRequestHandler {
     }
 
     public void getStringData(final String requestUrl, final ApiURLS.ApiId apiId, int requestMethod, final Map<String, String> postParams, final Map<String, String> headerParams) {
-        Logger.info(TAG, "======================On Network Request=================url is======" + requestUrl);
+        Logger.info(TAG, "======================On Network Request=================url is======" + requestUrl + "====request Method===" + requestMethod);
         pdialog.setTitle(mctx.getResources().getString(R.string.data_downloading_message));
         pdialog.show();
         // CommonUtils.showprogressDialog(mctx, null, mctx.getResources().getString(R.string.data_downloading_message), false, false);

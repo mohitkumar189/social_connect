@@ -1,18 +1,32 @@
 package in.squarei.socialconnect.activities;
 
+import android.Manifest;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.HeaderViewListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.google.firebase.iid.FirebaseInstanceId;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import in.squarei.socialconnect.R;
 import in.squarei.socialconnect.fragments.userDashboardFragments.UserChatsFragment;
@@ -21,12 +35,24 @@ import in.squarei.socialconnect.fragments.userDashboardFragments.UserFriendsFrag
 import in.squarei.socialconnect.fragments.userDashboardFragments.UserNoticeFragment;
 import in.squarei.socialconnect.fragments.userDashboardFragments.UserUpdatesFragment;
 import in.squarei.socialconnect.interfaces.AppConstants;
+import in.squarei.socialconnect.network.ApiURLS;
+import in.squarei.socialconnect.network.UrlResponseListener;
+import in.squarei.socialconnect.network.VolleyNetworkRequestHandler;
 import in.squarei.socialconnect.utils.Logger;
+import in.squarei.socialconnect.utils.SharedPreferenceUtils;
 
 import static in.squarei.socialconnect.interfaces.AppConstants.MENU_PROFILE_ID;
+import static in.squarei.socialconnect.interfaces.AppConstants.PROFILE_STATUS;
+import static in.squarei.socialconnect.interfaces.AppConstants.USER_FIRST_NAME;
+import static in.squarei.socialconnect.interfaces.AppConstants.USER_LAST_NAME;
 
-public class UserDashboardActivity extends SocialConnectBaseActivity {
+public class UserDashboardActivity extends SocialConnectBaseActivity implements UrlResponseListener {
+
     private static final String TAG = "UserDashboardActivity";
+    String[] PERMISSIONS = {Manifest.permission.READ_PHONE_STATE
+            , Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_NETWORK_STATE,
+            Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+    int PERMISSION_ALL = 1;
     private boolean canExit = false;
     private FrameLayout fragment_container;
     private UserFeedsFragment userFeedsFragment;
@@ -34,13 +60,74 @@ public class UserDashboardActivity extends SocialConnectBaseActivity {
     private UserNoticeFragment userNoticeFragment;
     private UserFriendsFragment userFriendsFragment;
     private UserUpdatesFragment userUpdatesFragment;
+    private AlertDialog b;
+    private String firstName, lastName;
+
+    public static boolean hasPermissions(Context context, String... permissions) {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_dashboard);
         // settingNavigationView();
+        if (!hasPermissions(this, PERMISSIONS)) {
+            ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
+        }
+        switchContent(R.id.fragment_container, userFeedsFragment, true, false, "userFeedFragment");
+        navigationView.setCheckedItem(R.id.nav_user_feeds);
+        checkForProfileCompleteDialog();
     }
+
+    private void checkForProfileCompleteDialog() {
+        if (SharedPreferenceUtils.getInstance(context).getBoolean(PROFILE_STATUS)) {
+            updateUserName();
+        } else {
+            showUserProfileDialog();
+        }
+    }
+
+    private void showUserProfileDialog() {
+
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
+        LayoutInflater inflater = currentActivity.getLayoutInflater();
+        final View dialogView = inflater.inflate(R.layout.dialog_profile_update, null);
+        dialogBuilder.setView(dialogView);
+        dialogBuilder.setCancelable(true);
+        dialogBuilder.setTitle("Please enter profile details");
+        b = dialogBuilder.create();
+        final EditText editUserFirstName = (EditText) dialogView.findViewById(R.id.editUserFirstName);
+        final EditText editUserLastName = (EditText) dialogView.findViewById(R.id.editUserLastName);
+        final TextView tvUserNameUpdate = (TextView) dialogView.findViewById(R.id.tvUserNameUpdate);
+        b.show();
+
+        tvUserNameUpdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                firstName = editUserFirstName.getText().toString();
+                lastName = editUserLastName.getText().toString();
+
+                Map<String, String> paramPost = new HashMap<>();
+                if (firstName != null) paramPost.put("firstName", firstName);
+
+                if (lastName != null) paramPost.put("lastName", lastName);
+
+                String clientiD = SharedPreferenceUtils.getInstance(context).getString(AppConstants.API_KEY);
+                Map<String, String> headerParams = new HashMap<>();
+                headerParams.put("client-id", clientiD);
+                VolleyNetworkRequestHandler.getInstance(context, UserDashboardActivity.this).getStringData(ApiURLS.USER_PROFILE, ApiURLS.ApiId.USER_PROFILE_UPDATE, ApiURLS.REQUEST_PUT, paramPost, headerParams);
+            }
+        });
+    }
+
 
     private void settingNavigationView() {
         navigationView.getMenu().clear();
@@ -109,7 +196,6 @@ public class UserDashboardActivity extends SocialConnectBaseActivity {
 
     @Override
     protected void initListners() {
-        switchContent(R.id.fragment_container, userFeedsFragment, true, false, "userFeedFragment");
     }
 
     @Override
@@ -129,12 +215,12 @@ public class UserDashboardActivity extends SocialConnectBaseActivity {
 
     @Override
     protected boolean isTabs() {
-        return true;
+        return false;
     }
 
     @Override
     protected boolean isFab() {
-        return true;
+        return false;
     }
 
     @Override
@@ -147,28 +233,37 @@ public class UserDashboardActivity extends SocialConnectBaseActivity {
         switch (item.getItemId()) {
             case R.id.nav_user_profile:
                 drawer.closeDrawer(navigationView);
-                toast("profile", false);
                 startActivity(this, UserProfileActivity.class);
                 break;
             case R.id.nav_user_feeds:
                 drawer.closeDrawer(navigationView);
                 switchContent(R.id.fragment_container, userFeedsFragment, true, false, "userFeedFragment");
+                settingTitle(getResources().getString(R.string.feed_fragment));
                 break;
             case R.id.nav_user_chat:
                 drawer.closeDrawer(navigationView);
                 switchContent(R.id.fragment_container, userChatsFragment, true, false, "userChatsFragment");
+                settingTitle(getResources().getString(R.string.chat_fragment));
                 break;
             case R.id.nav_user_friends:
                 drawer.closeDrawer(navigationView);
                 switchContent(R.id.fragment_container, userFriendsFragment, true, false, "userFriendsFragment");
+                settingTitle(getResources().getString(R.string.friends_fragment));
                 break;
             case R.id.nav_user_notice:
                 drawer.closeDrawer(navigationView);
                 switchContent(R.id.fragment_container, userNoticeFragment, true, false, "userNoticeFragment");
+                settingTitle(getResources().getString(R.string.notice_fragment));
                 break;
             case R.id.nav_user_updates:
                 drawer.closeDrawer(navigationView);
                 switchContent(R.id.fragment_container, userUpdatesFragment, true, false, "userUpdatesFragment");
+                settingTitle(getResources().getString(R.string.update_fragment));
+                break;
+            case R.id.nav_logout:
+                SharedPreferenceUtils.getInstance(context).clearAll();
+                startActivity(currentActivity, SplashActivity.class);
+                finish();
                 break;
             default:
                 drawer.closeDrawer(navigationView);
@@ -199,5 +294,70 @@ public class UserDashboardActivity extends SocialConnectBaseActivity {
                 canExit = false;
             }
         }, AppConstants.BACK_EXIT_TIME);
+    }
+
+    @Override
+    public void onResponseReceived(ApiURLS.ApiId apiId, JSONObject jsonObjectResponse) {
+
+    }
+
+    @Override
+    public void onResponseReceived(ApiURLS.ApiId apiId, String stringResponse) {
+        Logger.info(TAG, "======onResponseReceived======" + stringResponse);
+        if (apiId == ApiURLS.ApiId.USER_PROFILE_UPDATE) {
+
+            try {
+                JSONObject jsonObject = new JSONObject(stringResponse);
+                boolean error = jsonObject.getBoolean("error");
+                if (!error) {
+                    String data = jsonObject.getString("commandResult");
+                    JSONObject jsonObject1 = new JSONObject(data);
+                    int success = jsonObject1.getInt("success");
+                    String message = jsonObject1.getString("message");
+                    if (success == 1) {
+                        JSONObject input = new JSONObject(jsonObject.getString("input"));
+                        if (firstName != null) {
+                            SharedPreferenceUtils.getInstance(context).putString(USER_FIRST_NAME, input.getString("firstName"));
+                            SharedPreferenceUtils.getInstance(context).putBoolean(PROFILE_STATUS, true);
+                            if (lastName != null) {
+                                SharedPreferenceUtils.getInstance(context).putString(USER_LAST_NAME, input.getString("lastName"));
+                            }
+                            updateUserName();
+                        }
+
+                        toast(message, false);
+                        b.dismiss();
+                    } else {
+                        toast(message, false);
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public void onErrorResponse(ApiURLS.ApiId apiId, String errorData, int responseCode) {
+        Logger.info(TAG, "======onErrorResponse======" + errorData);
+    }
+
+    private void updateUserName() {
+        View header = navigationView.getHeaderView(0);
+
+        //  TextView tvNavUserName = (TextView) navigationView.inflateHeaderView(R.layout.nav_header_social_connect_base).findViewById(R.id.tvNavUserName);
+        TextView tvNavUserName = (TextView) header.findViewById(R.id.tvNavUserName);
+        String fullname = null;
+        String firstName = SharedPreferenceUtils.getInstance(context).getString(USER_FIRST_NAME);
+        String lastName = SharedPreferenceUtils.getInstance(context).getString(USER_LAST_NAME);
+        if (firstName != null) {
+            fullname = firstName;
+            if (lastName != null) {
+                fullname = firstName + " " + lastName;
+            }
+        }
+        if (fullname != null) {
+            tvNavUserName.setText(fullname);
+        }
     }
 }

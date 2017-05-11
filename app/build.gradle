@@ -45,5 +45,6 @@ dependencies {
     compile 'com.android.volley:volley:1.0.0'
     compile 'com.googlecode.android-query:android-query:0.24.3'
     testCompile 'junit:junit:4.12'
+    compile project(':simple-crop-image-lib')
 }
 apply plugin: 'com.google.gms.google-services'

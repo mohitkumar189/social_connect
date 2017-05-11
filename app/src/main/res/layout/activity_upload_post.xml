@@ -1,121 +1,170 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#f2f2f2"
-    android:orientation="vertical">
+    android:background="#f2f2f2">
 
-    <android.support.v7.widget.CardView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:cardCornerRadius="2dp"
-        app:cardElevation="4dp"
-        app:cardUseCompatPadding="true">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="@dimen/margin_5">
 
-        <RelativeLayout
+
+        <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:padding="@dimen/margin_15">
+            app:cardCornerRadius="2dp"
+            app:cardElevation="4dp"
+            app:cardUseCompatPadding="true">
 
-            <ImageView
-                android:id="@+id/ivUsereProfile"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:src="@drawable/user" />
-
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_marginLeft="@dimen/margin_10"
-                android:layout_toEndOf="@+id/ivUsereProfile"
-                android:layout_toRightOf="@+id/ivUsereProfile"
-                android:gravity="center_vertical"
-                android:orientation="vertical">
+                android:background="@color/white"
+                android:padding="@dimen/margin_15">
 
-                <TextView
-                    android:id="@+id/tvUserName"
+                <ImageView
+                    android:id="@+id/ivUsereProfile"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:src="@drawable/user" />
+
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/margin_10"
+                    android:layout_toRightOf="@+id/ivUsereProfile"
+                    android:orientation="vertical">
 
-                <Spinner
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"></Spinner>
-            </LinearLayout>
-        </RelativeLayout>
-    </android.support.v7.widget.CardView>
+                    <TextView
+                        android:id="@+id/text_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/margin_5"
+                        android:text="Santosh Kumar"
+                        android:textColor="@color/text_color"
+                        android:textSize="@dimen/text_size_15" />
 
-    <android.support.v7.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:cardCornerRadius="2dp"
-        app:cardElevation="4dp"
-        app:cardUseCompatPadding="true">
+                    <Spinner
+                        android:id="@+id/spinner_mode"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/text_name"
+                        android:layout_marginTop="@dimen/dp5" />
+                </LinearLayout>
+            </RelativeLayout>
+        </android.support.v7.widget.CardView>
 
-        <EditText
+        <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_10"
-            android:background="@android:color/white"
-            android:gravity="bottom"
-            android:lines="5"
-            android:text="Write Something....." />
-    </android.support.v7.widget.CardView>
+            app:cardCornerRadius="2dp"
+            app:cardElevation="4dp"
+            app:cardUseCompatPadding="true">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_20"
-        android:orientation="horizontal"
-        android:paddingBottom="@dimen/margin_10"
-        android:paddingTop="@dimen/margin_10">
+            <EditText
+                android:id="@+id/editPost"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                android:gravity="top"
+                android:hint="Write Something....."
+                android:lines="5"
+                android:padding="@dimen/margin_10"
+                android:textSize="@dimen/font_14" />
+        </android.support.v7.widget.CardView>
 
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp" />
+        <LinearLayout
+            android:id="@+id/linearUploadImage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_10"
+            android:orientation="horizontal"
+            android:paddingTop="@dimen/margin_10">
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/images_symbol" />
+
+            <TextView
+                android:id="@+id/text_photo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_10"
+                android:gravity="center"
+                android:padding="@dimen/margin_5"
+                android:text="Photo"
+                android:textColor="@color/text_color"
+                android:textSize="@dimen/text_size_15" />
+        </LinearLayout>
+
+        <include layout="@layout/line_1_dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_10"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/video_camera_symbol" />
+
+            <TextView
+                android:id="@+id/text_video"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_10"
+                android:gravity="center"
+                android:padding="@dimen/margin_5"
+                android:text="Video"
+                android:textColor="@color/text_color"
+                android:textSize="@dimen/text_size_15" />
+        </LinearLayout>
+
+        <include layout="@layout/line_1_dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/margin_10"
+            android:paddingTop="@dimen/margin_10">
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <include layout="@layout/line_1_dp" />
 
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:id="@+id/tvPost"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/margin_20"
+            android:background="#2a7bb2"
+            android:paddingBottom="@dimen/margin_5"
+            android:paddingLeft="@dimen/margin_20"
+            android:paddingRight="@dimen/margin_20"
+            android:paddingTop="@dimen/margin_5"
+            android:text="POST"
+            android:textColor="@color/white"
+            android:textSize="@dimen/font_16"
+            android:textStyle="bold"/>
     </LinearLayout>
 
-    <include layout="@layout/line_1_dp" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingBottom="@dimen/margin_10"
-        android:paddingTop="@dimen/margin_10">
 
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
-
-    <include layout="@layout/line_1_dp" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingBottom="@dimen/margin_10"
-        android:paddingTop="@dimen/margin_10">
-
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
-
-    <include layout="@layout/line_1_dp" />
-</LinearLayout>
+</ScrollView>

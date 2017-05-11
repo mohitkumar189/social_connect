@@ -1,10 +1,15 @@
 package in.squarei.socialconnect.activities.useraccesspackage;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
-import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -15,15 +20,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import in.squarei.socialconnect.activities.SocialConnectBaseActivity;
 import in.squarei.socialconnect.R;
+import in.squarei.socialconnect.activities.SocialConnectBaseActivity;
 import in.squarei.socialconnect.activities.UserDashboardActivity;
 import in.squarei.socialconnect.interfaces.AppConstants;
 import in.squarei.socialconnect.network.ApiURLS;
@@ -33,6 +37,9 @@ import in.squarei.socialconnect.utils.Logger;
 import in.squarei.socialconnect.utils.SharedPreferenceUtils;
 import in.squarei.socialconnect.utils.Validator;
 
+import static in.squarei.socialconnect.interfaces.AppConstants.PROFILE_STATUS;
+import static in.squarei.socialconnect.interfaces.AppConstants.USER_FIRST_NAME;
+import static in.squarei.socialconnect.interfaces.AppConstants.USER_LAST_NAME;
 import static in.squarei.socialconnect.interfaces.AppConstants.USER_PIN;
 
 public class UserLoginActivity extends SocialConnectBaseActivity implements UrlResponseListener {
@@ -45,6 +52,9 @@ public class UserLoginActivity extends SocialConnectBaseActivity implements UrlR
         }
     };
     AlertDialog deleteDialog;
+    String[] PERMISSIONS = {Manifest.permission.READ_PHONE_STATE, Manifest.permission.ACCESS_NETWORK_STATE,
+            Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+    int PERMISSION_ALL = 1;
     private EditText editLoginId, editLoginPassword;
     private Button buttonLogin;
     private TextView tvSignupUser, tvForgotPassword;
@@ -52,8 +62,21 @@ public class UserLoginActivity extends SocialConnectBaseActivity implements UrlR
     private String apiKey;
     private String userId;
     private String userpinPassword;
+    private String userFirstName;
+    private String userLastName;
     // These are for dialog to enter OTP///
     private EditText editPassDigitOne, editPassDigitTwo, editPassDigitThree, editPassDigitFour;
+
+    public static boolean hasPermissions(Context context, String... permissions) {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +87,9 @@ public class UserLoginActivity extends SocialConnectBaseActivity implements UrlR
 
     @Override
     protected void initViews() {
+        if (!hasPermissions(this, PERMISSIONS)) {
+            ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
+        }
         editLoginId = (EditText) findViewById(R.id.editLoginId);
         // editLoginPassword = (EditText) findViewById(R.id.editLoginPassword);
         buttonLogin = (Button) findViewById(R.id.buttonLogin);
@@ -178,6 +204,8 @@ public class UserLoginActivity extends SocialConnectBaseActivity implements UrlR
                         userId = jsonDataObject.getString("id");
                         apiKey = jsonDataObject.getString("apiKey");
                         userpinPassword = jsonDataObject.getString("pinPassword");
+                        userFirstName = jsonDataObject.getString("firstName");
+                        userLastName = jsonDataObject.getString("lastName");
                         Logger.info(TAG, "===========================================USER PIN" + userpinPassword);
                         toast(message, false);
                         if (userpinPassword == "null" || userpinPassword.length() == 0) {
@@ -190,6 +218,15 @@ public class UserLoginActivity extends SocialConnectBaseActivity implements UrlR
                             intent.putExtra("userPin", userpinPassword);
                             intent.putExtra("apiKey", apiKey);
                             Logger.info(TAG, "================API KEY SENT====" + apiKey);
+                        }
+                        if (userFirstName == "null" || userFirstName.length() == 0) {
+                            SharedPreferenceUtils.getInstance(context).putBoolean(PROFILE_STATUS, false);
+                        } else {
+                            SharedPreferenceUtils.getInstance(context).putString(USER_FIRST_NAME, userFirstName);
+                            SharedPreferenceUtils.getInstance(context).putBoolean(PROFILE_STATUS, true);
+                            if (userLastName != "null" || userLastName.length() != 0) {
+                                SharedPreferenceUtils.getInstance(context).putString(USER_LAST_NAME, userLastName);
+                            }
                         }
                         //  intent.putExtra("actionType", AppConstants.IntentTypes.SET_USER_PIN);
                         onLoginSuccess(intent); /// go to onlogin success and save required properties

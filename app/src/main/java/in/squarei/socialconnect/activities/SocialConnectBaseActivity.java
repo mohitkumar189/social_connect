@@ -9,20 +9,20 @@ import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.View;
-import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
@@ -31,11 +31,10 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import in.squarei.socialconnect.interfaces.AppConstants;
 import in.squarei.socialconnect.R;
+import in.squarei.socialconnect.interfaces.AppConstants;
 import in.squarei.socialconnect.utils.ColoredSnackbar;
 import in.squarei.socialconnect.utils.DimensionUtils;
-import in.squarei.socialconnect.utils.Helper;
 
 public abstract class SocialConnectBaseActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
@@ -237,7 +236,7 @@ public abstract class SocialConnectBaseActivity extends AppCompatActivity
         ft.commit();
     }
 
-    public void switchContent(int containerId,Fragment fragment, boolean addToBackStack,
+    public void switchContent(int containerId, Fragment fragment, boolean addToBackStack,
                               boolean add, String tag) {
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
