@@ -301,23 +301,23 @@ public class UserProfileActivity extends SocialConnectBaseActivity implements Ur
                         JSONObject data = new JSONObject(dataString);
                         Logger.info(TAG, "================received data=============" + data);
                         String userId = data.getString("userID");
-                        String userFirstName = data.getString("firstName");
-                        String phoneString = data.getString("phone"); //json object
+                        String userFirstName = data.getString("firstName").trim();
+                        String phoneString = data.getString("phone").trim(); //json object
                         JSONObject phone = new JSONObject(phoneString);
-                        String userMobileNumber = phone.getString("ph"); //mobile number
-                        String mobilePolicy = phone.getString("policy");
-                        String profilePolicy = data.getString("privacy");// policy---->public , private, onlyMe
-                        String userLastName = data.getString("lastName");
-                        String userAddress = data.getString("address");
-                        String userLandmark = data.getString("landmark");
-                        String userCity = data.getString("city");
-                        String userState = data.getString("state");
-                        String userCountry = data.getString("country");
+                        String userMobileNumber = phone.getString("ph").trim(); //mobile number
+                        String mobilePolicy = phone.getString("policy").trim();
+                        String profilePolicy = data.getString("privacy").trim();// policy---->public , private, onlyMe
+                        String userLastName = data.getString("lastName").trim();
+                        String userAddress = data.getString("address").trim();
+                        String userLandmark = data.getString("landmark").trim();
+                        String userCity = data.getString("city").trim();
+                        String userState = data.getString("state").trim();
+                        String userCountry = data.getString("country").trim();
                         String userZipcode = data.getString("zipCode");
                         String userProfilePic = data.getString("profilePic");
-                        String userEmailAddress = data.getString("email");
-                        String userGender = data.getString("gender");
-                        String profileStatus = data.getString("prof_status");
+                        String userEmailAddress = data.getString("email").trim();
+                        String userGender = data.getString("gender").trim();
+                        String profileStatus = data.getString("prof_status").trim();
                         userProfiledata = new UserProfiledata(userFirstName + " " + userLastName, userMobileNumber, userAddress, userCity, userZipcode, userState, userLandmark, userCountry, userProfilePic,
                                 userFirstName, userLastName, userEmailAddress, userGender, profilePolicy, mobilePolicy, profileStatus);
                         setUserDetails(userProfiledata);
@@ -327,7 +327,6 @@ public class UserProfileActivity extends SocialConnectBaseActivity implements Ur
                 e.printStackTrace();
             }
         }
-
     }
 
     @Override

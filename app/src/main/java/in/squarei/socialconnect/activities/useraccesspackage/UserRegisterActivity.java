@@ -1,8 +1,7 @@
 package in.squarei.socialconnect.activities.useraccesspackage;
 
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -126,7 +125,7 @@ public class UserRegisterActivity extends SocialConnectBaseActivity implements U
             toast(mobileValidateMessage, false);
             return;
         } else {
-           // map.put("name", editUserName.getText().toString().toLowerCase().trim());
+            // map.put("name", editUserName.getText().toString().toLowerCase().trim());
             map.put("email", editUserEmail.getText().toString().toLowerCase().trim());
             map.put("mobile", editUserMobileNumber.getText().toString().toLowerCase().trim());
             Logger.info(TAG, "==============Input  data=========" + map.toString());
@@ -135,7 +134,7 @@ public class UserRegisterActivity extends SocialConnectBaseActivity implements U
     }
 
     private void onSignupSuccess() {
-        toast("You are successfully registered...", false);
+        // toast("You are successfully registered...", false);
         startActivity(currentActivity, UserLoginActivity.class);
         finish();
     }

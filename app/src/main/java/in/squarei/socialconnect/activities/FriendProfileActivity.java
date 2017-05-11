@@ -137,7 +137,7 @@ public class FriendProfileActivity extends SocialConnectBaseActivity implements 
         switch (v.getId()) {
             case R.id.linearUserStatusHolder:
                 if (userType == 1) {
-                    toast("image clicked", false);
+                    // toast("image clicked", false);
                     sendFriendRequest(userId);
                 }
                 break;
@@ -155,7 +155,7 @@ public class FriendProfileActivity extends SocialConnectBaseActivity implements 
 
         if (Validator.getInstance().isNetworkAvailable(context)) {
             VolleyNetworkRequestHandler volleyNetworkRequestHolder = VolleyNetworkRequestHandler.getInstance(context, this);
-            volleyNetworkRequestHolder.getStringData(ApiURLS.UPDATE_FRIEND_STATUS, SEND_FRIEND_REQUEST, ApiURLS.REQUEST_POST, postParams, headerParams);
+            volleyNetworkRequestHolder.getStringData(ApiURLS.SEND_FRIEND_REQUEST, SEND_FRIEND_REQUEST, ApiURLS.REQUEST_POST, postParams, headerParams);
         } else {
             toast(getResources().getString(R.string.network_error), false);
         }
@@ -188,6 +188,11 @@ public class FriendProfileActivity extends SocialConnectBaseActivity implements 
                     JSONObject commandResult = jsonObject.getJSONObject("commandResult");
                     int success = commandResult.getInt("success");
                     String message = commandResult.getString("message");
+                    if (success == 1) {
+                        toast(message, false);
+                    } else {
+                        toast(message, false);
+                    }
                 }
             } catch (JSONException e) {
                 e.printStackTrace();

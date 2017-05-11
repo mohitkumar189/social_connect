@@ -84,6 +84,7 @@ public class UserDashboardActivity extends SocialConnectBaseActivity implements 
         }
         switchContent(R.id.fragment_container, userFeedsFragment, true, false, "userFeedFragment");
         navigationView.setCheckedItem(R.id.nav_user_feeds);
+        settingTitle(getResources().getString(R.string.feed_fragment));
         checkForProfileCompleteDialog();
     }
 
@@ -237,27 +238,27 @@ public class UserDashboardActivity extends SocialConnectBaseActivity implements 
                 break;
             case R.id.nav_user_feeds:
                 drawer.closeDrawer(navigationView);
-                switchContent(R.id.fragment_container, userFeedsFragment, true, false, "userFeedFragment");
+                switchContent(R.id.fragment_container, userFeedsFragment, false, false, "userFeedFragment");
                 settingTitle(getResources().getString(R.string.feed_fragment));
                 break;
             case R.id.nav_user_chat:
                 drawer.closeDrawer(navigationView);
-                switchContent(R.id.fragment_container, userChatsFragment, true, false, "userChatsFragment");
+                switchContent(R.id.fragment_container, userChatsFragment, false, false, "userChatsFragment");
                 settingTitle(getResources().getString(R.string.chat_fragment));
                 break;
             case R.id.nav_user_friends:
                 drawer.closeDrawer(navigationView);
-                switchContent(R.id.fragment_container, userFriendsFragment, true, false, "userFriendsFragment");
+                switchContent(R.id.fragment_container, userFriendsFragment, false, false, "userFriendsFragment");
                 settingTitle(getResources().getString(R.string.friends_fragment));
                 break;
             case R.id.nav_user_notice:
                 drawer.closeDrawer(navigationView);
-                switchContent(R.id.fragment_container, userNoticeFragment, true, false, "userNoticeFragment");
+                switchContent(R.id.fragment_container, userNoticeFragment, false, false, "userNoticeFragment");
                 settingTitle(getResources().getString(R.string.notice_fragment));
                 break;
             case R.id.nav_user_updates:
                 drawer.closeDrawer(navigationView);
-                switchContent(R.id.fragment_container, userUpdatesFragment, true, false, "userUpdatesFragment");
+                switchContent(R.id.fragment_container, userUpdatesFragment, false, false, "userUpdatesFragment");
                 settingTitle(getResources().getString(R.string.update_fragment));
                 break;
             case R.id.nav_logout:

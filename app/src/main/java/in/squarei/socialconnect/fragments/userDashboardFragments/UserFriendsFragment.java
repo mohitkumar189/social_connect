@@ -22,6 +22,7 @@ import java.util.Map;
 import in.squarei.socialconnect.R;
 import in.squarei.socialconnect.activities.FriendProfileActivity;
 import in.squarei.socialconnect.adapters.UserFriendsListAdapter;
+import in.squarei.socialconnect.adapters.UserFriendsSuggestionAdapter;
 import in.squarei.socialconnect.fragments.SocialConnectBaseFragment;
 import in.squarei.socialconnect.interfaces.AppConstants;
 import in.squarei.socialconnect.interfaces.ItemClickListener;
@@ -45,13 +46,14 @@ import static in.squarei.socialconnect.network.ApiURLS.ApiId.SEND_FRIEND_REQUEST
 public class UserFriendsFragment extends SocialConnectBaseFragment implements UrlResponseListener, ItemClickListener {
 
     private static final String TAG = "UserFriendsFragment";
+    UserFriendsSuggestionAdapter userSuggestionFriendListAdapter;
     private RecyclerView recyclerViewFriendsList, recyclerViewSuggestedFriendsList;
     private List<UsersListData> usersListData;
     private UserFriendsListAdapter userFriendListAdapter;
-    private UserFriendsListAdapter userSuggestionFriendListAdapter;
     private List<UsersListData> usersSuggestionListData;
     private String clientiD;
     private int adapterPosition;
+    private int suggestionPosition = -1;
 
     public UserFriendsFragment() {
         // Required empty public constructor
@@ -133,7 +135,29 @@ public class UserFriendsFragment extends SocialConnectBaseFragment implements Ur
         } else if (apiId == REJECT_FRIEND) {
             updateAdapter(stringResponse, false);
         } else if (apiId == SEND_FRIEND_REQUEST) {
+            updateSuggestionADapter(stringResponse);
+        }
+    }
 
+    private void updateSuggestionADapter(String stringResponse) {
+        Logger.info(TAG, "================updateSuggestionADapter()=============");
+        try {
+            JSONObject jsonObject = new JSONObject(stringResponse);
+            boolean error = jsonObject.getBoolean("error");
+            if (!error) {
+                JSONObject commandResult = jsonObject.getJSONObject("commandResult");
+                String message = commandResult.getString("message");
+                int success = commandResult.getInt("success");
+                if (success == 1) {
+                    toast(context, message);
+                    usersSuggestionListData.remove(suggestionPosition);
+                    userSuggestionFriendListAdapter.notifyDataSetChanged();
+                } else {
+                    toast(context, message);
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 
@@ -226,9 +250,9 @@ public class UserFriendsFragment extends SocialConnectBaseFragment implements Ur
                             //        shared = userData.getString("shared");
                             prof_status = userData.getString("prof_status");
                             //    user_type = userData.getString("user_type");
-                            usersSuggestionListData.add(new UsersListData(userid, firstName + " " + lastName, prof_status, profilePic, user_type, false));
+                            usersSuggestionListData.add(new UsersListData(userid, firstName + " " + lastName, prof_status, profilePic, "123", false));
                         }
-                        userSuggestionFriendListAdapter = new UserFriendsListAdapter(usersSuggestionListData, context, this);
+                        userSuggestionFriendListAdapter = new UserFriendsSuggestionAdapter(usersSuggestionListData, context, this);
                         recyclerViewSuggestedFriendsList.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
                         recyclerViewSuggestedFriendsList.setAdapter(userSuggestionFriendListAdapter);
                         //   updateUsersList();
@@ -325,6 +349,17 @@ public class UserFriendsFragment extends SocialConnectBaseFragment implements Ur
                 toast(context, "remove");
                 rejectFriendRequest(usersListData.get(position).getUserId());
                 break;
+            case 5:
+                toast(context, "send request");
+                suggestionPosition = position;
+                sendFriendRequest(usersSuggestionListData.get(position).getUserId());
+                break;
+            case 6:
+                toast(context, "remove suggestion");
+                usersSuggestionListData.remove(position);
+                userSuggestionFriendListAdapter.notifyDataSetChanged();
+             //   rejectFriendRequest(usersSuggestionListData.get(position).getUserId());
+                break;
         }
     }
 
@@ -341,6 +376,23 @@ public class UserFriendsFragment extends SocialConnectBaseFragment implements Ur
         if (Validator.getInstance().isNetworkAvailable(context)) {
             VolleyNetworkRequestHandler volleyNetworkRequestHolder = VolleyNetworkRequestHandler.getInstance(context, this);
             volleyNetworkRequestHolder.getStringData(ApiURLS.UPDATE_FRIEND_STATUS, ACCEPT_FRIEND, ApiURLS.REQUEST_PUT, postParams, headerParams);
+        } else {
+            toast(context, currentActivity.getResources().getString(R.string.network_error));
+        }
+
+    }
+
+    private void sendFriendRequest(String conncetionId) {
+        Map<String, String> headerParams = new HashMap<>();
+        Map<String, String> postParams = new HashMap<>();
+        String clientiD = SharedPreferenceUtils.getInstance(context).getString(AppConstants.API_KEY);
+        Logger.info(TAG, "===================client id==========" + clientiD + "=============userid=====" + conncetionId);
+        headerParams.put("client-id", clientiD);// 8887e71887f2f2b8dc191ff238ad5a4f
+        postParams.put("connection_id", conncetionId);
+
+        if (Validator.getInstance().isNetworkAvailable(context)) {
+            VolleyNetworkRequestHandler volleyNetworkRequestHolder = VolleyNetworkRequestHandler.getInstance(context, this);
+            volleyNetworkRequestHolder.getStringData(ApiURLS.SEND_FRIEND_REQUEST, SEND_FRIEND_REQUEST, ApiURLS.REQUEST_POST, postParams, headerParams);
         } else {
             toast(context, currentActivity.getResources().getString(R.string.network_error));
         }

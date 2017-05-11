@@ -1,0 +1,94 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <ImageView
+                android:id="@+id/imageViewAppLogo"
+                android:layout_width="@dimen/logo_height"
+                android:layout_height="@dimen/logo_width"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="100dp"
+                android:src="@drawable/social_connect_logo" />
+            <!-- layout to pass user using pin -->
+            <LinearLayout
+                android:id="@+id/container_user_pin_enter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/imageViewAppLogo"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_marginTop="@dimen/margin_15"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/enter_your_otp"
+                    android:textColor="@color/black"
+                    android:textSize="18sp" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/margin_10"
+                    android:layout_marginTop="@dimen/margin_5"
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:id="@+id/editPassDigitOne"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/background_shape"
+                        android:gravity="center"
+                        android:hint="*"
+                        android:inputType="numberPassword"
+                        android:padding="@dimen/font_16"
+                        android:textColorHint="@color/black" />
+
+                    <EditText
+                        android:id="@+id/editPassDigitTwo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:background="@drawable/background_shape"
+                        android:gravity="center"
+                        android:hint="*"
+                        android:inputType="numberPassword"
+                        android:padding="@dimen/font_16"
+                        android:textColorHint="@color/black" />
+
+                    <EditText
+                        android:id="@+id/editPassDigitThree"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:background="@drawable/background_shape"
+                        android:gravity="center"
+                        android:hint="*"
+                        android:inputType="numberPassword"
+                        android:padding="@dimen/font_16"
+                        android:textColorHint="@color/black" />
+
+                    <EditText
+                        android:id="@+id/editPassDigitFour"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:background="@drawable/background_shape"
+                        android:gravity="center"
+                        android:hint="*"
+                        android:inputType="numberPassword"
+                        android:padding="@dimen/font_16"
+                        android:textColorHint="@color/black" />
+                </LinearLayout>
+
+            </LinearLayout>
+        </RelativeLayout>
+    </ScrollView>
+</FrameLayout>

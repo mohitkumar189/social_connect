@@ -18,15 +18,15 @@ import in.squarei.socialconnect.interfaces.ItemClickListener;
 import in.squarei.socialconnect.modals.UsersListData;
 
 /**
- * Created by mohit kumar on 5/8/2017.
+ * Created by mohit kumar on 5/11/2017.
  */
 
-public class UserFriendsListAdapter extends RecyclerView.Adapter<UserFriendsListAdapter.MyViewHolder> {
+public class UserFriendsSuggestionAdapter extends RecyclerView.Adapter<UserFriendsSuggestionAdapter.MyViewHolder> {
     ItemClickListener itemClickListener;
     private List<UsersListData> usersListData;
     private Context ctx;
 
-    public UserFriendsListAdapter(List<UsersListData> usersListData, Context ctx, ItemClickListener itemClickListener) {
+    public UserFriendsSuggestionAdapter(List<UsersListData> usersListData, Context ctx, ItemClickListener itemClickListener) {
         this.usersListData = usersListData;
         this.ctx = ctx;
         this.itemClickListener = itemClickListener;
@@ -35,9 +35,9 @@ public class UserFriendsListAdapter extends RecyclerView.Adapter<UserFriendsList
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(ctx)
-                .inflate(R.layout.top_view_user_profile, parent, false);
+                .inflate(R.layout.top_view_user_suggest_profile, parent, false);
 
-        return new UserFriendsListAdapter.MyViewHolder(itemView);
+        return new UserFriendsSuggestionAdapter.MyViewHolder(itemView);
     }
 
     @Override
@@ -67,11 +67,11 @@ public class UserFriendsListAdapter extends RecyclerView.Adapter<UserFriendsList
             super(itemView);
             tvUserProfileName = (TextView) itemView.findViewById(R.id.tvUserProfileName);
             tvUserProfileStatus = (TextView) itemView.findViewById(R.id.tvUserProfileStatus);
-            tvUserType = (TextView) itemView.findViewById(R.id.tvUserType);
+            //  tvUserType = (TextView) itemView.findViewById(R.id.tvUserType);
             tvAddFriend = (TextView) itemView.findViewById(R.id.tvRemoveFriend);
             tvRemoveFriend = (TextView) itemView.findViewById(R.id.tvAddFriend);
             linearActionViewHolder = (LinearLayout) itemView.findViewById(R.id.linearActionViewHolder);
-            user_view_container = (LinearLayout) itemView.findViewById(R.id.user_view_container);
+            //  user_view_container = (LinearLayout) itemView.findViewById(R.id.user_view_container);
             ivUserProfile = (ImageView) itemView.findViewById(R.id.ivUserProfile);
             itemView.setOnClickListener(this);
             tvAddFriend.setOnClickListener(this);
@@ -82,7 +82,7 @@ public class UserFriendsListAdapter extends RecyclerView.Adapter<UserFriendsList
         public void bind(UsersListData usersListData, int position, ItemClickListener itemClickListener) {
             tvUserProfileName.setText(usersListData.getUserName());
             tvUserProfileStatus.setText(usersListData.getUserStatus());
-            tvUserType.setText(usersListData.getUserType());
+//            tvUserType.setText(usersListData.getUserType());
             Picasso.with(ctx)
                     .load(usersListData.getUserProfilePic())
                     .placeholder(ctx.getResources().getDrawable(R.drawable.man)) //this is optional the image to display while the url image is downloading
@@ -102,25 +102,18 @@ public class UserFriendsListAdapter extends RecyclerView.Adapter<UserFriendsList
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.tvAddFriend:
-                    itemClickListener.onItemClickCallback(getAdapterPosition(), 2); // 2 to accept friend request
+                    itemClickListener.onItemClickCallback(getAdapterPosition(), 5); // 5 to accept suggested friend request
                     break;
                 case R.id.tvRemoveFriend:
-                    itemClickListener.onItemClickCallback(getAdapterPosition(), 3);// 3 to reject friend request
+                    itemClickListener.onItemClickCallback(getAdapterPosition(), 6);// 6 to reject suggested friend request
                     break;
                 default:
-                    if (usersListData.get(getAdapterPosition()).isFriend()) {
-                        itemClickListener.onItemClickCallback(getAdapterPosition(), 0);// 0 if friend request received, 1 if friend
-                    } else {
-                        if (usersListData.get(getAdapterPosition()).getUserType().equals("123")) {
-                            itemClickListener.onItemClickCallback(getAdapterPosition(), 1); // this is for suggestion
-                        } else {
-                            itemClickListener.onItemClickCallback(getAdapterPosition(), 0);
-                        }
+                    itemClickListener.onItemClickCallback(getAdapterPosition(), 1); // 1 is for suggestions
 
-                    }
                     break;
             }
 
         }
     }
 }
+

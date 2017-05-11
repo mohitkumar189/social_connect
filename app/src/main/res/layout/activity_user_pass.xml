@@ -1,237 +1,260 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/screen_background"
     tools:context="in.squarei.socialconnect.activities.useraccesspackage.UserPassActivity">
 
-    <!-- layout to pass user using pin -->
-    <LinearLayout
-        android:id="@+id/container_user_pin_enter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:layout_marginTop="@dimen/margin_15"
-        android:orientation="vertical"
-        android:visibility="gone">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/otp_enter_text"
-            android:textColor="@color/black"
-            android:textSize="18sp" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/screen_background">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_10"
-            android:layout_marginTop="@dimen/margin_5"
-            android:orientation="horizontal">
+            <ImageView
+                android:id="@+id/imageViewAppLogo"
+                android:layout_width="@dimen/logo_height"
+                android:layout_height="@dimen/logo_width"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="100dp"
+                android:src="@drawable/social_connect_logo" />
 
-            <EditText
-                android:id="@+id/editPassDigitOne"
+            <!-- layout to pass user using pin -->
+            <LinearLayout
+                android:id="@+id/container_user_pin_enter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/background_shape"
-                android:gravity="center"
-                android:hint="*"
-                android:inputType="numberPassword"
-                android:padding="@dimen/font_16"
-                android:textColorHint="@color/black" />
+                android:layout_below="@+id/imageViewAppLogo"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_marginTop="@dimen/margin_15"
+                android:orientation="vertical"
+                android:visibility="gone">
 
-            <EditText
-                android:id="@+id/editPassDigitTwo"
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/otp_enter_text"
+                    android:textColor="@color/black"
+                    android:textSize="18sp" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/margin_10"
+                    android:layout_marginTop="@dimen/margin_5"
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:id="@+id/editPassDigitOne"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/background_shape"
+                        android:gravity="center"
+                        android:hint="*"
+                        android:inputType="numberPassword"
+                        android:padding="@dimen/font_16"
+                        android:textColorHint="@color/black" />
+
+                    <EditText
+                        android:id="@+id/editPassDigitTwo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:background="@drawable/background_shape"
+                        android:gravity="center"
+                        android:hint="*"
+                        android:inputType="numberPassword"
+                        android:padding="@dimen/font_16"
+                        android:textColorHint="@color/black" />
+
+                    <EditText
+                        android:id="@+id/editPassDigitThree"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:background="@drawable/background_shape"
+                        android:gravity="center"
+                        android:hint="*"
+                        android:inputType="numberPassword"
+                        android:padding="@dimen/font_16"
+                        android:textColorHint="@color/black" />
+
+                    <EditText
+                        android:id="@+id/editPassDigitFour"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:background="@drawable/background_shape"
+                        android:gravity="center"
+                        android:hint="*"
+                        android:inputType="numberPassword"
+                        android:padding="@dimen/font_16"
+                        android:textColorHint="@color/black" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+            <!-- layout to set user using pin -->
+            <LinearLayout
+                android:id="@+id/container_user_pin_digits_reset"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:background="@drawable/background_shape"
-                android:gravity="center"
-                android:hint="*"
-                android:inputType="numberPassword"
-                android:padding="@dimen/font_16"
-                android:textColorHint="@color/black" />
+                android:layout_below="@+id/imageViewAppLogo"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_marginTop="@dimen/margin_15"
 
-            <EditText
-                android:id="@+id/editPassDigitThree"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:background="@drawable/background_shape"
-                android:gravity="center"
-                android:hint="*"
-                android:inputType="numberPassword"
-                android:padding="@dimen/font_16"
-                android:textColorHint="@color/black" />
+                android:orientation="vertical">
 
-            <EditText
-                android:id="@+id/editPassDigitFour"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:background="@drawable/background_shape"
-                android:gravity="center"
-                android:hint="*"
-                android:inputType="numberPassword"
-                android:padding="@dimen/font_16"
-                android:textColorHint="@color/black" />
-        </LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/otp_set_pin_text"
+                    android:textColor="@color/black"
+                    android:textSize="18sp" />
 
-    </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/linearDigitHolder2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:orientation="horizontal">
 
+                    <EditText
+                        android:id="@+id/editPassDigitOne2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/background_shape"
+                        android:gravity="center"
+                        android:hint="*"
+                        android:inputType="numberPassword"
+                        android:padding="@dimen/font_16"
+                        android:textColorHint="@color/black" />
 
-    <!-- layout to set user using pin -->
-    <LinearLayout
-        android:id="@+id/container_user_pin_digits_reset"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:layout_marginTop="@dimen/margin_15"
-        android:orientation="vertical">
+                    <EditText
+                        android:id="@+id/editPassDigitTwo2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:background="@drawable/background_shape"
+                        android:gravity="center"
+                        android:hint="*"
+                        android:inputType="numberPassword"
+                        android:padding="@dimen/font_16"
+                        android:textColorHint="@color/black" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/otp_set_pin_text"
-            android:textColor="@color/black"
-            android:textSize="18sp" />
+                    <EditText
+                        android:id="@+id/editPassDigitThree2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:background="@drawable/background_shape"
+                        android:gravity="center"
+                        android:hint="*"
+                        android:inputType="numberPassword"
+                        android:padding="@dimen/font_16"
+                        android:textColorHint="@color/black" />
 
-        <LinearLayout
-            android:id="@+id/linearDigitHolder2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:orientation="horizontal">
+                    <EditText
+                        android:id="@+id/editPassDigitFour2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:background="@drawable/background_shape"
+                        android:gravity="center"
+                        android:hint="*"
+                        android:inputType="numberPassword"
+                        android:padding="@dimen/font_16"
+                        android:textColorHint="@color/black" />
+                </LinearLayout>
 
-            <EditText
-                android:id="@+id/editPassDigitOne2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/background_shape"
-                android:gravity="center"
-                android:hint="*"
-                android:inputType="numberPassword"
-                android:padding="@dimen/font_16"
-                android:textColorHint="@color/black" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_10"
+                    android:text="@string/otp_set_confirm_pin_text"
+                    android:textColor="@color/black"
+                    android:textSize="18sp" />
 
-            <EditText
-                android:id="@+id/editPassDigitTwo2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:background="@drawable/background_shape"
-                android:gravity="center"
-                android:hint="*"
-                android:inputType="numberPassword"
-                android:padding="@dimen/font_16"
-                android:textColorHint="@color/black" />
+                <LinearLayout
+                    android:id="@+id/linearDigitHolder3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:orientation="horizontal">
 
-            <EditText
-                android:id="@+id/editPassDigitThree2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:background="@drawable/background_shape"
-                android:gravity="center"
-                android:hint="*"
-                android:inputType="numberPassword"
-                android:padding="@dimen/font_16"
-                android:textColorHint="@color/black" />
+                    <EditText
+                        android:id="@+id/editPassDigitOne3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/background_shape"
+                        android:gravity="center"
+                        android:hint="*"
+                        android:inputType="numberPassword"
+                        android:padding="@dimen/font_16"
+                        android:textColorHint="@color/black" />
 
-            <EditText
-                android:id="@+id/editPassDigitFour2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:background="@drawable/background_shape"
-                android:gravity="center"
-                android:hint="*"
-                android:inputType="numberPassword"
-                android:padding="@dimen/font_16"
-                android:textColorHint="@color/black" />
-        </LinearLayout>
+                    <EditText
+                        android:id="@+id/editPassDigitTwo3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:background="@drawable/background_shape"
+                        android:gravity="center"
+                        android:hint="*"
+                        android:inputType="numberPassword"
+                        android:padding="@dimen/font_16"
+                        android:textColorHint="@color/black" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_10"
-            android:text="@string/otp_set_confirm_pin_text"
-            android:textColor="@color/black"
-            android:textSize="18sp" />
+                    <EditText
+                        android:id="@+id/editPassDigitThree3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:background="@drawable/background_shape"
+                        android:gravity="center"
+                        android:hint="*"
+                        android:inputType="numberPassword"
+                        android:padding="@dimen/font_16"
+                        android:textColorHint="@color/black" />
 
-        <LinearLayout
-            android:id="@+id/linearDigitHolder3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:orientation="horizontal">
+                    <EditText
+                        android:id="@+id/editPassDigitFour3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:background="@drawable/background_shape"
+                        android:gravity="center"
+                        android:hint="*"
+                        android:inputType="numberPassword"
+                        android:padding="@dimen/font_16"
+                        android:textColorHint="@color/black" />
+                </LinearLayout>
 
-            <EditText
-                android:id="@+id/editPassDigitOne3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/background_shape"
-                android:gravity="center"
-                android:hint="*"
-                android:inputType="numberPassword"
-                android:padding="@dimen/font_16"
-                android:textColorHint="@color/black" />
+                <Button
+                    android:id="@+id/tvSetUserPin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/linearDigitHolder2"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/margin_20"
+                    android:background="@drawable/rounded_button_background"
+                    android:paddingLeft="@dimen/margin_60"
+                    android:paddingRight="@dimen/margin_60"
+                    android:text="@string/set_pin"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/font_16"
+                    android:textStyle="bold" />
 
-            <EditText
-                android:id="@+id/editPassDigitTwo3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:background="@drawable/background_shape"
-                android:gravity="center"
-                android:hint="*"
-                android:inputType="numberPassword"
-                android:padding="@dimen/font_16"
-                android:textColorHint="@color/black" />
+            </LinearLayout>
 
-            <EditText
-                android:id="@+id/editPassDigitThree3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:background="@drawable/background_shape"
-                android:gravity="center"
-                android:hint="*"
-                android:inputType="numberPassword"
-                android:padding="@dimen/font_16"
-                android:textColorHint="@color/black" />
+        </RelativeLayout>
 
-            <EditText
-                android:id="@+id/editPassDigitFour3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:background="@drawable/background_shape"
-                android:gravity="center"
-                android:hint="*"
-                android:inputType="numberPassword"
-                android:padding="@dimen/font_16"
-                android:textColorHint="@color/black" />
-        </LinearLayout>
-
-        <Button
-            android:id="@+id/tvSetUserPin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/linearDigitHolder2"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/margin_20"
-            android:background="@drawable/rounded_button_background"
-            android:paddingLeft="@dimen/margin_60"
-            android:paddingRight="@dimen/margin_60"
-            android:text="@string/set_pin"
-            android:textColor="@color/white"
-            android:textSize="@dimen/font_16"
-            android:textStyle="bold" />
-
-    </LinearLayout>
-
-</RelativeLayout>
+    </ScrollView>
+</FrameLayout>
