@@ -391,8 +391,8 @@ public class UserProfileActivity extends SocialConnectBaseActivity implements Ur
         if (imageUrl != "null" || imageUrl != null || imageUrl.length() != 0) {
             Picasso.with(context)
                     .load(userDetails.getUserProfilePic())
-                    .placeholder(context.getResources().getDrawable(R.drawable.man)) //this is optional the image to display while the url image is downloading
-                    .error(context.getResources().getDrawable(R.drawable.man))         //this is also optional if some error has occurred in downloading the image this image would be displayed
+                    .placeholder(context.getResources().getDrawable(R.drawable.user)) //this is optional the image to display while the url image is downloading
+                    .error(context.getResources().getDrawable(R.drawable.user))         //this is also optional if some error has occurred in downloading the image this image would be displayed
                     .into(profile_image);
         }
     }

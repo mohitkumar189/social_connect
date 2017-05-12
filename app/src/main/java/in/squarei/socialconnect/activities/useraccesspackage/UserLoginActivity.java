@@ -175,6 +175,7 @@ public class UserLoginActivity extends SocialConnectBaseActivity implements UrlR
 
     private void onLoginSuccess(Intent intent) {
         startActivity(intent);
+        finishAffinity();
         //toast("Login success", false);
         //showDialogForComment();
         //   creatingDialog(context,true,true,null,200,400);

@@ -28,3 +28,4 @@
 -keep class * {
     public private *;
 }
+-dontwarn okio.**

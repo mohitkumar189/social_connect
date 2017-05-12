@@ -1,11 +1,13 @@
 package in.squarei.socialconnect.activities;
 
+import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -14,22 +16,46 @@ import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 import eu.janmuller.android.simplecropimage.CropImage;
+import eu.janmuller.android.simplecropimage.Util;
 import in.squarei.socialconnect.R;
+import in.squarei.socialconnect.utils.CommonUtils;
+import in.squarei.socialconnect.utils.Logger;
+import in.squarei.socialconnect.utils.SharedPreferenceUtils;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
+import static in.squarei.socialconnect.interfaces.AppConstants.API_KEY;
+import static in.squarei.socialconnect.network.ApiURLS.BASE_URL;
+import static in.squarei.socialconnect.network.ApiURLS.UPLOAD_POST;
 
 public class UploadPostActivity extends SocialConnectBaseActivity {
 
-    public static final String TAG = "MainActivity";
+    public static final String TAG = "UploadPostActivity";
     public static final int REQUEST_CODE_GALLERY = 0x1;
     public static final int REQUEST_CODE_TAKE_PICTURE = 0x2;
     public static final int REQUEST_CODE_CROP_IMAGE = 0x3;
@@ -39,7 +65,11 @@ public class UploadPostActivity extends SocialConnectBaseActivity {
     private File mFileTemp, selectedFilePath;
     private Bitmap bitmap = null;
     private TextView tvPost;
-    private EditText editPost;
+    private EditText editPost, editPostTitle;
+    private String clientId;
+    private Response response = null;
+    private ImageView ivImageToBeUpload;
+
 
     public static void copyStream(InputStream input, OutputStream output)
             throws IOException {
@@ -56,6 +86,7 @@ public class UploadPostActivity extends SocialConnectBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upload_post);
         String states = Environment.getExternalStorageState();
+        clientId = SharedPreferenceUtils.getInstance(context).getString(API_KEY);
         if (Environment.MEDIA_MOUNTED.equals(states)) {
             mFileTemp = new File(Environment.getExternalStorageDirectory(), TEMP_PHOTO_FILE_NAME);
         } else {
@@ -67,7 +98,9 @@ public class UploadPostActivity extends SocialConnectBaseActivity {
     @Override
     protected void initViews() {
         linearUploadImage = (LinearLayout) findViewById(R.id.linearUploadImage);
+        ivImageToBeUpload = (ImageView) findViewById(R.id.ivImageToBeUpload);
         editPost = (EditText) findViewById(R.id.editPost);
+        editPostTitle = (EditText) findViewById(R.id.editPostTitle);
         tvPost = (TextView) findViewById(R.id.tvPost);
     }
 
@@ -134,16 +167,16 @@ public class UploadPostActivity extends SocialConnectBaseActivity {
 
             case REQUEST_CODE_TAKE_PICTURE:
 
-              /*  path = mFileTemp.getPath();
+                path = mFileTemp.getPath();
                 bitmap = BitmapFactory.decodeFile(path);
-          //      selectedFilePath = new File(path);
+                //      selectedFilePath = new File(path);
                 Log.e("filepath", "**" + path);
 
                 bitmap = Util.rotateImage(bitmap, -90);
-              //  RotateBitmap rotateBitmap = new RotateBitmap(bitmap);
-               // mImageView.setImageRotateBitmapResetBase(rotateBitmap, true);
+                //  RotateBitmap rotateBitmap = new RotateBitmap(bitmap);
+                // mImageView.setImageRotateBitmapResetBase(rotateBitmap, true);
 
-                image_view.setImageBitmap(bitmap);*/
+                // image_view.setImageBitmap(bitmap);
                 startCropImage();
                 break;
 
@@ -158,7 +191,7 @@ public class UploadPostActivity extends SocialConnectBaseActivity {
                     startCropImage();
 
                 } catch (Exception e) {
-                    Log.e(TAG, "Error while creating temp file", e);
+                    Logger.info(TAG, "Error while creating temp file" + e);
                 }
                 //  upload_image.setText("Image upload successfully");
                 break;
@@ -174,13 +207,13 @@ public class UploadPostActivity extends SocialConnectBaseActivity {
                 }
                 bitmap = BitmapFactory.decodeFile(mFileTemp.getPath());
                 selectedFilePath = new File(path);
-                Log.e("filepath", "**" + selectedFilePath);
-                //  image_view.setImageBitmap(bitmap);
+                Logger.info("filepath", "**" + selectedFilePath);
+                ivImageToBeUpload.setImageBitmap(bitmap);
                 break;
         }
     }
 
-    private void selectImage1() {
+    private void selectImage() {
         final CharSequence[] items = {"Take Photo", "Choose from Library",
                 "Cancel"};
 
@@ -245,16 +278,187 @@ public class UploadPostActivity extends SocialConnectBaseActivity {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.linearUploadImage:
-                selectImage1();
+                selectImage();
                 break;
             case R.id.tvPost:
+                //  new UploadFilesToServer().execute();
                 uploadPost();
                 break;
         }
     }
 
-    private void uploadPost() {
-        String text = editPost.getText().toString();
+    private void uploadPost1() {
 
+        Logger.info(TAG, "================file path====" + selectedFilePath);
+
+        HashMap<String, Object> hm = new HashMap<>();
+        hm.put("image", selectedFilePath);
+
+        String url = BASE_URL + "upload.php";
+        //   new CommonAsyncTaskAquery(1, context, this).getquery(url, hm);
     }
+
+    private String getMimeType(String path) {
+        String type = null;
+        String extension = MimeTypeMap.getFileExtensionFromUrl(path).toLowerCase().trim();
+        System.out.println("file extension : " + extension);
+        if (extension != null) {
+            type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+            return type;
+        }
+        return type;
+    }
+
+    private void uploadPost() {
+
+        Logger.info(TAG, "===========Client Id=========" + clientId);
+        String postText = editPost.getText().toString();
+        String postTitle = editPostTitle.getText().toString();
+        String filePath;
+        final String content_type;
+        // File file=new File(selectedFilePath);
+        if (selectedFilePath != null) {
+            content_type = getMimeType(selectedFilePath.getPath());
+            filePath = selectedFilePath.getAbsolutePath();
+            OkHttpClient client = new OkHttpClient.Builder()
+                    .connectTimeout(10, TimeUnit.SECONDS)
+                    .writeTimeout(30, TimeUnit.SECONDS)
+                    .readTimeout(30, TimeUnit.SECONDS)
+                    .build();
+            RequestBody fileBody = RequestBody.create(MediaType.parse(content_type), selectedFilePath);
+            RequestBody requestBody = new MultipartBody.Builder()
+                    .setType(MultipartBody.FORM)
+                    .addFormDataPart("post_type", content_type)
+                    .addFormDataPart("title", postTitle)
+                    .addFormDataPart("client-id", clientId)
+                    // .addFormDataPart("posturl", "")
+                    .addFormDataPart("description", postText)
+                    .addFormDataPart("uploads", filePath.substring(filePath.lastIndexOf("/") + 1), fileBody)
+                    .build();
+
+            Logger.info(TAG, "===========requestBody=====" + requestBody);
+            Request request = new Request.Builder()
+                    .url(UPLOAD_POST)//UPLOAD_POST"http://squarei.in/api/v1/upload.php"
+                    .post(requestBody)
+                    .build();
+            //  System.out.println("request url : " + request.url());
+            CommonUtils.showprogressDialog(context, "Please wait", "Uploading...", false, false);
+            //client.newCall(request).execute();
+            client.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    CommonUtils.cancelProgressDialog();
+                    Logger.info(TAG, "==============onFailure=========" + call + "====exception===" + e);
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    CommonUtils.cancelProgressDialog();
+                    Logger.info(TAG, "==============response=========" + response);
+                    String responseBody = response.body().string();
+                    Logger.info(TAG, "==============response body=========" + responseBody);
+                    try {
+                        JSONObject jsonObject = new JSONObject(responseBody);
+                        boolean error = jsonObject.getBoolean("error");
+
+                        if (!error) {
+                            JSONObject jsonObject1 = jsonObject.getJSONObject("commandResult");
+                            final String message = jsonObject1.getString("message");
+                            int success = jsonObject1.getInt("success");
+                            if (success == 1) {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+                                        finish();
+
+                                    }
+                                });
+                                // toast(message, false);
+
+                            } else {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+
+                                    }
+                                });
+                            }
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            });
+
+        }
+    }
+
+    private class UploadFilesToServer extends AsyncTask<String, Void, Void> {
+        ProgressDialog progressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = new ProgressDialog(context);
+            progressDialog.setTitle("uploading");
+            progressDialog.setMessage("please wait...");
+            progressDialog.show();
+        }
+
+        @Override
+        protected Void doInBackground(String... params) {
+            uploadPost();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            if (progressDialog.isShowing())
+                progressDialog.dismiss();
+        }
+    }
+
+/*
+    private class UploadFilesToServer1 extends AsyncTask<Void, Void, String> {
+        ProgressDialog progressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = new ProgressDialog(context);
+            progressDialog.setTitle("uploading");
+            progressDialog.setMessage("please wait...");
+            progressDialog.show();
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            uploadPost();
+            return null;
+        }
+
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
+            String responseBody = null;
+            try {
+                if (response != null) {
+                    responseBody = response.body().string();
+                }
+
+                System.out.println("response from server " + response.networkResponse());
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            progressDialog.dismiss();
+        }
+    }
+*/
 }

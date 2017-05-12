@@ -282,7 +282,8 @@ public class UserDashboardActivity extends SocialConnectBaseActivity implements 
     public void onBackPressed() {
 
         if (canExit) {
-            super.onBackPressed();
+            // super.onBackPressed();
+            finish();
             return;
         }
         canExit = true;

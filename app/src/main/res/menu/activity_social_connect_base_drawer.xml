@@ -4,15 +4,15 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_user_feeds"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/home"
             android:title="@string/feed_fragment" />
         <item
             android:id="@+id/nav_user_chat"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/chat"
             android:title="@string/chat_fragment" />
         <item
             android:id="@+id/nav_user_friends"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/friends"
             android:title="@string/friends_fragment" />
         <item
             android:id="@+id/nav_user_notice"
@@ -20,7 +20,7 @@
             android:title="@string/notice_fragment" />
         <item
             android:id="@+id/nav_user_updates"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/news"
             android:title="@string/update_fragment" />
         <item
             android:id="@+id/nav_user_profile"

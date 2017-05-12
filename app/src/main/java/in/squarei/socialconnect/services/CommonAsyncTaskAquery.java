@@ -3,6 +3,7 @@ package in.squarei.socialconnect.services;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxCallback;
@@ -47,10 +48,20 @@ public class CommonAsyncTaskAquery {
         aq.progress(pd).ajax(url, hm, JSONObject.class, new AjaxCallback<JSONObject>() {
 
                     @Override
-                    public void callback(String url, JSONObject obj, AjaxStatus status) {
-                        super.callback(url, obj, status);
-                        Log.e("response", "** " + obj);
-                        if (obj != null) {
+                    public void callback(String url, JSONObject json, AjaxStatus status) {
+                        super.callback(url, json, status);
+                        Log.e("response", "** " + json);
+                        if (json != null) {
+
+                            //successful ajax call, show status code and json content
+                            Toast.makeText(aq.getContext(), status.getCode() + ":" + json.toString(), Toast.LENGTH_LONG).show();
+
+                        } else {
+
+                            //ajax error, show error code
+                            Toast.makeText(aq.getContext(), "Error:" + status.getCode(), Toast.LENGTH_LONG).show();
+                        }
+               /*         if (obj != null) {
                             try {
                                 if (listener != null) {
                                     listener.onResponseReceived(null, obj);
@@ -59,17 +70,17 @@ public class CommonAsyncTaskAquery {
                                     if (listener != null) {
                                         listener.onResponseReceived(null, "Null data from server.");
                                     }
-                                 /*       // listener.onPostRequestFailed(method, "Null data from server.");
+                                 *//*       // listener.onPostRequestFailed(method, "Null data from server.");
                                         Toast.makeText(context,
                                                 context.getResources().getString(R.string.problem_server),
-                                                Toast.LENGTH_LONG).show();*/
+                                                Toast.LENGTH_LONG).show();*//*
                                 }
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
                         } else {
 
-                        }
+                        }*/
                         //  Toast.makeText(context, context.getString(R.string.message_problem), Toast.LENGTH_SHORT).show();
                         //   Alerts.okAlert(context, context.getString(R.string.something_went_wrong));
                     }

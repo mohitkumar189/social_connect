@@ -38,7 +38,8 @@ public class Validator {
         return false;
     }
 
-    public String validateEmail(Context context, CharSequence target) {
+    public String validateEmail(Context context, CharSequence charSequence) {
+        String target= ((String) charSequence).trim();
         if (target == null) {
             return context.getString(R.string.error_empty_email_id);
 

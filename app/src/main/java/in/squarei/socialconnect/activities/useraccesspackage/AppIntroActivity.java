@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import com.github.paolorotolo.appintro.AppIntro;
 
+import in.squarei.socialconnect.R;
 import in.squarei.socialconnect.fragments.appIntro.FragmentOneAppIntro;
 import in.squarei.socialconnect.fragments.appIntro.FragmentTwoAppIntro;
 import in.squarei.socialconnect.utils.SharedPreferenceUtils;
@@ -26,7 +27,9 @@ public class AppIntroActivity extends AppIntro {
         addSlide(fragmentOneAppIntro);
         addSlide(fragmentTwoAppIntro);
 
+        doneButton.setBackground(this.getResources().getDrawable(R.drawable.rounded_button_background));
         showSkipButton(true);
+        // setNavBarColor(this.getResources().getColor(R.color.black));
         setProgressButtonEnabled(true);
     }
 

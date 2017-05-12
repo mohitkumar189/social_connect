@@ -1,7 +1,6 @@
 package in.squarei.socialconnect.adapters;
 
 import android.content.Context;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +16,7 @@ import java.util.List;
 import in.squarei.socialconnect.R;
 import in.squarei.socialconnect.interfaces.ItemClickListener;
 import in.squarei.socialconnect.modals.UserFeedsData;
-import in.squarei.socialconnect.modals.UsersListData;
+import in.squarei.socialconnect.utils.Helper;
 
 /**
  * Created by mohit kumar on 5/5/2017.
@@ -91,11 +90,15 @@ public class UserFeedsAdapter extends RecyclerView.Adapter<UserFeedsAdapter.MyVi
             tvUserLikes.setText(userFeedsData.getUserLikes() + " likes");
             tvUserComments.setText(userFeedsData.getUserComments() + " comments");
 
-            Picasso.with(context)
-                    .load(userFeedsData.getPostImageUrl())
-                    .placeholder(context.getResources().getDrawable(R.drawable.picture)) //this is optional the image to display while the url image is downloading
-                    .error(context.getResources().getDrawable(R.drawable.picture))         //this is also optional if some error has occurred in downloading the image this image would be displayed
-                    .into(ivPostImage);
+            String imageUrl=userFeedsData.getPostImageUrl();
+            if(Helper.isExternalURL(imageUrl)){
+                Picasso.with(context)
+                        .load(imageUrl)
+                        .placeholder(context.getResources().getDrawable(R.drawable.picture)) //this is optional the image to display while the url image is downloading
+                        .error(context.getResources().getDrawable(R.drawable.picture))         //this is also optional if some error has occurred in downloading the image this image would be displayed
+                        .into(ivPostImage);
+            }
+
         }
 
         @Override

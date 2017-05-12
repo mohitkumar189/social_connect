@@ -1,16 +1,15 @@
 package in.squarei.socialconnect.activities.useraccesspackage;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import org.json.JSONException;
@@ -30,7 +29,6 @@ import in.squarei.socialconnect.utils.Logger;
 import in.squarei.socialconnect.utils.SharedPreferenceUtils;
 
 import static in.squarei.socialconnect.interfaces.AppConstants.API_KEY;
-import static in.squarei.socialconnect.interfaces.AppConstants.IS_INTRO_COMPLETED;
 import static in.squarei.socialconnect.interfaces.AppConstants.PIN_STATUS;
 import static in.squarei.socialconnect.interfaces.AppConstants.USER_PIN;
 
@@ -72,6 +70,7 @@ public class UserPassActivity extends SocialConnectBaseActivity implements UrlRe
             apiKey = intent.getStringExtra("apiKey");
             Logger.info(TAG, "================API KEY RECEIVED====" + apiKey);
             Logger.info(TAG, "================USER PIN RECEIVED====" + userPin);
+            saveDataInSf();
             if (container_user_pin_digits_reset.getVisibility() == View.GONE) {
                 container_user_pin_digits_reset.setVisibility(View.VISIBLE);
                 if (container_user_pin_enter.getVisibility() == View.VISIBLE)
