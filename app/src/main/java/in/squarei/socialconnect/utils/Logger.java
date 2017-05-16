@@ -21,7 +21,9 @@ public class Logger {
     public static boolean loggingEnabled = true;
     private static boolean errorLoggingEnabled = true;
 
+
     public static void fatal(String message) {
+
         if (errorLoggingEnabled) {
             Log.e(LOG_FILTER_STRING + ":" + LOG_TAG_FATAL, message);
         }

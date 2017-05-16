@@ -90,12 +90,12 @@ public class UserFeedsAdapter extends RecyclerView.Adapter<UserFeedsAdapter.MyVi
             tvUserLikes.setText(userFeedsData.getUserLikes() + " likes");
             tvUserComments.setText(userFeedsData.getUserComments() + " comments");
 
-            String imageUrl=userFeedsData.getPostImageUrl();
-            if(Helper.isExternalURL(imageUrl)){
+            String imageUrl = userFeedsData.getPostImageUrl();
+            if (Helper.isExternalURL(imageUrl)) {
                 Picasso.with(context)
                         .load(imageUrl)
-                        .placeholder(context.getResources().getDrawable(R.drawable.picture)) //this is optional the image to display while the url image is downloading
-                        .error(context.getResources().getDrawable(R.drawable.picture))         //this is also optional if some error has occurred in downloading the image this image would be displayed
+                        .placeholder(context.getResources().getDrawable(R.drawable.default_imgae_post)) //this is optional the image to display while the url image is downloading
+                        .error(context.getResources().getDrawable(R.drawable.default_imgae_post))         //this is also optional if some error has occurred in downloading the image this image would be displayed
                         .into(ivPostImage);
             }
 

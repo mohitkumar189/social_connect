@@ -41,6 +41,7 @@ import in.squarei.socialconnect.network.VolleyNetworkRequestHandler;
 import in.squarei.socialconnect.utils.Logger;
 import in.squarei.socialconnect.utils.SharedPreferenceUtils;
 
+import static in.squarei.socialconnect.interfaces.AppConstants.IS_LOGIN;
 import static in.squarei.socialconnect.interfaces.AppConstants.MENU_PROFILE_ID;
 import static in.squarei.socialconnect.interfaces.AppConstants.PROFILE_STATUS;
 import static in.squarei.socialconnect.interfaces.AppConstants.USER_FIRST_NAME;
@@ -49,8 +50,7 @@ import static in.squarei.socialconnect.interfaces.AppConstants.USER_LAST_NAME;
 public class UserDashboardActivity extends SocialConnectBaseActivity implements UrlResponseListener {
 
     private static final String TAG = "UserDashboardActivity";
-    String[] PERMISSIONS = {Manifest.permission.READ_PHONE_STATE
-            , Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_NETWORK_STATE,
+    String[] PERMISSIONS = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_NETWORK_STATE,
             Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
     int PERMISSION_ALL = 1;
     private boolean canExit = false;
@@ -262,7 +262,7 @@ public class UserDashboardActivity extends SocialConnectBaseActivity implements 
                 settingTitle(getResources().getString(R.string.update_fragment));
                 break;
             case R.id.nav_logout:
-                SharedPreferenceUtils.getInstance(context).clearAll();
+                SharedPreferenceUtils.getInstance(context).putBoolean(IS_LOGIN, false);
                 startActivity(currentActivity, SplashActivity.class);
                 finish();
                 break;

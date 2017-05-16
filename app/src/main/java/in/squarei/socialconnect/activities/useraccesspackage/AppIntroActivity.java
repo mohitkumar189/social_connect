@@ -1,9 +1,10 @@
 package in.squarei.socialconnect.activities.useraccesspackage;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.os.Bundle;
+import android.view.View;
 
 import com.github.paolorotolo.appintro.AppIntro;
 
@@ -26,10 +27,11 @@ public class AppIntroActivity extends AppIntro {
         fragmentTwoAppIntro = new FragmentTwoAppIntro();
         addSlide(fragmentOneAppIntro);
         addSlide(fragmentTwoAppIntro);
-
-        doneButton.setBackground(this.getResources().getDrawable(R.drawable.rounded_button_background));
         showSkipButton(true);
-        // setNavBarColor(this.getResources().getColor(R.color.black));
+        View view= (View) doneButton.getParent();
+        view.setBackgroundColor(this.getResources().getColor(R.color.green));
+        // setNavBarColor(545454);
+      //  setBarColor(555555);
         setProgressButtonEnabled(true);
     }
 

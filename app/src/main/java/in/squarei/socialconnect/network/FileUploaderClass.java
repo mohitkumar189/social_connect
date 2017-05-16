@@ -1,17 +1,23 @@
 package in.squarei.socialconnect.network;
 
+import android.os.Handler;
 import android.webkit.MimeTypeMap;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.HttpUrl;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
+import okhttp3.Response;
 
 /**
  * Created by mohit kumar on 5/12/2017.
@@ -25,29 +31,39 @@ public class FileUploaderClass {
     private String content_type;
     private String fileName;
 
-    private void uploadFile(File file, Map<String, String> map, String url) {
+    private void uploadFile(File file, Map<String, String> map, String url, Handler handler) {
+        getFileInfo(file);
         OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(CONNECT_TIMEOUT, TimeUnit.SECONDS)
                 .writeTimeout(WRITE_TIMEOUT, TimeUnit.SECONDS)
                 .readTimeout(READ_TIMEOUT, TimeUnit.SECONDS)
                 .build();
 
+        MultipartBody.Builder multipartBody = new MultipartBody.Builder().setType(MultipartBody.FORM);
+
+        Iterator<Map.Entry<String, String>> iterator = map.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<String, String> entrySet = iterator.next();
+            multipartBody.addFormDataPart(entrySet.getKey(), entrySet.getValue());
+        }
         RequestBody fileBody = RequestBody.create(MediaType.parse(content_type), file);
-
-
-        RequestBody requestBody = new MultipartBody.Builder()
-                .setType(MultipartBody.FORM)
-                .addFormDataPart("type", content_type)
-                .addFormDataPart("file", filePath.substring(filePath.lastIndexOf("/") + 1), fileBody)
-                .addFormDataPart("userId", "")
-                .build();
-
-
+        multipartBody.addFormDataPart("file", filePath.substring(filePath.lastIndexOf("/") + 1), fileBody);
+        RequestBody requestBody = multipartBody.build();
         Request request = new Request.Builder()
-                .url("http://squarei.in/api/v1/upload.php")
+                .url(url)
                 .post(requestBody)
                 .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
 
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+
+            }
+        });
     }
 
     private String getMimeType(String path) {

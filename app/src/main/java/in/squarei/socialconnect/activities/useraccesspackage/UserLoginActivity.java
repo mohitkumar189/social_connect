@@ -52,7 +52,7 @@ public class UserLoginActivity extends SocialConnectBaseActivity implements UrlR
         }
     };
     AlertDialog deleteDialog;
-    String[] PERMISSIONS = {Manifest.permission.READ_PHONE_STATE, Manifest.permission.ACCESS_NETWORK_STATE,
+    String[] PERMISSIONS = { Manifest.permission.ACCESS_NETWORK_STATE,
             Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
     int PERMISSION_ALL = 1;
     private EditText editLoginId, editLoginPassword;
@@ -164,7 +164,7 @@ public class UserLoginActivity extends SocialConnectBaseActivity implements UrlR
                 startActivity(currentActivity, UserPasswordResetActivity.class);
                 break;
             case R.id.tvResendOtp:
-                toast("otp sent", false);
+              //  toast("otp sent", false);
                 break;
         }
     }
@@ -339,7 +339,6 @@ public class UserLoginActivity extends SocialConnectBaseActivity implements UrlR
                             startActivity(currentActivity, UserDashboardActivity.class);
                             deleteDialog.dismiss();
                         } else {
-
                             toast("otp incorrect", false);
                         }
                     }

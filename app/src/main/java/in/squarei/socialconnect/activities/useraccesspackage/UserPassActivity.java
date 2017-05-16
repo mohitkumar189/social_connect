@@ -20,7 +20,6 @@ import java.util.Map;
 
 import in.squarei.socialconnect.R;
 import in.squarei.socialconnect.activities.SocialConnectBaseActivity;
-import in.squarei.socialconnect.activities.UserDashboardActivity;
 import in.squarei.socialconnect.interfaces.AppConstants;
 import in.squarei.socialconnect.network.ApiURLS;
 import in.squarei.socialconnect.network.UrlResponseListener;
@@ -226,7 +225,7 @@ public class UserPassActivity extends SocialConnectBaseActivity implements UrlRe
                 String message = commandResult.getString("message");
                 //pinToBeSaved = jsonObject.getJSONObject("input").getString("pin");
                 if (success == 1) {
-                    goToDashboardActivity();
+                    goToDashboardActivity();///////////////////////////////////////////////////////////////
                     toast(message, false);
                 } else {
                     toast(message, false);
@@ -263,7 +262,8 @@ public class UserPassActivity extends SocialConnectBaseActivity implements UrlRe
         }
         if (enteredUserPin.equals(sharedPreferenceUtils.getString(USER_PIN))) {
             //  goToDashboardActivity();
-            startActivity(currentActivity, UserDashboardActivity.class);
+            //    startActivity(currentActivity, UserDashboardActivity.class);/////////////////////////////////////////////Navigate to complete user profile
+            startActivity(currentActivity, UserCompleteProfile.class);
         } else {
             toast("Wrong Pin...", false);
         }
@@ -328,7 +328,8 @@ public class UserPassActivity extends SocialConnectBaseActivity implements UrlRe
                         editPassDigitFour.requestFocus();
                     break;
                 case R.id.editPassDigitFour:
-                    if (text != null || text != "") goToDashboardActivity();
+                    if (text != null || text != "")
+                        goToDashboardActivity();///////////////////////////////////////////////////////////////////////////////////////////
                     break;
 
 

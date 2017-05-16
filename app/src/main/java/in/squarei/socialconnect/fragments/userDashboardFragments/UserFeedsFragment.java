@@ -1,6 +1,7 @@
 package in.squarei.socialconnect.fragments.userDashboardFragments;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -41,6 +42,7 @@ import in.squarei.socialconnect.utils.Logger;
 import in.squarei.socialconnect.utils.SharedPreferenceUtils;
 import in.squarei.socialconnect.utils.Validator;
 
+import static android.app.Activity.RESULT_OK;
 import static in.squarei.socialconnect.network.ApiURLS.ApiId.FRIENDS_POST;
 import static in.squarei.socialconnect.network.ApiURLS.ApiId.LIKE_POST;
 import static in.squarei.socialconnect.network.ApiURLS.ApiId.POST_COMMENTS;
@@ -49,6 +51,7 @@ import static in.squarei.socialconnect.network.ApiURLS.ApiId.To_POST_COMMENT;
 public class UserFeedsFragment extends SocialConnectBaseFragment implements UrlResponseListener, ItemClickListener {
 
     private static final String TAG = "UserFeedsFragment";
+    private static final int UPLOAD_ACTIVITY = 100;
     String postIdd;
     private RecyclerView recyclerViewUserFeeds;
     private List<UserFeedsData> userFeedData;
@@ -88,7 +91,7 @@ public class UserFeedsFragment extends SocialConnectBaseFragment implements UrlR
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, UploadPostActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, UPLOAD_ACTIVITY);
             }
         });
         swiperefresh.setOnRefreshListener(
@@ -113,24 +116,25 @@ public class UserFeedsFragment extends SocialConnectBaseFragment implements UrlR
             userFeedAdapter.notifyDataSetChanged();
         }
         loadDataForFeeds();
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Logger.info(TAG, "==============onCreateView================");
         return inflater.inflate(R.layout.fragment_user_feeds, container, false);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
+        Logger.info(TAG, "==============onActivityCreated================");
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Logger.info(TAG, "==============onAttach================");
         clientiD = SharedPreferenceUtils.getInstance(context).getString(AppConstants.API_KEY);
         Logger.info(TAG, "===================client id==========" + clientiD);
         loadDataForFeeds();
@@ -190,7 +194,6 @@ public class UserFeedsFragment extends SocialConnectBaseFragment implements UrlR
                     } else {
                         toast(context, message);
                     }
-
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -363,4 +366,24 @@ public class UserFeedsFragment extends SocialConnectBaseFragment implements UrlR
         }
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        Logger.info(TAG, "==============onAttach================");
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        Logger.info(TAG, "===============onDetach===============");
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == UPLOAD_ACTIVITY) {
+            if (resultCode == RESULT_OK) {
+                updateFeedsListOnRefresh();
+            }
+        }
+    }
 }

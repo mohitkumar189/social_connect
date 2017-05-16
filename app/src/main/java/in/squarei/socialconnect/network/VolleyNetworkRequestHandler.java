@@ -38,7 +38,8 @@ public class VolleyNetworkRequestHandler {
     public static VolleyNetworkRequestHandler getInstance(Context context, UrlResponseListener urlResponseListener) {
 
         pdialog = new ProgressDialog(context);
-        pdialog.setTitle("Please wait...");
+        pdialog.setMessage("Please wait...");
+        pdialog.setCancelable(true);
         //   if (VolleyNetworkRequestHandler.mctx == null) {
         VolleyNetworkRequestHandler.mctx = context;
         //    }
@@ -53,7 +54,7 @@ public class VolleyNetworkRequestHandler {
 
     public void getStringData(final String requestUrl, final ApiURLS.ApiId apiId, int requestMethod, final Map<String, String> postParams, final Map<String, String> headerParams) {
         Logger.info(TAG, "======================On Network Request=================url is======" + requestUrl + "====request Method===" + requestMethod);
-        pdialog.setTitle(mctx.getResources().getString(R.string.data_downloading_message));
+        //  pdialog.setTitle(mctx.getResources().getString(R.string.data_downloading_message));
         pdialog.show();
         // CommonUtils.showprogressDialog(mctx, null, mctx.getResources().getString(R.string.data_downloading_message), false, false);
         final StringRequest stringRequest = new StringRequest(requestMethod, requestUrl, new Response.Listener<String>() {
@@ -154,6 +155,7 @@ public class VolleyNetworkRequestHandler {
                 return params;
             }
         };
+        // new VolleyNetworkRequestHandler.UrlVerifier().verify(requestUrl, null);
         SocialConnectApplication.getInstance().addToRequestQueue(stringRequest);
 
     }
@@ -223,6 +225,8 @@ public class VolleyNetworkRequestHandler {
                 return params;
             }
         };
+
         SocialConnectApplication.getInstance().addToRequestQueue(jsonObjReq);
     }
+
 }

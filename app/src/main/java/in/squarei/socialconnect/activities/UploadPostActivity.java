@@ -34,9 +34,14 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLSession;
+
 import eu.janmuller.android.simplecropimage.CropImage;
 import eu.janmuller.android.simplecropimage.Util;
 import in.squarei.socialconnect.R;
+import in.squarei.socialconnect.network.ApiURLS;
 import in.squarei.socialconnect.utils.CommonUtils;
 import in.squarei.socialconnect.utils.Logger;
 import in.squarei.socialconnect.utils.SharedPreferenceUtils;
@@ -59,7 +64,7 @@ public class UploadPostActivity extends SocialConnectBaseActivity {
     public static final int REQUEST_CODE_GALLERY = 0x1;
     public static final int REQUEST_CODE_TAKE_PICTURE = 0x2;
     public static final int REQUEST_CODE_CROP_IMAGE = 0x3;
-    public static final String TEMP_PHOTO_FILE_NAME = "temp_photo.jpg";
+    public static String TEMP_PHOTO_FILE_NAME;
     String path = "";
     private LinearLayout linearUploadImage;
     private File mFileTemp, selectedFilePath;
@@ -87,12 +92,18 @@ public class UploadPostActivity extends SocialConnectBaseActivity {
         setContentView(R.layout.activity_upload_post);
         String states = Environment.getExternalStorageState();
         clientId = SharedPreferenceUtils.getInstance(context).getString(API_KEY);
+        TEMP_PHOTO_FILE_NAME = System.currentTimeMillis() + clientId + ".jpg";
         if (Environment.MEDIA_MOUNTED.equals(states)) {
             mFileTemp = new File(Environment.getExternalStorageDirectory(), TEMP_PHOTO_FILE_NAME);
         } else {
             mFileTemp = new File(getFilesDir(), TEMP_PHOTO_FILE_NAME);
         }
         settingTitle(getResources().getString(R.string.post_upload_activity));
+        HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
+            public boolean verify(final String hostname, final SSLSession session) {
+                return hostname.equalsIgnoreCase(ApiURLS.BASE_URL);
+            }
+        });
     }
 
     @Override
@@ -107,7 +118,8 @@ public class UploadPostActivity extends SocialConnectBaseActivity {
     @Override
     protected void initContext() {
         context = UploadPostActivity.this;
-        currentActivity = UploadPostActivity.this;
+        // currentActivity = UploadPostActivity.this;
+        Logger.info(TAG, "==============initContext=======" + context);
     }
 
     @Override
@@ -312,6 +324,7 @@ public class UploadPostActivity extends SocialConnectBaseActivity {
     private void uploadPost() {
 
         Logger.info(TAG, "===========Client Id=========" + clientId);
+        Logger.info(TAG, "===========File path=========" + selectedFilePath);
         String postText = editPost.getText().toString();
         String postTitle = editPostTitle.getText().toString();
         String filePath;
@@ -336,18 +349,35 @@ public class UploadPostActivity extends SocialConnectBaseActivity {
                     .addFormDataPart("uploads", filePath.substring(filePath.lastIndexOf("/") + 1), fileBody)
                     .build();
 
+
+/*            MultipartBody.Builder multipartBody=new MultipartBody.Builder().setType(MultipartBody.FORM);
+
+            multipartBody.addFormDataPart();
+
+            RequestBody requestBody1 =multipartBody.build();*/
+
+
             Logger.info(TAG, "===========requestBody=====" + requestBody);
             Request request = new Request.Builder()
                     .url(UPLOAD_POST)//UPLOAD_POST"http://squarei.in/api/v1/upload.php"
                     .post(requestBody)
                     .build();
             //  System.out.println("request url : " + request.url());
-            CommonUtils.showprogressDialog(context, "Please wait", "Uploading...", false, false);
+            if (context != null)
+                CommonUtils.showprogressDialog(context, "Please wait", "Uploading...", false, false);
             //client.newCall(request).execute();
+            tvPost.setEnabled(false);
             client.newCall(request).enqueue(new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
                     CommonUtils.cancelProgressDialog();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            tvPost.setEnabled(true);
+                        }
+                    });
+                    tvPost.setEnabled(true);
                     Logger.info(TAG, "==============onFailure=========" + call + "====exception===" + e);
                 }
 
@@ -370,8 +400,8 @@ public class UploadPostActivity extends SocialConnectBaseActivity {
                                     @Override
                                     public void run() {
                                         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+                                        setResult(RESULT_OK);
                                         finish();
-
                                     }
                                 });
                                 // toast(message, false);
@@ -380,6 +410,7 @@ public class UploadPostActivity extends SocialConnectBaseActivity {
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
+                                        tvPost.setEnabled(true);
                                         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
 
                                     }
@@ -394,6 +425,13 @@ public class UploadPostActivity extends SocialConnectBaseActivity {
             });
 
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Logger.info(TAG, "===========onDestroy=====");
+        CommonUtils.cancelProgressDialog();
     }
 
     private class UploadFilesToServer extends AsyncTask<String, Void, Void> {
@@ -422,7 +460,7 @@ public class UploadPostActivity extends SocialConnectBaseActivity {
         }
     }
 
-/*
+    /*
     private class UploadFilesToServer1 extends AsyncTask<Void, Void, String> {
         ProgressDialog progressDialog;
 

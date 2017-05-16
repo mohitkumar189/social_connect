@@ -3,6 +3,7 @@ package in.squarei.socialconnect.utils;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,13 +18,19 @@ import in.squarei.socialconnect.R;
  */
 
 public class CommonUtils {
-    static ProgressDialog pdialog;
-    Dialog customDialog;
+    private static final String TAG = "CommonUtils";
+    private static ProgressDialog pdialog;
+    private Dialog customDialog;
 
     public static void showprogressDialog(Context context, String title, String message, boolean cancelable, boolean isTitle) {
-        if (pdialog == null) {
-            pdialog = new ProgressDialog(context);
-        }
+ /*       if(((Activity) context).isFinishing())
+        {
+            return;
+        }*/
+        Logger.info(TAG, "==============initContext=======" + context);
+        //   if (pdialog == null) {
+        pdialog = new ProgressDialog(context);
+        //  }
 
         if (isTitle) {
             pdialog.setTitle(title);
@@ -34,16 +41,16 @@ public class CommonUtils {
         if (!cancelable) {
             pdialog.setCancelable(false);
         }
-
-        if (!pdialog.isShowing()) {
+        if (pdialog != null && !pdialog.isShowing()) {
+            Log.e("show_dialog", "showing");
             pdialog.show();
-
         }
 
     }
 
     public static void cancelProgressDialog() {
-        pdialog.cancel();
+        if (pdialog != null)
+            pdialog.dismiss();
     }
 
     protected Dialog creatingDialog(Context context, boolean isCancelableBack, boolean isCancelableoutside, View view, int height, int width) {
