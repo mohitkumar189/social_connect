@@ -37,6 +37,9 @@ import in.squarei.socialconnect.utils.Logger;
 import in.squarei.socialconnect.utils.SharedPreferenceUtils;
 import in.squarei.socialconnect.utils.Validator;
 
+import static in.squarei.socialconnect.interfaces.AppConstants.COMMUNITY_ID;
+import static in.squarei.socialconnect.interfaces.AppConstants.COMMUNITY_NAME;
+import static in.squarei.socialconnect.interfaces.AppConstants.COMMUNITY_STATUS;
 import static in.squarei.socialconnect.interfaces.AppConstants.PROFILE_STATUS;
 import static in.squarei.socialconnect.interfaces.AppConstants.USER_FIRST_NAME;
 import static in.squarei.socialconnect.interfaces.AppConstants.USER_LAST_NAME;
@@ -52,7 +55,7 @@ public class UserLoginActivity extends SocialConnectBaseActivity implements UrlR
         }
     };
     AlertDialog deleteDialog;
-    String[] PERMISSIONS = { Manifest.permission.ACCESS_NETWORK_STATE,
+    String[] PERMISSIONS = {Manifest.permission.ACCESS_NETWORK_STATE,
             Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
     int PERMISSION_ALL = 1;
     private EditText editLoginId, editLoginPassword;
@@ -64,6 +67,8 @@ public class UserLoginActivity extends SocialConnectBaseActivity implements UrlR
     private String userpinPassword;
     private String userFirstName;
     private String userLastName;
+    private String communityName;
+    private String communityId;
     // These are for dialog to enter OTP///
     private EditText editPassDigitOne, editPassDigitTwo, editPassDigitThree, editPassDigitFour;
 
@@ -164,7 +169,7 @@ public class UserLoginActivity extends SocialConnectBaseActivity implements UrlR
                 startActivity(currentActivity, UserPasswordResetActivity.class);
                 break;
             case R.id.tvResendOtp:
-              //  toast("otp sent", false);
+                //  toast("otp sent", false);
                 break;
         }
     }
@@ -207,6 +212,8 @@ public class UserLoginActivity extends SocialConnectBaseActivity implements UrlR
                         userpinPassword = jsonDataObject.getString("pinPassword");
                         userFirstName = jsonDataObject.getString("firstName");
                         userLastName = jsonDataObject.getString("lastName");
+                        communityId = jsonDataObject.getString("communityID");
+                        communityName = jsonDataObject.getString("community");
                         Logger.info(TAG, "===========================================USER PIN" + userpinPassword);
                         toast(message, false);
                         if (userpinPassword == "null" || userpinPassword.length() == 0) {
@@ -225,6 +232,14 @@ public class UserLoginActivity extends SocialConnectBaseActivity implements UrlR
                         } else {
                             SharedPreferenceUtils.getInstance(context).putString(USER_FIRST_NAME, userFirstName);
                             SharedPreferenceUtils.getInstance(context).putBoolean(PROFILE_STATUS, true);
+                            if (communityId != "null" && communityId.length() != 0) {
+                                SharedPreferenceUtils.getInstance(context).putString(COMMUNITY_ID, communityId);
+                                if (communityName != "null" && communityName.length() != 0) {
+                                    SharedPreferenceUtils.getInstance(context).putString(COMMUNITY_NAME, communityName);
+                                    SharedPreferenceUtils.getInstance(context).putBoolean(COMMUNITY_STATUS, true);
+                                    Logger.info(TAG, "===========Community details are saved============");
+                                }
+                            }
                             if (userLastName != "null" || userLastName.length() != 0) {
                                 SharedPreferenceUtils.getInstance(context).putString(USER_LAST_NAME, userLastName);
                             }

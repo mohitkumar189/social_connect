@@ -8,15 +8,19 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.HeaderViewListAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -41,6 +45,7 @@ import in.squarei.socialconnect.network.VolleyNetworkRequestHandler;
 import in.squarei.socialconnect.utils.Logger;
 import in.squarei.socialconnect.utils.SharedPreferenceUtils;
 
+import static in.squarei.socialconnect.interfaces.AppConstants.COMMUNITY_NAME;
 import static in.squarei.socialconnect.interfaces.AppConstants.IS_LOGIN;
 import static in.squarei.socialconnect.interfaces.AppConstants.MENU_PROFILE_ID;
 import static in.squarei.socialconnect.interfaces.AppConstants.PROFILE_STATUS;
@@ -53,6 +58,7 @@ public class UserDashboardActivity extends SocialConnectBaseActivity implements 
     String[] PERMISSIONS = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_NETWORK_STATE,
             Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
     int PERMISSION_ALL = 1;
+    boolean isVisible = true;
     private boolean canExit = false;
     private FrameLayout fragment_container;
     private UserFeedsFragment userFeedsFragment;
@@ -62,6 +68,9 @@ public class UserDashboardActivity extends SocialConnectBaseActivity implements 
     private UserUpdatesFragment userUpdatesFragment;
     private AlertDialog b;
     private String firstName, lastName;
+    private ImageView image_show;
+    private NestedScrollView scrollview;
+    private TextView tvNavUserCommunityName;
 
     public static boolean hasPermissions(Context context, String... permissions) {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
@@ -169,6 +178,12 @@ public class UserDashboardActivity extends SocialConnectBaseActivity implements 
         String token = FirebaseInstanceId.getInstance().getToken();
         fragment_container = (FrameLayout) findViewById(R.id.fragment_container);
         Logger.info(TAG, "============Token==========" + token);
+        scrollview = (NestedScrollView) findViewById(R.id.scrollview);
+        image_show = (ImageView) findViewById(R.id.image_show);
+
+        image_show.setOnClickListener(this);
+        //  image_show.bringToFront();
+        // scrollview.bringToFront();
     }
 
     @Override
@@ -276,6 +291,67 @@ public class UserDashboardActivity extends SocialConnectBaseActivity implements 
     @Override
     public void onClick(View v) {
 
+        switch (v.getId()) {
+            case R.id.image_show:
+                if (isVisible) {
+                    // scrollview.setVisibility(View.GONE);
+                    hideAnimation();
+                    isVisible = false;
+                } else {
+                    //  scrollview.setVisibility(View.VISIBLE);
+                    showAnimation();
+                    isVisible = true;
+                }
+                break;
+        }
+    }
+
+    private void showAnimation() {
+        Animation anim;
+        anim = AnimationUtils.loadAnimation(context, R.anim.leftright);
+
+        anim.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                scrollview.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        scrollview.startAnimation(anim);
+        image_show.startAnimation(anim);
+    }
+
+    private void hideAnimation() {
+        Animation anim;
+        anim = AnimationUtils.loadAnimation(context, R.anim.righttoleft);
+
+        anim.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                scrollview.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        scrollview.startAnimation(anim);
+        image_show.startAnimation(anim);
     }
 
     @Override
@@ -349,9 +425,14 @@ public class UserDashboardActivity extends SocialConnectBaseActivity implements 
 
         //  TextView tvNavUserName = (TextView) navigationView.inflateHeaderView(R.layout.nav_header_social_connect_base).findViewById(R.id.tvNavUserName);
         TextView tvNavUserName = (TextView) header.findViewById(R.id.tvNavUserName);
+        TextView tvNavUserCommunityName = (TextView) header.findViewById(R.id.tvNavUserCommunityName);
         String fullname = null;
         String firstName = SharedPreferenceUtils.getInstance(context).getString(USER_FIRST_NAME);
         String lastName = SharedPreferenceUtils.getInstance(context).getString(USER_LAST_NAME);
+        String communityName = SharedPreferenceUtils.getInstance(context).getString(COMMUNITY_NAME);
+        if (communityName != null && communityName != "") {
+            tvNavUserCommunityName.setText(communityName);
+        }
         if (firstName != null) {
             fullname = firstName;
             if (lastName != null) {
@@ -362,4 +443,5 @@ public class UserDashboardActivity extends SocialConnectBaseActivity implements 
             tvNavUserName.setText(fullname);
         }
     }
+
 }

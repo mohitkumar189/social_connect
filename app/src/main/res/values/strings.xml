@@ -49,6 +49,8 @@
     <string name="post_upload_activity">Post Upload</string>
     <string name="friend_profile_activity">User profile</string>
     <string name="network_error">No internet connection</string>
+    <string name="pin_change_text">Forgot pin? Reset now</string>
+    <string name="pin_enter_text">Enter Pin</string>
 
 
 </resources>

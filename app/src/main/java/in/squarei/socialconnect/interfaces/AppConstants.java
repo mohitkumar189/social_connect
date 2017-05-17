@@ -1,7 +1,5 @@
 package in.squarei.socialconnect.interfaces;
 
-import com.android.volley.Request;
-
 /**
  * Created by mohit kumar on 4/26/2017.
  */
@@ -26,6 +24,9 @@ public interface AppConstants {
     String USER_FIRST_NAME = "userFirstName";
     String USER_LAST_NAME = "userLasttName";
     String API_KEY = "apiKey";
+    String COMMUNITY_STATUS = "communitySet";
+    String COMMUNITY_ID = "communityId";
+    String COMMUNITY_NAME = "communityName";
 
     //Menu IDs
     int MENU_PROFILE_ID = 2000;

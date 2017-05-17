@@ -20,6 +20,7 @@ import java.util.Map;
 
 import in.squarei.socialconnect.R;
 import in.squarei.socialconnect.activities.SocialConnectBaseActivity;
+import in.squarei.socialconnect.activities.UserDashboardActivity;
 import in.squarei.socialconnect.interfaces.AppConstants;
 import in.squarei.socialconnect.network.ApiURLS;
 import in.squarei.socialconnect.network.UrlResponseListener;
@@ -28,6 +29,7 @@ import in.squarei.socialconnect.utils.Logger;
 import in.squarei.socialconnect.utils.SharedPreferenceUtils;
 
 import static in.squarei.socialconnect.interfaces.AppConstants.API_KEY;
+import static in.squarei.socialconnect.interfaces.AppConstants.COMMUNITY_STATUS;
 import static in.squarei.socialconnect.interfaces.AppConstants.PIN_STATUS;
 import static in.squarei.socialconnect.interfaces.AppConstants.USER_PIN;
 
@@ -46,6 +48,8 @@ public class UserPassActivity extends SocialConnectBaseActivity implements UrlRe
     private String apiKey;
     private SharedPreferenceUtils sharedPreferenceUtils = SharedPreferenceUtils.getInstance(context);
     private boolean canExit = false;
+    private TextView tvForgotPin;
+    private TextView tvPinEnter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +102,9 @@ public class UserPassActivity extends SocialConnectBaseActivity implements UrlRe
         editPassDigitTwo3 = (EditText) findViewById(R.id.editPassDigitTwo3);
         editPassDigitThree3 = (EditText) findViewById(R.id.editPassDigitThree3);
         editPassDigitFour3 = (EditText) findViewById(R.id.editPassDigitFour3);
+
+        tvForgotPin = (TextView) findViewById(R.id.tvForgotPin);
+        tvPinEnter = (TextView) findViewById(R.id.tvPinEnter);
     }
 
     @Override
@@ -123,6 +130,9 @@ public class UserPassActivity extends SocialConnectBaseActivity implements UrlRe
         editPassDigitTwo3.addTextChangedListener(new UserPassActivity.MyTextWatcher(editPassDigitTwo3));
         editPassDigitThree3.addTextChangedListener(new UserPassActivity.MyTextWatcher(editPassDigitThree3));
         editPassDigitFour3.addTextChangedListener(new UserPassActivity.MyTextWatcher(editPassDigitFour3));
+
+        tvForgotPin.setOnClickListener(this);
+        tvPinEnter.setOnClickListener(this);
     }
 
     @Override
@@ -188,7 +198,7 @@ public class UserPassActivity extends SocialConnectBaseActivity implements UrlRe
                         Map<String, String> mapHeader = new HashMap<>();
                         mapParams.put("pin", enteredUserPin);
                         //     mapParams.put("client-id", apiKey);
-                        mapHeader.put("client-id", apiKey);
+                        mapHeader.put("client-id", sharedPreferenceUtils.getString(API_KEY));
                         getPinUpdateResult(mapParams, mapHeader);
                     } else {
                         toast("Please enter same pin", false);
@@ -198,8 +208,22 @@ public class UserPassActivity extends SocialConnectBaseActivity implements UrlRe
                     toast("Enter a valid pin", false);
                 }
                 break;
+            case R.id.tvForgotPin:
+                resetUserPin();
+                break;
+            case R.id.tvPinEnter:
+                loginAgain();
+                break;
             default:
                 break;
+        }
+    }
+
+    private void resetUserPin() {
+        if (container_user_pin_digits_reset.getVisibility() == View.GONE) {
+            container_user_pin_digits_reset.setVisibility(View.VISIBLE);
+            if (container_user_pin_enter.getVisibility() == View.VISIBLE)
+                container_user_pin_enter.setVisibility(View.GONE);
         }
     }
 
@@ -216,26 +240,41 @@ public class UserPassActivity extends SocialConnectBaseActivity implements UrlRe
     public void onResponseReceived(ApiURLS.ApiId apiId, String stringResponse) {
         Logger.info(TAG, "===================Received response==============" + stringResponse);
         JSONObject jsonObject = null;
-        try {
-            jsonObject = new JSONObject(stringResponse);
-            boolean error = jsonObject.getBoolean("error");
-            if (!error) {
-                JSONObject commandResult = jsonObject.getJSONObject("commandResult");
-                int success = commandResult.getInt("success");
-                String message = commandResult.getString("message");
-                //pinToBeSaved = jsonObject.getJSONObject("input").getString("pin");
-                if (success == 1) {
-                    goToDashboardActivity();///////////////////////////////////////////////////////////////
-                    toast(message, false);
-                } else {
-                    toast(message, false);
+        if (apiId == ApiURLS.ApiId.PIN_UPDATE) {
+            try {
+                jsonObject = new JSONObject(stringResponse);
+                boolean error = jsonObject.getBoolean("error");
+                if (!error) {
+                    JSONObject commandResult = jsonObject.getJSONObject("commandResult");
+                    int success = commandResult.getInt("success");
+                    String message = commandResult.getString("message");
+
+                    //pinToBeSaved = jsonObject.getJSONObject("input").getString("pin");
+                    if (success == 1) {
+                        String pin = jsonObject.getJSONObject("input").getString("pin");
+                        Logger.info(TAG, "===================updated pin==============" + pin);
+                        sharedPreferenceUtils.putString(USER_PIN, pin);
+                        loginAgain();
+                        //      startActivity(currentActivity, UserCompleteProfile.class);
+                        //  goToDashboardActivity();///////////////////////////////////////////////////////////////
+                        toast(message, false);
+                    } else {
+                        toast(message, false);
+                    }
                 }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
         }
 
+    }
 
+    private void loginAgain() {
+        if (container_user_pin_enter.getVisibility() == View.GONE) {
+            container_user_pin_enter.setVisibility(View.VISIBLE);
+            if (container_user_pin_digits_reset.getVisibility() == View.VISIBLE)
+                container_user_pin_digits_reset.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -263,7 +302,12 @@ public class UserPassActivity extends SocialConnectBaseActivity implements UrlRe
         if (enteredUserPin.equals(sharedPreferenceUtils.getString(USER_PIN))) {
             //  goToDashboardActivity();
             //    startActivity(currentActivity, UserDashboardActivity.class);/////////////////////////////////////////////Navigate to complete user profile
-            startActivity(currentActivity, UserCompleteProfile.class);
+            if (!sharedPreferenceUtils.getBoolean(COMMUNITY_STATUS)) {
+                startActivity(currentActivity, UserCompleteProfile.class);
+            } else {
+                startActivity(currentActivity, UserDashboardActivity.class);
+            }
+
         } else {
             toast("Wrong Pin...", false);
         }

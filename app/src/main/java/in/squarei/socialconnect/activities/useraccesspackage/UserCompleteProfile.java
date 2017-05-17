@@ -4,12 +4,14 @@ import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -29,6 +31,7 @@ import java.util.Map;
 
 import in.squarei.socialconnect.R;
 import in.squarei.socialconnect.activities.SocialConnectBaseActivity;
+import in.squarei.socialconnect.activities.UserDashboardActivity;
 import in.squarei.socialconnect.interfaces.AppConstants;
 import in.squarei.socialconnect.modals.CommunitiesData;
 import in.squarei.socialconnect.network.ApiURLS;
@@ -38,10 +41,13 @@ import in.squarei.socialconnect.utils.Logger;
 import in.squarei.socialconnect.utils.SharedPreferenceUtils;
 import in.squarei.socialconnect.utils.Validator;
 
+import static in.squarei.socialconnect.interfaces.AppConstants.COMMUNITY_ID;
+import static in.squarei.socialconnect.interfaces.AppConstants.COMMUNITY_STATUS;
 import static in.squarei.socialconnect.network.ApiURLS.ApiId.COMMUNITIES_LIST;
 import static in.squarei.socialconnect.network.ApiURLS.ApiId.COMMUNITY_ADD;
+import static in.squarei.socialconnect.network.ApiURLS.ApiId.USER_PROFILE_UPDATE;
 
-public class UserCompleteProfile extends SocialConnectBaseActivity implements RadioGroup.OnCheckedChangeListener, UrlResponseListener, View.OnFocusChangeListener {
+public class UserCompleteProfile extends SocialConnectBaseActivity implements RadioGroup.OnCheckedChangeListener, UrlResponseListener, View.OnFocusChangeListener, SearchView.OnQueryTextListener, CompoundButton.OnCheckedChangeListener {
 
     private static final String TAG = "UserCompleteProfile";
     private ImageView ivImageUpload;
@@ -76,7 +82,12 @@ public class UserCompleteProfile extends SocialConnectBaseActivity implements Ra
     private AlertDialog b;
     private ListView communitiesList;
     private String[] communities;
-
+    private SearchView searchView;
+    private ArrayAdapter communitiesListAdapter;
+    private String checkedGender;
+    private String checkedPrivacy;
+    private String phonePolicy;
+    private String communityId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,10 +137,12 @@ public class UserCompleteProfile extends SocialConnectBaseActivity implements Ra
         btnSubmitProfile.setOnClickListener(this);
         btnCommunityList.setOnClickListener(this);
         btnAddCommunity.setOnClickListener(this);
+        radioBtnAdd.setOnClickListener(this);
         radioGroupUserCommunity.setOnCheckedChangeListener(this);
         radioGroupUserGender.setOnCheckedChangeListener(this);
         radioGroupUserPrivacy.setOnCheckedChangeListener(this);
         editCommunityName.setOnFocusChangeListener(this);
+        switchPhonePolicy.setOnCheckedChangeListener(this);
         clientiD = SharedPreferenceUtils.getInstance(context).getString(AppConstants.API_KEY);
         getUserProfile();
     }
@@ -187,7 +200,7 @@ public class UserCompleteProfile extends SocialConnectBaseActivity implements Ra
                 uploadProfilePic();
                 break;
             case R.id.btnSubmitProfile:
-                updateProfile();
+                updateUserProfile();
                 break;
             case R.id.btnCommunityList:
                 getListOfCommunities();
@@ -195,6 +208,8 @@ public class UserCompleteProfile extends SocialConnectBaseActivity implements Ra
             case R.id.btnAddCommunity:
                 addCommunityName();
                 break;
+            case R.id.radioBtnAdd:
+                getListOfCommunities();
         }
     }
 
@@ -213,11 +228,8 @@ public class UserCompleteProfile extends SocialConnectBaseActivity implements Ra
         } else {
             toast("Community name length must be 4", false);
         }
-
     }
 
-    private void updateProfile() {
-    }
 
     private void getListOfCommunities() {
         if (!communitiesFetched) {
@@ -258,22 +270,106 @@ public class UserCompleteProfile extends SocialConnectBaseActivity implements Ra
             case R.id.radioGroupUserGender:
                 switch (checkedId) {
                     case R.id.radioBtnMale:
+                        checkedGender = "Male";
                         break;
                     case R.id.radioBtnFemale:
+                        checkedGender = "Female";
                         break;
                 }
                 break;
             case R.id.radioGroupUserPrivacy:
                 switch (checkedId) {
                     case R.id.radioBtnPublic:
+                        checkedPrivacy = "0";
                         break;
                     case R.id.radioBtnPrivate:
+                        checkedPrivacy = "1";
                         break;
                     case R.id.radioBtnOnlyMe:
+                        checkedPrivacy = "2";
                         break;
                 }
                 break;
         }
+    }
+
+    private void updateUserProfile() {
+        String validateMessage = validateUserInputs();
+        if (validateMessage == null) {
+            Map<String, String> paramPost = new HashMap<>();
+
+            //go to the request
+            String firstName = editFirstName.getText().toString();
+            String lastName = editLastName.getText().toString();
+            String address = editUserAddress.getText().toString();
+            String landmark = editUserLandmark.getText().toString();
+            String city = editUserCity.getText().toString();
+            String state = editUserState.getText().toString();
+            String country = editUserCountry.getText().toString();
+            String zipCode = editUserZipcode.getText().toString();
+            String phone = editUserMobilenumber.getText().toString();
+            String community = editCommunityName.getText().toString().trim();
+            //  String gender=editLastName.getText().toString();
+
+            if (firstName != null) {
+                paramPost.put("firstName", firstName);
+            }
+            if (lastName != null) {
+                paramPost.put("lastName", lastName);
+            }
+            if (address != null) {
+                paramPost.put("address", address);
+            }
+            if (landmark != null) {
+                paramPost.put("landmark", landmark);
+            }
+            if (city != null) {
+                paramPost.put("city", city);
+            }
+            if (state != null) {
+                paramPost.put("state", state);
+            }
+            if (country != null) {
+                paramPost.put("country", country);
+            }
+            if (zipCode != null) {
+                paramPost.put("zipCode", zipCode);
+            }
+            if (phone != null) {
+                String phoneData = "{" + "ph:" + phone + "," + "policy:" + phonePolicy + "}";
+                paramPost.put("phone", phoneData);
+            }
+            if (checkedGender != null) {
+                paramPost.put("gender", checkedGender);
+            }
+            if (checkedPrivacy != null) {
+                paramPost.put("privacy", checkedPrivacy);
+            }
+            if (communityId != null)
+                paramPost.put("communityID", communityId);
+
+            Logger.info(TAG, "============Community ID===========" + communityId);
+            String clientiD = SharedPreferenceUtils.getInstance(context).getString(AppConstants.API_KEY);
+            Map<String, String> headerParams = new HashMap<>();
+            headerParams.put("client-id", clientiD);// 8887e71887f2f2b8dc191ff238ad5a4f
+            if (communityId != null && community != "") {
+                Logger.info(TAG, "============Community ID===========" + communityId);
+                if (Validator.getInstance().isNetworkAvailable(context)) {
+                    VolleyNetworkRequestHandler.getInstance(context, this).getStringData(ApiURLS.USER_PROFILE, USER_PROFILE_UPDATE, ApiURLS.REQUEST_PUT, paramPost, headerParams);
+                } else {
+                    toast(getResources().getString(R.string.network_error), false);
+                }
+            } else {
+                toast("You must be a member of a community", false);
+            }
+        } else {
+            toast(validateMessage, false);
+        }
+        validateUserInputs();
+    }
+
+    private String validateUserInputs() {
+        return null;
     }
 
     @Override
@@ -332,8 +428,39 @@ public class UserCompleteProfile extends SocialConnectBaseActivity implements Ra
                     int success = commandResult.getInt("success");
                     String message = commandResult.getString("message");
                     if (success == 1) {
+                        JSONObject jsonData = commandResult.getJSONObject("data");
+                        communityId = jsonData.getString("id");
                         toast(message, false);
                         editCommunityName.setEnabled(false);
+                        //  radioGroupUserCommunity.setEnabled(false);
+                        radioBtnCreate.setEnabled(false);
+                        radioBtnAdd.setEnabled(false);
+                        btnAddCommunity.setEnabled(false);
+                    } else {
+                        toast(message, false);
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        } else if (apiId == USER_PROFILE_UPDATE) {
+            try {
+                jsonObject = new JSONObject(stringResponse);
+                boolean error = jsonObject.getBoolean("error");
+                if (!error) {
+                    JSONObject commandResult = jsonObject.getJSONObject("commandResult");
+                    int success = commandResult.getInt("success");
+                    String message = commandResult.getString("message");
+                    if (success == 1) {
+                        toast(message, false);
+                        //   JSONObject jsonData = commandResult.getJSONObject("data");
+                        JSONObject jsonInputs = jsonObject.getJSONObject("input");
+                        String commId = jsonInputs.getString("communityID");
+                        if (commId != null && commId != "") {
+                            SharedPreferenceUtils.getInstance(context).putBoolean(COMMUNITY_STATUS, true);
+                            SharedPreferenceUtils.getInstance(context).putString(COMMUNITY_ID, commId);
+                            startActivity(currentActivity, UserDashboardActivity.class);
+                        }
                     } else {
                         toast(message, false);
                     }
@@ -364,6 +491,7 @@ public class UserCompleteProfile extends SocialConnectBaseActivity implements Ra
         showDialogForCommunities(communitiesData);
     }
 
+
     private void showDialogForCommunities(final List<CommunitiesData> communitiesData) {
         if (communitiesData != null) {
             AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
@@ -374,18 +502,22 @@ public class UserCompleteProfile extends SocialConnectBaseActivity implements Ra
             dialogBuilder.setTitle("Communities");
             b = dialogBuilder.create();
             communitiesList = (ListView) dialogView.findViewById(R.id.listView);
-            ArrayAdapter communitiesListAdapter = new ArrayAdapter(this,
+            searchView = (SearchView) dialogView.findViewById(R.id.searchView);
+            communitiesListAdapter = new ArrayAdapter(this,
                     android.R.layout.simple_spinner_dropdown_item,
                     communities);
             communitiesList.setAdapter(communitiesListAdapter);
+            b.show();
             communitiesList.setOnItemClickListener(new android.widget.AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    //   editCommunityName.setText(communitiesData.get(position).getTitle());
                     editCommunityName.setText(communitiesData.get(position).getTitle());
+                    communityId = communitiesData.get(position).getId();
                     b.dismiss();
                 }
             });
-            b.show();
+            searchView.setOnQueryTextListener(this);
         }
     }
 
@@ -478,7 +610,36 @@ public class UserCompleteProfile extends SocialConnectBaseActivity implements Ra
         switch (v.getId()) {
             case R.id.editCommunityName:
                 if (radioBtnAdd.isChecked()) {
-                    getListOfCommunities();
+                    if (hasFocus) {
+                        //    getListOfCommunities();
+                    }
+                }
+                break;
+        }
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        communitiesListAdapter.getFilter().filter(query);
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        communitiesListAdapter.getFilter().filter(newText);
+        return true;
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        switch (buttonView.getId()) {
+            case R.id.switchPhonePolicy:
+                if (switchPhonePolicy.isChecked()) {
+                    phonePolicy = "public";
+                    switchPhonePolicy.setText("Public");
+                } else {
+                    phonePolicy = "private";
+                    switchPhonePolicy.setText("Private");
                 }
                 break;
         }
