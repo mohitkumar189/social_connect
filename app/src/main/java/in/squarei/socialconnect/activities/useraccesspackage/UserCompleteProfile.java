@@ -42,7 +42,11 @@ import in.squarei.socialconnect.utils.SharedPreferenceUtils;
 import in.squarei.socialconnect.utils.Validator;
 
 import static in.squarei.socialconnect.interfaces.AppConstants.COMMUNITY_ID;
+import static in.squarei.socialconnect.interfaces.AppConstants.COMMUNITY_NAME;
 import static in.squarei.socialconnect.interfaces.AppConstants.COMMUNITY_STATUS;
+import static in.squarei.socialconnect.interfaces.AppConstants.PROFILE_STATUS;
+import static in.squarei.socialconnect.interfaces.AppConstants.USER_FIRST_NAME;
+import static in.squarei.socialconnect.interfaces.AppConstants.USER_LAST_NAME;
 import static in.squarei.socialconnect.network.ApiURLS.ApiId.COMMUNITIES_LIST;
 import static in.squarei.socialconnect.network.ApiURLS.ApiId.COMMUNITY_ADD;
 import static in.squarei.socialconnect.network.ApiURLS.ApiId.USER_PROFILE_UPDATE;
@@ -447,26 +451,42 @@ public class UserCompleteProfile extends SocialConnectBaseActivity implements Ra
             try {
                 jsonObject = new JSONObject(stringResponse);
                 boolean error = jsonObject.getBoolean("error");
+
                 if (!error) {
+
                     JSONObject commandResult = jsonObject.getJSONObject("commandResult");
                     int success = commandResult.getInt("success");
                     String message = commandResult.getString("message");
                     if (success == 1) {
-                        toast(message, false);
                         //   JSONObject jsonData = commandResult.getJSONObject("data");
                         JSONObject jsonInputs = jsonObject.getJSONObject("input");
+                        JSONObject jsonData = commandResult.getJSONObject("data");
                         String commId = jsonInputs.getString("communityID");
+                        String communityName = jsonData.getString("communityName");
+                        String firstName = jsonInputs.getString("firstName");
+                        String lastName = jsonInputs.getString("lastName");
                         if (commId != null && commId != "") {
                             SharedPreferenceUtils.getInstance(context).putBoolean(COMMUNITY_STATUS, true);
                             SharedPreferenceUtils.getInstance(context).putString(COMMUNITY_ID, commId);
+                            SharedPreferenceUtils.getInstance(context).putString(COMMUNITY_NAME, communityName);
                             startActivity(currentActivity, UserDashboardActivity.class);
                         }
+
+                        if (firstName != "null" && firstName != "") {
+                            SharedPreferenceUtils.getInstance(context).putString(USER_FIRST_NAME, firstName);
+                            SharedPreferenceUtils.getInstance(context).putBoolean(PROFILE_STATUS, true);
+                            if (lastName != "null" & lastName != "") {
+                                SharedPreferenceUtils.getInstance(context).putString(USER_LAST_NAME, lastName);
+                            }
+                        }
+                        toast(message, false);
                     } else {
                         toast(message, false);
                     }
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
+                toast("Somethin went wrong... Please try again", false);
             }
         }
     }

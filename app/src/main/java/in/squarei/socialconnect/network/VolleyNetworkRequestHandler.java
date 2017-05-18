@@ -69,7 +69,6 @@ public class VolleyNetworkRequestHandler {
                             Logger.info(TAG, "===Object not null===");
                             urlResponseListener.onResponseReceived(apiId, response);
                         }
-
                     } else {
                         Logger.info(TAG, "===Object null error===");
                         if (VolleyNetworkRequestHandler.urlResponseListener != null)

@@ -46,6 +46,7 @@ import in.squarei.socialconnect.utils.Logger;
 import in.squarei.socialconnect.utils.SharedPreferenceUtils;
 
 import static in.squarei.socialconnect.interfaces.AppConstants.COMMUNITY_NAME;
+import static in.squarei.socialconnect.interfaces.AppConstants.COMMUNITY_STATUS;
 import static in.squarei.socialconnect.interfaces.AppConstants.IS_LOGIN;
 import static in.squarei.socialconnect.interfaces.AppConstants.MENU_PROFILE_ID;
 import static in.squarei.socialconnect.interfaces.AppConstants.PROFILE_STATUS;
@@ -394,7 +395,7 @@ public class UserDashboardActivity extends SocialConnectBaseActivity implements 
                     String message = jsonObject1.getString("message");
                     if (success == 1) {
                         JSONObject input = new JSONObject(jsonObject.getString("input"));
-                        if (firstName != null) {
+                        if (firstName != "null" && firstName != "") {
                             SharedPreferenceUtils.getInstance(context).putString(USER_FIRST_NAME, input.getString("firstName"));
                             SharedPreferenceUtils.getInstance(context).putBoolean(PROFILE_STATUS, true);
                             if (lastName != null) {
@@ -429,11 +430,16 @@ public class UserDashboardActivity extends SocialConnectBaseActivity implements 
         String fullname = null;
         String firstName = SharedPreferenceUtils.getInstance(context).getString(USER_FIRST_NAME);
         String lastName = SharedPreferenceUtils.getInstance(context).getString(USER_LAST_NAME);
-        String communityName = SharedPreferenceUtils.getInstance(context).getString(COMMUNITY_NAME);
-        if (communityName != null && communityName != "") {
-            tvNavUserCommunityName.setText(communityName);
+        if (SharedPreferenceUtils.getInstance(context).getBoolean(COMMUNITY_STATUS)) {
+            String communityName = SharedPreferenceUtils.getInstance(context).getString(COMMUNITY_NAME);
+            Logger.info(TAG, "==============Community name in SF============" + communityName);
+            if (communityName != null && communityName != "") {
+                tvNavUserCommunityName.setText(communityName);
+            }
         }
-        if (firstName != null) {
+
+
+        if (firstName != null && firstName.length() != 0) {
             fullname = firstName;
             if (lastName != null) {
                 fullname = firstName + " " + lastName;

@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="in.squarei.socialconnect.activities.useraccesspackage.UserPassActivity">
+    android:background="@drawable/screen_background">
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_above="@+id/tvLoginChange"
+        android:fillViewport="true"
+        android:scrollbars="none">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/screen_background">
+            android:layout_height="wrap_content">
 
             <ImageView
                 android:id="@+id/imageViewAppLogo"
@@ -103,9 +104,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="right"
                     android:layout_marginTop="@dimen/margin_15"
-                    android:text="@string/pin_change_text"/>
+                    android:text="@string/pin_change_text" />
             </LinearLayout>
-
 
             <!-- layout to set user using pin -->
             <LinearLayout
@@ -243,13 +243,16 @@
                         android:padding="@dimen/font_16"
                         android:textColorHint="@color/black" />
                 </LinearLayout>
+
                 <TextView
                     android:id="@+id/tvPinEnter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="right"
                     android:layout_marginTop="@dimen/margin_15"
-                    android:text="@string/pin_enter_text"/>
+                    android:text="@string/pin_enter_text"
+                    android:textSize="@dimen/font_15" />
+
                 <Button
                     android:id="@+id/tvSetUserPin"
                     android:layout_width="wrap_content"
@@ -264,10 +267,19 @@
                     android:textColor="@color/white"
                     android:textSize="@dimen/font_16"
                     android:textStyle="bold" />
-
             </LinearLayout>
 
         </RelativeLayout>
 
     </ScrollView>
-</FrameLayout>
+
+    <TextView
+        android:id="@+id/tvLoginChange"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/margin_30"
+        android:gravity="center"
+        android:text="Login with different account"
+        android:textSize="@dimen/font_15" />
+</RelativeLayout>

@@ -16,7 +16,7 @@
             android:title="@string/friends_fragment" />
         <item
             android:id="@+id/nav_user_notice"
-            android:icon="@drawable/notice"
+            android:icon="@drawable/nav_notice"
             android:title="@string/notice_fragment" />
         <item
             android:id="@+id/nav_user_updates"
@@ -24,26 +24,29 @@
             android:title="@string/update_fragment" />
         <item
             android:id="@+id/nav_user_profile"
-            android:icon="@drawable/work"
+            android:icon="@drawable/nav_user"
             android:title="@string/proflile_activity" />
 
     </group>
 
-    <item android:title="Communicate">
-        <menu>
+    <group android:checkableBehavior="single">
+        <item android:title="Communicate">
+            <!--      <menu>
+                      <item
+                          android:id="@+id/nav_share"
+                          android:icon="@drawable/ic_menu_share"
+                          android:title="Share" />
+                      <item
+                          android:id="@+id/nav_send"
+                          android:icon="@drawable/ic_menu_send"
+                          android:title="Send" />
+                  </menu>-->
             <item
-                android:id="@+id/nav_share"
-                android:icon="@drawable/ic_menu_share"
-                android:title="Share" />
-            <item
-                android:id="@+id/nav_send"
-                android:icon="@drawable/ic_menu_send"
-                android:title="Send" />
-        </menu>
-    </item>
-    <item
-        android:id="@+id/nav_logout"
-        android:icon="@drawable/ic_menu_send"
-        android:title="Logout" />
+                android:id="@+id/nav_logout"
+                android:icon="@drawable/logout"
+                android:title="Logout" />
+        </item>
+    </group>
+
 
 </menu>

@@ -82,6 +82,7 @@
 
         <activity
             android:name=".activities.UserProfileActivity"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
         <activity android:name=".activities.FriendProfileActivity" />
         <activity android:name=".activities.UploadPostActivity" />

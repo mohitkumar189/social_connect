@@ -50,6 +50,7 @@ public class UserPassActivity extends SocialConnectBaseActivity implements UrlRe
     private boolean canExit = false;
     private TextView tvForgotPin;
     private TextView tvPinEnter;
+    private TextView tvLoginChange;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,6 +106,7 @@ public class UserPassActivity extends SocialConnectBaseActivity implements UrlRe
 
         tvForgotPin = (TextView) findViewById(R.id.tvForgotPin);
         tvPinEnter = (TextView) findViewById(R.id.tvPinEnter);
+        tvLoginChange = (TextView) findViewById(R.id.tvLoginChange);
     }
 
     @Override
@@ -133,6 +135,7 @@ public class UserPassActivity extends SocialConnectBaseActivity implements UrlRe
 
         tvForgotPin.setOnClickListener(this);
         tvPinEnter.setOnClickListener(this);
+        tvLoginChange.setOnClickListener(this);
     }
 
     @Override
@@ -213,6 +216,9 @@ public class UserPassActivity extends SocialConnectBaseActivity implements UrlRe
                 break;
             case R.id.tvPinEnter:
                 loginAgain();
+                break;
+            case R.id.tvLoginChange:
+                startActivity(currentActivity, UserLoginActivity.class);
                 break;
             default:
                 break;

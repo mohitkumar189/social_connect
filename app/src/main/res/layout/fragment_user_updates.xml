@@ -1,13 +1,56 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="in.squarei.socialconnect.fragments.userDashboardFragments.UserUpdatesFragment">
-
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    android:layout_height="match_parent">
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="user updates" />
+        android:orientation="vertical"
+        tools:context="in.squarei.socialconnect.fragments.userDashboardFragments.UserChatsFragment">
 
-</FrameLayout>
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="110dp"
+            android:padding="@dimen/margin_10"
+            android:src="@drawable/lock_error" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/margin_8"
+            android:gravity="center"
+            android:text="Sorry,"
+            android:textSize="@dimen/margin_30" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/margin_8"
+            android:gravity="center"
+            android:text="This feature isn't available."
+            android:textSize="@dimen/margin_25" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/margin_8"
+            android:gravity="center"
+            android:text="Thanks for coming to check out our app. \n Currently, This feature isn't available to anyone."
+            android:textSize="@dimen/margin_15" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/margin_8"
+            android:gravity="center"
+            android:text="So, please e-mail us at info@squarei.in and contact: +91-120 6999900 or contact to community admin"
+            android:textSize="@dimen/margin_15" />
+    </LinearLayout>
+
+</ScrollView>

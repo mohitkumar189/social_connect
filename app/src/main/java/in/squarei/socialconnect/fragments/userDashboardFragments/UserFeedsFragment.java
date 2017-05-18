@@ -61,7 +61,7 @@ public class UserFeedsFragment extends SocialConnectBaseFragment implements UrlR
     private String clientiD;
     private SwipeRefreshLayout swiperefresh;
     private UserFeedsAdapter userFeedAdapter;
-    private LinearLayout linearWritePost;
+    private LinearLayout linearWritePost, linearPostUpdate, linearSharePost;
 
     public UserFeedsFragment() {
         // Required empty public constructor
@@ -77,6 +77,8 @@ public class UserFeedsFragment extends SocialConnectBaseFragment implements UrlR
         recyclerViewUserFeeds = (RecyclerView) currentActivity.findViewById(R.id.recyclerViewUserFeeds);
         swiperefresh = (SwipeRefreshLayout) currentActivity.findViewById(R.id.swiperefresh);
         linearWritePost = (LinearLayout) currentActivity.findViewById(R.id.linearWritePost);
+        linearPostUpdate = (LinearLayout) currentActivity.findViewById(R.id.linearPostUpdate);
+        linearSharePost = (LinearLayout) currentActivity.findViewById(R.id.linearSharePost);
     }
 
     @Override
@@ -88,6 +90,13 @@ public class UserFeedsFragment extends SocialConnectBaseFragment implements UrlR
     @Override
     protected void initListners() {
         linearWritePost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, UploadPostActivity.class);
+                startActivityForResult(intent, UPLOAD_ACTIVITY);
+            }
+        });
+        linearSharePost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, UploadPostActivity.class);
@@ -108,6 +117,13 @@ public class UserFeedsFragment extends SocialConnectBaseFragment implements UrlR
 
                     }
                 });
+        linearPostUpdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, UploadPostActivity.class);
+                startActivityForResult(intent, UPLOAD_ACTIVITY);
+            }
+        });
     }
 
     private void updateFeedsListOnRefresh() {

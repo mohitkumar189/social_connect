@@ -342,20 +342,20 @@ public class UserFriendsFragment extends SocialConnectBaseFragment implements Ur
                 startActivity(intent);
                 break;
             case 2:
-                toast(context, "add");
+              //  toast(context, "add");
                 acceptFriendRequest(usersListData.get(position).getUserId());
                 break;
             case 3:
-                toast(context, "remove");
+              //  toast(context, "remove");
                 rejectFriendRequest(usersListData.get(position).getUserId());
                 break;
             case 5:
-                toast(context, "send request");
+               // toast(context, "send request");
                 suggestionPosition = position;
                 sendFriendRequest(usersSuggestionListData.get(position).getUserId());
                 break;
             case 6:
-                toast(context, "remove suggestion");
+             //   toast(context, "remove suggestion");
                 usersSuggestionListData.remove(position);
                 userSuggestionFriendListAdapter.notifyDataSetChanged();
              //   rejectFriendRequest(usersSuggestionListData.get(position).getUserId());
