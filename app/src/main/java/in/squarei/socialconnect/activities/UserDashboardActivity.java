@@ -42,16 +42,19 @@ import in.squarei.socialconnect.interfaces.AppConstants;
 import in.squarei.socialconnect.network.ApiURLS;
 import in.squarei.socialconnect.network.UrlResponseListener;
 import in.squarei.socialconnect.network.VolleyNetworkRequestHandler;
+import in.squarei.socialconnect.utils.CommonUtils;
 import in.squarei.socialconnect.utils.Logger;
 import in.squarei.socialconnect.utils.SharedPreferenceUtils;
 
 import static in.squarei.socialconnect.interfaces.AppConstants.COMMUNITY_NAME;
 import static in.squarei.socialconnect.interfaces.AppConstants.COMMUNITY_STATUS;
+import static in.squarei.socialconnect.interfaces.AppConstants.FIREBASE_STATUS;
 import static in.squarei.socialconnect.interfaces.AppConstants.IS_LOGIN;
 import static in.squarei.socialconnect.interfaces.AppConstants.MENU_PROFILE_ID;
 import static in.squarei.socialconnect.interfaces.AppConstants.PROFILE_STATUS;
 import static in.squarei.socialconnect.interfaces.AppConstants.USER_FIRST_NAME;
 import static in.squarei.socialconnect.interfaces.AppConstants.USER_LAST_NAME;
+import static in.squarei.socialconnect.network.ApiURLS.USER_UPDATE;
 
 public class UserDashboardActivity extends SocialConnectBaseActivity implements UrlResponseListener {
 
@@ -183,6 +186,15 @@ public class UserDashboardActivity extends SocialConnectBaseActivity implements 
         image_show = (ImageView) findViewById(R.id.image_show);
 
         image_show.setOnClickListener(this);
+
+        if (!SharedPreferenceUtils.getInstance(context).getBoolean(FIREBASE_STATUS)) {
+            String clientiD = SharedPreferenceUtils.getInstance(context).getString(AppConstants.API_KEY);
+            if (clientiD != null) {
+                if (token != null)
+                    CommonUtils.saveDeviceToken(USER_UPDATE, token, clientiD, context);
+            }
+        }
+
         //  image_show.bringToFront();
         // scrollview.bringToFront();
     }
@@ -279,6 +291,9 @@ public class UserDashboardActivity extends SocialConnectBaseActivity implements 
                 break;
             case R.id.nav_logout:
                 SharedPreferenceUtils.getInstance(context).putBoolean(IS_LOGIN, false);
+                SharedPreferenceUtils.getInstance(context).putBoolean(PROFILE_STATUS, false);
+                SharedPreferenceUtils.getInstance(context).putString(USER_FIRST_NAME, "");
+                SharedPreferenceUtils.getInstance(context).putString(USER_LAST_NAME, "");
                 startActivity(currentActivity, SplashActivity.class);
                 finish();
                 break;

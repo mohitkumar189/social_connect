@@ -11,13 +11,28 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+
+import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.Map;
+
 import in.squarei.socialconnect.R;
+import in.squarei.socialconnect.interfaces.AppConstants;
+import in.squarei.socialconnect.socialConnectApplication.SocialConnectApplication;
+
+import static in.squarei.socialconnect.network.ApiURLS.REQUEST_PUT;
 
 /**
  * Created by mohit kumar on 4/26/2017.
  */
 
-public class CommonUtils {
+public class CommonUtils implements AppConstants {
     private static final String TAG = "CommonUtils";
     private static ProgressDialog pdialog;
     private Dialog customDialog;
@@ -51,6 +66,70 @@ public class CommonUtils {
     public static void cancelProgressDialog() {
         if (pdialog != null)
             pdialog.dismiss();
+    }
+
+    public static void saveDeviceToken(String url, final String deviceToken, final String clientId, final Context context) {
+        final StringRequest stringRequest = new StringRequest(REQUEST_PUT, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Logger.info(TAG, "======Network response====" + response);
+                try {
+                    if (response != null) {
+                            Logger.info(TAG, "===Object not null===");
+                            JSONObject jsonObject = new JSONObject(response);
+                            Boolean error = jsonObject.getBoolean("error");
+                            if (!error) {
+                                JSONObject commandResult = new JSONObject(jsonObject.getString("commandResult"));
+                                int success = commandResult.getInt("success");
+                                String message = commandResult.getString("message");
+                                if (success == 1) {
+                                    SharedPreferenceUtils.getInstance(context).putBoolean(FIREBASE_STATUS,true);
+                                }
+
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                String messageBody = null; // message received in the error
+                int responseCode = 0;
+                if (error != null) {
+                    if (error.networkResponse != null) {
+                        responseCode = error.networkResponse.statusCode; // to get response code
+                        if (error.networkResponse.data != null) {
+                            try {
+                                messageBody = new String(error.networkResponse.data, "UTF-8");
+                            } catch (UnsupportedEncodingException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("deviceID", deviceToken);
+                return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                if (clientId != null)
+                    params.put("client-id", clientId);
+
+                return params;
+            }
+        };
+        // new VolleyNetworkRequestHandler.UrlVerifier().verify(requestUrl, null);
+        SocialConnectApplication.getInstance().addToRequestQueue(stringRequest);
+
     }
 
     protected Dialog creatingDialog(Context context, boolean isCancelableBack, boolean isCancelableoutside, View view, int height, int width) {

@@ -1,9 +1,10 @@
 package in.squarei.socialconnect.activities;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -11,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -31,10 +33,13 @@ import in.squarei.socialconnect.utils.Logger;
 import in.squarei.socialconnect.utils.SharedPreferenceUtils;
 import in.squarei.socialconnect.utils.Validator;
 
+import static in.squarei.socialconnect.interfaces.AppConstants.PROFILE_STATUS;
+import static in.squarei.socialconnect.interfaces.AppConstants.USER_FIRST_NAME;
+import static in.squarei.socialconnect.interfaces.AppConstants.USER_LAST_NAME;
 import static in.squarei.socialconnect.network.ApiURLS.REQUEST_GET;
 
 
-public class UserProfileActivity extends SocialConnectBaseActivity implements UrlResponseListener, CompoundButton.OnCheckedChangeListener {
+public class UserProfileActivity extends AppCompatActivity implements UrlResponseListener, CompoundButton.OnCheckedChangeListener, View.OnClickListener {
 
     private static final String TAG = "UserProfileActivity";
     private ImageView ivEditProfile;
@@ -50,14 +55,16 @@ public class UserProfileActivity extends SocialConnectBaseActivity implements Ur
     private String phonePolicy;
     private CircleImageView profile_image;
     private Switch switchPhonePolicy;
+    private Context context;
+    private Activity currentActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
+        initViews();
     }
 
-    @Override
     protected void initViews() {
         ivEditProfile = (ImageView) findViewById(R.id.ivEditProfile);
         editUserAddress = (EditText) findViewById(R.id.editUserAddress);
@@ -91,14 +98,12 @@ public class UserProfileActivity extends SocialConnectBaseActivity implements Ur
 
     }
 
-    @Override
     protected void initContext() {
         context = UserProfileActivity.this;
         currentActivity = UserProfileActivity.this;
         //toHideKeyboard();
     }
 
-    @Override
     protected void initListners() {
         ivEditProfile.setOnClickListener(this);
         btnSubmitProfile.setOnClickListener(this);
@@ -119,47 +124,12 @@ public class UserProfileActivity extends SocialConnectBaseActivity implements Ur
             VolleyNetworkRequestHandler volleyNetworkRequestHandler = VolleyNetworkRequestHandler.getInstance(context, this);
             volleyNetworkRequestHandler.getStringData(ApiURLS.USER_PROFILE, ApiURLS.ApiId.USER_PROFILE, REQUEST_GET, null, headerParams);
         } else {
-            toast(getResources().getString(R.string.network_error), false);
+            Toast.makeText(context, getResources().getString(R.string.network_error), Toast.LENGTH_SHORT).show();
         }
 
 
         Logger.info(TAG, "===================client id==========" + clientiD);
 
-    }
-
-    @Override
-    protected boolean isActionBar() {
-        return false;
-    }
-
-    @Override
-    protected boolean isHomeButton() {
-        return false;
-    }
-
-    @Override
-    protected boolean isNavigationView() {
-        return false;
-    }
-
-    @Override
-    protected boolean isTabs() {
-        return false;
-    }
-
-    @Override
-    protected boolean isFab() {
-        return false;
-    }
-
-    @Override
-    protected boolean isDrawerListener() {
-        return false;
-    }
-
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        return false;
     }
 
     @Override
@@ -242,10 +212,10 @@ public class UserProfileActivity extends SocialConnectBaseActivity implements Ur
                     if (Validator.getInstance().isNetworkAvailable(context)) {
                         VolleyNetworkRequestHandler.getInstance(context, this).getStringData(ApiURLS.USER_PROFILE, ApiURLS.ApiId.USER_PROFILE_UPDATE, ApiURLS.REQUEST_PUT, paramPost, headerParams);
                     } else {
-                        toast(getResources().getString(R.string.network_error), false);
+                        Toast.makeText(context, getResources().getString(R.string.network_error), Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    toast(validateMessage, false);
+                    Toast.makeText(context, validateMessage, Toast.LENGTH_SHORT).show();
                 }
                 validateUserInputs();
                 break;
@@ -278,7 +248,7 @@ public class UserProfileActivity extends SocialConnectBaseActivity implements Ur
                     int success = jsonObject1.getInt("success");
                     String message = jsonObject1.getString("message");
                     if (success == 1) {
-                        toast(message, false);
+                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
                         disableAllEditBoxes();// Disabling all the edit boxes
                     } else {
 
@@ -321,6 +291,14 @@ public class UserProfileActivity extends SocialConnectBaseActivity implements Ur
                         userProfiledata = new UserProfiledata(userFirstName + " " + userLastName, userMobileNumber, userAddress, userCity, userZipcode, userState, userLandmark, userCountry, userProfilePic,
                                 userFirstName, userLastName, userEmailAddress, userGender, profilePolicy, mobilePolicy, profileStatus);
                         setUserDetails(userProfiledata);
+
+                        if (userFirstName != "null" && userFirstName.length() != 0) {
+                            SharedPreferenceUtils.getInstance(context).putBoolean(PROFILE_STATUS, true);
+                            SharedPreferenceUtils.getInstance(context).putString(USER_FIRST_NAME, userFirstName);
+                            if (userLastName != "null" || userLastName.length() != 0) {
+                                SharedPreferenceUtils.getInstance(context).putString(USER_LAST_NAME, userLastName);
+                            }
+                        }
                     }
                 }
             } catch (JSONException e) {

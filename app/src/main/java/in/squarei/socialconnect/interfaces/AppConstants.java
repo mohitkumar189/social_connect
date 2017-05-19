@@ -27,6 +27,8 @@ public interface AppConstants {
     String COMMUNITY_STATUS = "communitySet";
     String COMMUNITY_ID = "communityId";
     String COMMUNITY_NAME = "communityName";
+    String FIREBASE_TOKEN = "firebasetoken";
+    String FIREBASE_STATUS = "firebasestatus";
 
     //Menu IDs
     int MENU_PROFILE_ID = 2000;

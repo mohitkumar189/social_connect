@@ -20,6 +20,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.firebase.iid.FirebaseInstanceId;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -33,6 +35,7 @@ import in.squarei.socialconnect.interfaces.AppConstants;
 import in.squarei.socialconnect.network.ApiURLS;
 import in.squarei.socialconnect.network.UrlResponseListener;
 import in.squarei.socialconnect.network.VolleyNetworkRequestHandler;
+import in.squarei.socialconnect.utils.CommonUtils;
 import in.squarei.socialconnect.utils.Logger;
 import in.squarei.socialconnect.utils.SharedPreferenceUtils;
 import in.squarei.socialconnect.utils.Validator;
@@ -40,10 +43,12 @@ import in.squarei.socialconnect.utils.Validator;
 import static in.squarei.socialconnect.interfaces.AppConstants.COMMUNITY_ID;
 import static in.squarei.socialconnect.interfaces.AppConstants.COMMUNITY_NAME;
 import static in.squarei.socialconnect.interfaces.AppConstants.COMMUNITY_STATUS;
+import static in.squarei.socialconnect.interfaces.AppConstants.FIREBASE_STATUS;
 import static in.squarei.socialconnect.interfaces.AppConstants.PROFILE_STATUS;
 import static in.squarei.socialconnect.interfaces.AppConstants.USER_FIRST_NAME;
 import static in.squarei.socialconnect.interfaces.AppConstants.USER_LAST_NAME;
 import static in.squarei.socialconnect.interfaces.AppConstants.USER_PIN;
+import static in.squarei.socialconnect.network.ApiURLS.USER_UPDATE;
 
 public class UserLoginActivity extends SocialConnectBaseActivity implements UrlResponseListener {
 
@@ -179,6 +184,13 @@ public class UserLoginActivity extends SocialConnectBaseActivity implements UrlR
     }
 
     private void onLoginSuccess(Intent intent) {
+        if (!SharedPreferenceUtils.getInstance(context).getBoolean(FIREBASE_STATUS)) {
+            if (apiKey != null && apiKey != "null") {
+                String token = FirebaseInstanceId.getInstance().getToken();
+                if (token != null)
+                    CommonUtils.saveDeviceToken(USER_UPDATE, token, apiKey, context);
+            }
+        }
         startActivity(intent);
         finishAffinity();
         //toast("Login success", false);

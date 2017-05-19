@@ -62,6 +62,7 @@ public class UserFeedsFragment extends SocialConnectBaseFragment implements UrlR
     private SwipeRefreshLayout swiperefresh;
     private UserFeedsAdapter userFeedAdapter;
     private LinearLayout linearWritePost, linearPostUpdate, linearSharePost;
+    private int adapterPosition = -1;
 
     public UserFeedsFragment() {
         // Required empty public constructor
@@ -309,6 +310,7 @@ public class UserFeedsFragment extends SocialConnectBaseFragment implements UrlR
     }
 
     private void likeUserPost(int position) {
+        adapterPosition = position;
         Map<String, String> headerParams = new HashMap<>();
         headerParams.put("client-id", clientiD);
         String postId = userFeedData.get(position).getPostId();

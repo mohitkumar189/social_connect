@@ -315,10 +315,10 @@ public class UserCompleteProfile extends SocialConnectBaseActivity implements Ra
             String community = editCommunityName.getText().toString().trim();
             //  String gender=editLastName.getText().toString();
 
-            if (firstName != null) {
+            if (firstName != null && firstName != "null") {
                 paramPost.put("firstName", firstName);
             }
-            if (lastName != null) {
+            if (lastName != null && firstName != "null") {
                 paramPost.put("lastName", lastName);
             }
             if (address != null) {
