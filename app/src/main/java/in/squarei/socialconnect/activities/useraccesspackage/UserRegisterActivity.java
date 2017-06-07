@@ -37,7 +37,6 @@ public class UserRegisterActivity extends SocialConnectBaseActivity implements U
 
     @Override
     protected void initViews() {
-
         editUserName = (EditText) findViewById(R.id.editUserName);
         editUserEmail = (EditText) findViewById(R.id.editUserEmail);
         editUserMobileNumber = (EditText) findViewById(R.id.editUserMobileNumber);

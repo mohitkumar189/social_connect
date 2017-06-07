@@ -10,6 +10,8 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
@@ -165,8 +167,9 @@ public class UploadPostActivity extends SocialConnectBaseActivity {
         intent.putExtra(CropImage.IMAGE_PATH, mFileTemp.getPath());
         intent.putExtra(CropImage.SCALE, true);
 
-        intent.putExtra(CropImage.ASPECT_X, 0);
-        intent.putExtra(CropImage.ASPECT_Y, 0);
+        /////////////////change here to select the aspect ratio///////////////
+        intent.putExtra(CropImage.ASPECT_X, 5);
+        intent.putExtra(CropImage.ASPECT_Y, 3);
 
         startActivityForResult(intent, REQUEST_CODE_CROP_IMAGE);
     }
@@ -293,8 +296,11 @@ public class UploadPostActivity extends SocialConnectBaseActivity {
                 selectImage();
                 break;
             case R.id.tvPost:
-                //  new UploadFilesToServer().execute();
+                // new UploadFilesToServer().execute();
                 uploadPost();
+                //  Map<String, String> map = new HashMap<>();
+                //  map.put("name", "mohit");
+                //  new FileUploaderClass().uploadFile(selectedFilePath, null, ApiURLS.BASE_URL + "upload.php", handler);
                 break;
         }
     }
@@ -321,6 +327,15 @@ public class UploadPostActivity extends SocialConnectBaseActivity {
         return type;
     }
 
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            Logger.info(TAG, "===========message received=========" + clientId);
+
+        }
+    };
+
     private void uploadPost() {
 
         Logger.info(TAG, "===========Client Id=========" + clientId);
@@ -328,6 +343,8 @@ public class UploadPostActivity extends SocialConnectBaseActivity {
         String postText = editPost.getText().toString();
         String postTitle = editPostTitle.getText().toString();
         String filePath;
+
+
         final String content_type;
         // File file=new File(selectedFilePath);
         if (selectedFilePath != null) {

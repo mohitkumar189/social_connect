@@ -1,11 +1,11 @@
 package in.squarei.socialconnect.activities.useraccesspackage;
 
-import android.support.annotation.NonNull;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,7 +25,7 @@ public class UserPasswordResetActivity extends SocialConnectBaseActivity impleme
 
     private static final String TAG = "UserPasswordResetActivity";
     private EditText editUserId;
-    private TextView tvForgotPassword;
+    private Button tvForgotPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +36,7 @@ public class UserPasswordResetActivity extends SocialConnectBaseActivity impleme
     @Override
     protected void initViews() {
         editUserId = (EditText) findViewById(R.id.editUserId);
-        tvForgotPassword = (TextView) findViewById(R.id.tvForgotPassword);
+        tvForgotPassword = (Button) findViewById(R.id.tvForgotPassword);
     }
 
     @Override

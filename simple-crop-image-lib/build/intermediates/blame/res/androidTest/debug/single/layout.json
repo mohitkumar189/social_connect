@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "C:\\android projects\\social_connect\\simple-crop-image-lib\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\main.xml",
+        "source": "C:\\android projects\\social_connect\\simple-crop-image-lib\\build\\intermediates\\bundles\\debug\\res\\layout\\main.xml"
+    },
+    {
+        "merged": "C:\\android projects\\social_connect\\simple-crop-image-lib\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\cropimage.xml",
+        "source": "C:\\android projects\\social_connect\\simple-crop-image-lib\\build\\intermediates\\bundles\\debug\\res\\layout\\cropimage.xml"
+    }
+]

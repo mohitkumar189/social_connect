@@ -63,6 +63,7 @@ public class UserFeedsFragment extends SocialConnectBaseFragment implements UrlR
     private UserFeedsAdapter userFeedAdapter;
     private LinearLayout linearWritePost, linearPostUpdate, linearSharePost;
     private int adapterPosition = -1;
+    private boolean loading = false;
 
     public UserFeedsFragment() {
         // Required empty public constructor
@@ -114,7 +115,7 @@ public class UserFeedsFragment extends SocialConnectBaseFragment implements UrlR
                                 swiperefresh.setRefreshing(false);
                                 updateFeedsListOnRefresh();
                             }
-                        }, 1000);
+                        }, 500);
 
                     }
                 });
@@ -282,11 +283,35 @@ public class UserFeedsFragment extends SocialConnectBaseFragment implements UrlR
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            userFeedAdapter = new UserFeedsAdapter(userFeedData, context, this);
-            recyclerViewUserFeeds.setLayoutManager(new LinearLayoutManager(context));
-            recyclerViewUserFeeds.setAdapter(userFeedAdapter);
-            recyclerViewUserFeeds.setNestedScrollingEnabled(false);
+            setUpAdapter(userFeedData);
+
         }
+    }
+
+    private void setUpAdapter(List<UserFeedsData> userFeedsData) {
+        userFeedAdapter = new UserFeedsAdapter(userFeedsData, context, this);
+        final LinearLayoutManager mLayoutManager = new LinearLayoutManager(context);
+        recyclerViewUserFeeds.setLayoutManager(mLayoutManager);
+        recyclerViewUserFeeds.setHasFixedSize(false);
+        recyclerViewUserFeeds.setAdapter(userFeedAdapter);
+        recyclerViewUserFeeds.setNestedScrollingEnabled(false);
+
+        recyclerViewUserFeeds.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                int lastvisibleitemposition = mLayoutManager.findLastVisibleItemPosition();
+                if (lastvisibleitemposition == userFeedAdapter.getItemCount() - 1) {
+
+                    if (!loading) {
+                        loading = true;
+                        // Increment the pagecount everytime we scroll to fetch data from the next pageR
+                        // make loading = false once the data is loaded
+                        // call mAdapter.notifyDataSetChanged() to refresh the Adapter and Layout
+                    }
+                }
+            }
+        });
     }
 
     @Override

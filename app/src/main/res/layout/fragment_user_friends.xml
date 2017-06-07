@@ -11,7 +11,7 @@
             android:id="@+id/tvPeopleSuggestion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/margin_5"
+            android:padding="@dimen/dp_5"
             android:text="People You May Know"
             android:textSize="@dimen/font_16" />
 
@@ -46,6 +46,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/relativeGroupCreateContainer"
-            android:layout_marginTop="@dimen/margin_10" />
+            android:layout_marginTop="@dimen/dp_10" />
     </RelativeLayout>
 </android.support.v4.widget.NestedScrollView>

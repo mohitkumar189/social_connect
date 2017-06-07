@@ -35,7 +35,7 @@ public class UserFriendsListAdapter extends RecyclerView.Adapter<UserFriendsList
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(ctx)
-                .inflate(R.layout.top_view_user_profile, parent, false);
+                .inflate(R.layout.row_user_profile, parent, false);
 
         return new UserFriendsListAdapter.MyViewHolder(itemView);
     }

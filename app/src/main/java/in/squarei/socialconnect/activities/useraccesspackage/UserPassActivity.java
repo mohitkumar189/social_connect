@@ -38,19 +38,21 @@ public class UserPassActivity extends SocialConnectBaseActivity implements UrlRe
     private static final String TAG = "UserPassActivity";
     private LinearLayout container_user_pin_digits_reset;
     private LinearLayout container_user_pin_enter;
-    private TextView tvSetUserPin;
     private EditText editPassDigitOne, editPassDigitTwo, editPassDigitThree, editPassDigitFour;
     private EditText editPassDigitOne2, editPassDigitTwo2, editPassDigitThree2, editPassDigitFour2;
     private EditText editPassDigitOne3, editPassDigitTwo3, editPassDigitThree3, editPassDigitFour3;
 
     private String userPin;
-    private String enteredUserPin;
     private String apiKey;
+    private String enteredUserPin;
+
     private SharedPreferenceUtils sharedPreferenceUtils = SharedPreferenceUtils.getInstance(context);
     private boolean canExit = false;
     private TextView tvForgotPin;
     private TextView tvPinEnter;
     private TextView tvLoginChange;
+    private TextView tvSetUserPin;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -382,7 +384,6 @@ public class UserPassActivity extends SocialConnectBaseActivity implements UrlRe
                         goToDashboardActivity();///////////////////////////////////////////////////////////////////////////////////////////
                     break;
 
-
                 case R.id.editPassDigitOne2:
                     if (editPassDigitOne2.getText() != null)
                         editPassDigitTwo2.requestFocus();
@@ -398,7 +399,6 @@ public class UserPassActivity extends SocialConnectBaseActivity implements UrlRe
                 case R.id.editPassDigitFour2:
                     //if (editPassDigitFour2.getText() != null) toast("From reset pin", false);
                     break;
-
 
                 case R.id.editPassDigitOne3:
                     if (text != null || text != "")

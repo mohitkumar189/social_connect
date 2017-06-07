@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="@dimen/margin_5">
+        android:padding="@dimen/dp_5">
 
 
         <android.support.v7.widget.CardView
@@ -23,7 +23,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
-                android:padding="@dimen/margin_15">
+                android:padding="@dimen/dp_15">
 
                 <ImageView
                     android:id="@+id/ivUsereProfile"
@@ -35,7 +35,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/margin_10"
+                    android:layout_marginLeft="@dimen/dp_10"
                     android:layout_toRightOf="@+id/ivUsereProfile"
                     android:orientation="vertical"
                     android:visibility="invisible">
@@ -44,7 +44,7 @@
                         android:id="@+id/text_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:padding="@dimen/margin_5"
+                        android:padding="@dimen/dp_5"
                         android:text="Santosh Kumar"
                         android:textColor="@color/text_color"
                         android:textSize="@dimen/text_size_15" />
@@ -79,7 +79,7 @@
                     android:gravity="top"
                     android:hint="Title"
                     android:lines="1"
-                    android:padding="@dimen/margin_10"
+                    android:padding="@dimen/dp_10"
                     android:textSize="@dimen/font_14" />
 
                 <include layout="@layout/line_1_dp" />
@@ -88,12 +88,12 @@
                     android:id="@+id/editPost"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_10"
+                    android:layout_marginTop="@dimen/dp_10"
                     android:background="@android:color/white"
                     android:gravity="top"
                     android:hint="Write Something....."
                     android:lines="5"
-                    android:padding="@dimen/margin_10"
+                    android:padding="@dimen/dp_10"
                     android:textSize="@dimen/font_14" />
             </LinearLayout>
 
@@ -116,9 +116,9 @@
                     android:id="@+id/linearUploadImage"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/margin_10"
+                    android:layout_margin="@dimen/dp_10"
                     android:orientation="horizontal"
-                    android:paddingTop="@dimen/margin_10">
+                    android:paddingTop="@dimen/dp_10">
 
                     <ImageView
                         android:layout_width="30dp"
@@ -129,9 +129,9 @@
                         android:id="@+id/text_photo"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/margin_10"
+                        android:layout_marginLeft="@dimen/dp_10"
                         android:gravity="center"
-                        android:padding="@dimen/margin_5"
+                        android:padding="@dimen/dp_5"
                         android:text="Photo"
                         android:textColor="@color/text_color"
                         android:textSize="@dimen/text_size_15" />
@@ -142,7 +142,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/margin_10"
+                    android:layout_margin="@dimen/dp_10"
                     android:orientation="horizontal">
 
                     <ImageView
@@ -154,9 +154,9 @@
                         android:id="@+id/text_video"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/margin_10"
+                        android:layout_marginLeft="@dimen/dp_10"
                         android:gravity="center"
-                        android:padding="@dimen/margin_5"
+                        android:padding="@dimen/dp_5"
                         android:text="Video"
                         android:textColor="@color/text_color"
                         android:textSize="@dimen/text_size_15" />
@@ -169,13 +169,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginBottom="@dimen/margin_10"
-                    android:layout_marginTop="@dimen/margin_20"
+                    android:layout_marginBottom="@dimen/dp_10"
+                    android:layout_marginTop="@dimen/dp_20"
                     android:background="#2a7bb2"
-                    android:paddingBottom="@dimen/margin_5"
-                    android:paddingLeft="@dimen/margin_20"
-                    android:paddingRight="@dimen/margin_20"
-                    android:paddingTop="@dimen/margin_5"
+                    android:paddingBottom="@dimen/dp_5"
+                    android:paddingLeft="@dimen/dp_20"
+                    android:paddingRight="@dimen/dp_20"
+                    android:paddingTop="@dimen/dp_5"
                     android:text="POST"
                     android:textColor="@color/white"
                     android:textSize="@dimen/font_16"
@@ -193,8 +193,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:paddingBottom="@dimen/margin_10"
-            android:paddingTop="@dimen/margin_10"
+            android:paddingBottom="@dimen/dp_10"
+            android:paddingTop="@dimen/dp_10"
             android:visibility="gone">
 
             <ImageView

@@ -23,7 +23,7 @@
                 android:layout_below="@+id/imageViewAppLogo"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
-                android:layout_marginTop="@dimen/margin_15"
+                android:layout_marginTop="@dimen/dp_15"
                 android:orientation="vertical">
 
                 <TextView
@@ -36,8 +36,8 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/margin_10"
-                    android:layout_marginTop="@dimen/margin_5"
+                    android:layout_marginLeft="@dimen/dp_10"
+                    android:layout_marginTop="@dimen/dp_5"
                     android:orientation="horizontal">
 
                     <EditText

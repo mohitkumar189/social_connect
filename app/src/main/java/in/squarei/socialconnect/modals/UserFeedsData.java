@@ -6,6 +6,7 @@ package in.squarei.socialconnect.modals;
 
 public class UserFeedsData {
     private String postSenderName, postTitleComment, userLikes, userComments, usershares, postImageUrl, postId;
+    private int isLiked;
 
     public UserFeedsData(String postSenderName, String postTitleComment, String userLikes, String userComments, String postImageUrl, String postId) {
         this.postSenderName = postSenderName;
@@ -71,5 +72,13 @@ public class UserFeedsData {
 
     public void setPostImageUrl(String postImageUrl) {
         this.postImageUrl = postImageUrl;
+    }
+
+    public int getIsLiked() {
+        return isLiked;
+    }
+
+    public void setIsLiked(int isLiked) {
+        this.isLiked = isLiked;
     }
 }

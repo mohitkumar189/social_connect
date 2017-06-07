@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -16,7 +15,6 @@ import java.util.List;
 import in.squarei.socialconnect.R;
 import in.squarei.socialconnect.interfaces.ItemClickListener;
 import in.squarei.socialconnect.modals.PostCommentsData;
-import in.squarei.socialconnect.modals.UserFeedsData;
 
 /**
  * Created by mohit kumar on 5/9/2017.
@@ -37,7 +35,7 @@ public class PostCommentsAdapter extends RecyclerView.Adapter<PostCommentsAdapte
     @Override
     public PostCommentsAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(context)
-                .inflate(R.layout.top_view_user_for_comments, parent, false);
+                .inflate(R.layout.row_user_for_comments, parent, false);
 
         return new PostCommentsAdapter.MyViewHolder(itemView);
     }

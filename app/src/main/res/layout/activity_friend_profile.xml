@@ -14,7 +14,7 @@
             android:layout_height="wrap_content"
             android:background="@color/white"
             android:orientation="vertical"
-            android:padding="@dimen/margin_10">
+            android:padding="@dimen/dp_10">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -25,7 +25,7 @@
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:layout_centerVertical="true"
-                    android:padding="@dimen/margin_10"
+                    android:padding="@dimen/dp_10"
                     android:scaleType="fitXY"
                     android:src="@drawable/user" />
 
@@ -33,7 +33,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/margin_10"
+                    android:layout_marginLeft="@dimen/dp_10"
                     android:layout_toRightOf="@+id/ivUserProfilePic">
 
                     <TextView
@@ -82,7 +82,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/tvUserStatus"
-                        android:layout_marginTop="@dimen/margin_10"
+                        android:layout_marginTop="@dimen/dp_10"
                         android:orientation="horizontal">
 
                         <LinearLayout
@@ -96,7 +96,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:orientation="horizontal"
-                                android:paddingTop="@dimen/margin_5">
+                                android:paddingTop="@dimen/dp_5">
 
                                 <ImageView
                                     android:layout_width="25dp"
@@ -118,7 +118,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:orientation="horizontal"
-                                android:paddingTop="@dimen/margin_5">
+                                android:paddingTop="@dimen/dp_5">
 
                                 <ImageView
                                     android:layout_width="25dp"
@@ -171,7 +171,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginTop="@dimen/margin_20"
+                android:layout_marginTop="@dimen/dp_20"
                 android:background="@color/text_color_grey" />
 
             <LinearLayout
@@ -202,7 +202,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/linearUserProfileHolder"
-            android:layout_marginTop="@dimen/margin_10"
+            android:layout_marginTop="@dimen/dp_10"
             android:background="@color/white"
             android:orientation="vertical">
 
@@ -210,20 +210,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
-                android:padding="@dimen/margin_10">
+                android:padding="@dimen/dp_10">
 
                 <ImageView
                     android:id="@+id/ivUserProfileInStatus"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:padding="@dimen/margin_5"
+                    android:padding="@dimen/dp_5"
                     android:src="@drawable/user" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/margin_15"
+                    android:layout_marginLeft="@dimen/dp_15"
                     android:layout_toRightOf="@+id/ivUserProfileInStatus"
                     android:text="@string/user_status_update_text"
                     android:textSize="@dimen/font_14" />
@@ -238,7 +238,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="@dimen/margin_5"
+                android:padding="@dimen/dp_5"
                 android:weightSum="2">
 
                 <LinearLayout
@@ -258,7 +258,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="@dimen/margin_5"
+                        android:layout_marginLeft="@dimen/dp_5"
                         android:text="Write Post"
                         android:textColor="@color/black"
                         android:textSize="@dimen/font_12" />
@@ -280,7 +280,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/margin_5"
+                        android:layout_marginLeft="@dimen/dp_5"
                         android:text="Share Post"
                         android:textColor="@color/black"
                         android:textSize="@dimen/font_12" />

@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import in.squarei.socialconnect.utils.Logger;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.HttpUrl;
@@ -18,6 +19,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+
+import static in.squarei.socialconnect.activities.UploadPostActivity.TAG;
 
 /**
  * Created by mohit kumar on 5/12/2017.
@@ -30,8 +33,9 @@ public class FileUploaderClass {
     private String filePath;
     private String content_type;
     private String fileName;
+    private String fileKey = "filekey";
 
-    private void uploadFile(File file, Map<String, String> map, String url, Handler handler) {
+    public void uploadFile(File file, Map<String, String> map, String url, Handler handler) {
         getFileInfo(file);
         OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(CONNECT_TIMEOUT, TimeUnit.SECONDS)
@@ -41,13 +45,16 @@ public class FileUploaderClass {
 
         MultipartBody.Builder multipartBody = new MultipartBody.Builder().setType(MultipartBody.FORM);
 
-        Iterator<Map.Entry<String, String>> iterator = map.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry<String, String> entrySet = iterator.next();
-            multipartBody.addFormDataPart(entrySet.getKey(), entrySet.getValue());
+        if (map != null) {
+            Iterator<Map.Entry<String, String>> iterator = map.entrySet().iterator();
+            while (iterator.hasNext()) {
+                Map.Entry<String, String> entrySet = iterator.next();
+                multipartBody.addFormDataPart(entrySet.getKey(), entrySet.getValue());
+            }
         }
+
         RequestBody fileBody = RequestBody.create(MediaType.parse(content_type), file);
-        multipartBody.addFormDataPart("file", filePath.substring(filePath.lastIndexOf("/") + 1), fileBody);
+        multipartBody.addFormDataPart(fileKey, filePath.substring(filePath.lastIndexOf("/") + 1), fileBody);
         RequestBody requestBody = multipartBody.build();
         Request request = new Request.Builder()
                 .url(url)
@@ -56,12 +63,13 @@ public class FileUploaderClass {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-
+                Logger.info(TAG, "================File uploading failed====");
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-
+                String responseBody = response.body().string();
+                Logger.info(TAG, "==============response body=========" + responseBody);
             }
         });
     }

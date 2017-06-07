@@ -6,8 +6,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
@@ -53,16 +51,9 @@ import static in.squarei.socialconnect.network.ApiURLS.USER_UPDATE;
 public class UserLoginActivity extends SocialConnectBaseActivity implements UrlResponseListener {
 
     private static final String TAG = "UserLoginActivity";
-    Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-
-        }
-    };
-    AlertDialog deleteDialog;
-    String[] PERMISSIONS = {Manifest.permission.ACCESS_NETWORK_STATE,
-            Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
-    int PERMISSION_ALL = 1;
+    private AlertDialog deleteDialog;
+    private String[] PERMISSIONS = {Manifest.permission.ACCESS_NETWORK_STATE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+    private int PERMISSION_ALL = 1;
     private EditText editLoginId, editLoginPassword;
     private Button buttonLogin;
     private TextView tvSignupUser, tvForgotPassword;
@@ -237,6 +228,11 @@ public class UserLoginActivity extends SocialConnectBaseActivity implements UrlR
                             intent.putExtra("actionType", AppConstants.IntentTypes.ENTER_USER_PIN);
                             intent.putExtra("userPin", userpinPassword);
                             intent.putExtra("apiKey", apiKey);
+      /*                      Intent pinEnterIntent = new Intent(currentActivity, UserPinEnterActivity.class);
+                            pinEnterIntent.putExtra("userPin", userpinPassword);
+                            pinEnterIntent.putExtra("apiKey", apiKey);*/
+                            //    startActivity(pinEnterIntent);
+                            //   onLoginSuccess(pinEnterIntent);
                             Logger.info(TAG, "================API KEY SENT====" + apiKey);
                         }
                         if (userFirstName == "null" || userFirstName.length() == 0) {

@@ -87,7 +87,12 @@
         <activity android:name=".activities.FriendProfileActivity" />
         <activity android:name=".activities.UploadPostActivity" />
         <activity android:name=".activities.useraccesspackage.EnterOTPActivity" />
-        <activity android:name=".activities.useraccesspackage.UserCompleteProfile"></activity>
+        <activity android:name=".activities.useraccesspackage.UserCompleteProfile" />
+        <activity android:name=".activities.NotificationActivity" />
+        <activity android:name=".activities.UserUpdateActivity" />
+        <activity android:name=".activities.UserChatActivity" />
+        <activity android:name=".activities.useraccesspackage.UserPinResetActivity" />
+        <activity android:name=".activities.useraccesspackage.UserPinEnterActivity"></activity>
     </application>
 
 </manifest>

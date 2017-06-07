@@ -25,7 +25,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="@dimen/margin_10"
+        android:layout_marginLeft="@dimen/dp_10"
         android:layout_toRightOf="@+id/detailExpertPic">
 
         <TextView
@@ -41,7 +41,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tvNavUserName"
-            android:paddingTop="@dimen/margin_5"
+            android:paddingTop="@dimen/dp_5"
             android:text="Welcome"
             android:textColor="@color/white"
             android:textSize="@dimen/font_14" />

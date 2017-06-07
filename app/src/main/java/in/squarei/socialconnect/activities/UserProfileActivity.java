@@ -63,6 +63,8 @@ public class UserProfileActivity extends AppCompatActivity implements UrlRespons
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
         initViews();
+        initContext();
+        initListners();
     }
 
     protected void initViews() {
@@ -93,9 +95,14 @@ public class UserProfileActivity extends AppCompatActivity implements UrlRespons
         switchPhonePolicy = (Switch) findViewById(R.id.switchPhonePolicy);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
+      //  getSupportActionBar().setHomeButtonEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         getSupportActionBar().setTitle(getResources().getString(R.string.proflile_activity));
-
     }
 
     protected void initContext() {
@@ -259,6 +266,7 @@ public class UserProfileActivity extends AppCompatActivity implements UrlRespons
             }
         } else if (apiId == ApiURLS.ApiId.USER_PROFILE) {
             JSONObject jsonObject = null;
+            String userMobileNumber = null, mobilePolicy = null;
             try {
                 jsonObject = new JSONObject(stringResponse);
                 boolean error = jsonObject.getBoolean("error");
@@ -273,9 +281,18 @@ public class UserProfileActivity extends AppCompatActivity implements UrlRespons
                         String userId = data.getString("userID");
                         String userFirstName = data.getString("firstName").trim();
                         String phoneString = data.getString("phone").trim(); //json object
+                        Logger.info(TAG, "===========phone ===========" + phoneString);
                         JSONObject phone = new JSONObject(phoneString);
-                        String userMobileNumber = phone.getString("ph").trim(); //mobile number
-                        String mobilePolicy = phone.getString("policy").trim();
+                        try {
+                            userMobileNumber = phone.getString("ph").trim(); //mobile number
+                        } catch (Exception e) {
+
+                        }
+                        try {
+                            mobilePolicy = phone.getString("policy").trim();
+                        } catch (Exception e) {
+
+                        }
                         String profilePolicy = data.getString("privacy").trim();// policy---->public , private, onlyMe
                         String userLastName = data.getString("lastName").trim();
                         String userAddress = data.getString("address").trim();

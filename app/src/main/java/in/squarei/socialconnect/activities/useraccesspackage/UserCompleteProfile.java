@@ -20,6 +20,8 @@ import android.widget.RadioGroup;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.quickblox.users.model.QBUser;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,6 +34,8 @@ import java.util.Map;
 import in.squarei.socialconnect.R;
 import in.squarei.socialconnect.activities.SocialConnectBaseActivity;
 import in.squarei.socialconnect.activities.UserDashboardActivity;
+import in.squarei.socialconnect.chat.QBHelper;
+import in.squarei.socialconnect.chat.QBHelperCallback;
 import in.squarei.socialconnect.interfaces.AppConstants;
 import in.squarei.socialconnect.modals.CommunitiesData;
 import in.squarei.socialconnect.network.ApiURLS;
@@ -51,7 +55,8 @@ import static in.squarei.socialconnect.network.ApiURLS.ApiId.COMMUNITIES_LIST;
 import static in.squarei.socialconnect.network.ApiURLS.ApiId.COMMUNITY_ADD;
 import static in.squarei.socialconnect.network.ApiURLS.ApiId.USER_PROFILE_UPDATE;
 
-public class UserCompleteProfile extends SocialConnectBaseActivity implements RadioGroup.OnCheckedChangeListener, UrlResponseListener, View.OnFocusChangeListener, SearchView.OnQueryTextListener, CompoundButton.OnCheckedChangeListener {
+public class UserCompleteProfile extends SocialConnectBaseActivity implements RadioGroup.OnCheckedChangeListener, UrlResponseListener,
+        View.OnFocusChangeListener, SearchView.OnQueryTextListener, CompoundButton.OnCheckedChangeListener, QBHelperCallback {
 
     private static final String TAG = "UserCompleteProfile";
     private ImageView ivImageUpload;
@@ -83,7 +88,7 @@ public class UserCompleteProfile extends SocialConnectBaseActivity implements Ra
     private Switch switchPhonePolicy;
     private boolean communitiesFetched = false;
     private List<CommunitiesData> communitiesData;
-    private AlertDialog b;
+    private AlertDialog communityListDialog;
     private ListView communitiesList;
     private String[] communities;
     private SearchView searchView;
@@ -92,6 +97,13 @@ public class UserCompleteProfile extends SocialConnectBaseActivity implements Ra
     private String checkedPrivacy;
     private String phonePolicy;
     private String communityId;
+    private QBUser qbUser = new QBUser();
+    private String userMobileNumber;
+    private String userEmailAddress;
+    private String userFullName;
+    private int attempts = 0;
+    private int chatId = 0;
+    private boolean profileUpdated = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -207,7 +219,7 @@ public class UserCompleteProfile extends SocialConnectBaseActivity implements Ra
                 updateUserProfile();
                 break;
             case R.id.btnCommunityList:
-                getListOfCommunities();
+                // getListOfCommunities();
                 break;
             case R.id.btnAddCommunity:
                 addCommunityName();
@@ -267,7 +279,7 @@ public class UserCompleteProfile extends SocialConnectBaseActivity implements Ra
                         if (btnAddCommunity.getVisibility() == View.VISIBLE) {
                             btnAddCommunity.setVisibility(View.GONE);
                         }
-                        getListOfCommunities();
+                        //   getListOfCommunities();
                         break;
                 }
                 break;
@@ -295,6 +307,13 @@ public class UserCompleteProfile extends SocialConnectBaseActivity implements Ra
                 }
                 break;
         }
+    }
+
+    private void setupChatAccount() {
+        qbUser.setFullName(QBHelper.CHAT_NAME);
+        //  qbUser.setLogin(edituser.getText().toString().trim());
+        qbUser.setEmail(editEmailAddress.getText().toString());
+        qbUser.setPassword(QBHelper.CHAT_PASSWORD);
     }
 
     private void updateUserProfile() {
@@ -351,6 +370,9 @@ public class UserCompleteProfile extends SocialConnectBaseActivity implements Ra
             }
             if (communityId != null)
                 paramPost.put("communityID", communityId);
+            if (chatId != 0)
+                paramPost.put("chatid", String.valueOf(chatId));
+
 
             Logger.info(TAG, "============Community ID===========" + communityId);
             String clientiD = SharedPreferenceUtils.getInstance(context).getString(AppConstants.API_KEY);
@@ -465,11 +487,13 @@ public class UserCompleteProfile extends SocialConnectBaseActivity implements Ra
                         String communityName = jsonData.getString("communityName");
                         String firstName = jsonInputs.getString("firstName");
                         String lastName = jsonInputs.getString("lastName");
+                        userFullName = firstName + " " + lastName;
                         if (commId != null && commId != "") {
                             SharedPreferenceUtils.getInstance(context).putBoolean(COMMUNITY_STATUS, true);
                             SharedPreferenceUtils.getInstance(context).putString(COMMUNITY_ID, commId);
                             SharedPreferenceUtils.getInstance(context).putString(COMMUNITY_NAME, communityName);
-                            startActivity(currentActivity, UserDashboardActivity.class);
+                            //      startActivity(currentActivity, UserDashboardActivity.class);////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                            setupChatAccount();
                         }
 
                         if (firstName != "null" && firstName != "") {
@@ -480,6 +504,9 @@ public class UserCompleteProfile extends SocialConnectBaseActivity implements Ra
                             }
                         }
                         toast(message, false);
+                        if (!profileUpdated)
+                            attemptUserChatAccountCreation();
+                        else navigateActivity();
                     } else {
                         toast(message, false);
                     }
@@ -489,6 +516,7 @@ public class UserCompleteProfile extends SocialConnectBaseActivity implements Ra
                 toast("Somethin went wrong... Please try again", false);
             }
         }
+
     }
 
     private void setCommunitiesModal(JSONArray jsonDataArray) {
@@ -520,21 +548,23 @@ public class UserCompleteProfile extends SocialConnectBaseActivity implements Ra
             dialogBuilder.setView(dialogView);
             dialogBuilder.setCancelable(true);
             dialogBuilder.setTitle("Communities");
-            b = dialogBuilder.create();
+            communityListDialog = dialogBuilder.create();
             communitiesList = (ListView) dialogView.findViewById(R.id.listView);
             searchView = (SearchView) dialogView.findViewById(R.id.searchView);
             communitiesListAdapter = new ArrayAdapter(this,
                     android.R.layout.simple_spinner_dropdown_item,
                     communities);
             communitiesList.setAdapter(communitiesListAdapter);
-            b.show();
+            communityListDialog.setCancelable(true);
+            communityListDialog.show();
             communitiesList.setOnItemClickListener(new android.widget.AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Logger.info(TAG, "=====list is clicked===");
                     //   editCommunityName.setText(communitiesData.get(position).getTitle());
                     editCommunityName.setText(communitiesData.get(position).getTitle());
                     communityId = communitiesData.get(position).getId();
-                    b.dismiss();
+                    communityListDialog.cancel();
                 }
             });
             searchView.setOnQueryTextListener(this);
@@ -559,21 +589,29 @@ public class UserCompleteProfile extends SocialConnectBaseActivity implements Ra
             String userCountry = data.getString("country").trim();
             String userZipcode = data.getString("zipCode");
             String userProfilePic = data.getString("profilePic");
-            String userEmailAddress = data.getString("email").trim();
+            userEmailAddress = data.getString("email").trim();
             String userGender = data.getString("gender").trim();
             String profileStatus = data.getString("prof_status").trim();
-
+            String mobile = data.getString("mobile").trim();
+            if (mobile != "")
+                userMobileNumber = mobile;
             ///////////////setting the details/////////////
             editEmailAddress.setText(userEmailAddress);
-            editFirstName.setText(userFirstName);
-            editLastName.setText(userLastName);
+            if (userFirstName != "null" && userFirstName != null)
+                editFirstName.setText(userFirstName);
+            else editFirstName.setText("");
+            if (userLastName != "null" && userLastName != null)
+                editLastName.setText(userLastName);
+            else editFirstName.setText("");
+
             editUserCity.setText(userCity);
             editUserCountry.setText(userCountry);
             editUserState.setText(userState);
             editUserZipcode.setText(userZipcode);
             editUserAddress.setText(userAddress);
             editUserLandmark.setText(userLandmark);
-            editUserMobilenumber.setText(userMobileNumber);
+            //editUserMobilenumber.setText(userMobileNumber);
+            editUserMobilenumber.setText(mobile);
             // setting up the details(radio groups)//
             switch (userGender) {
                 case "Male":
@@ -617,7 +655,16 @@ public class UserCompleteProfile extends SocialConnectBaseActivity implements Ra
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
 
+    private void attemptUserChatAccountCreation() {
+        qbUser.setEmail(userEmailAddress);
+        if (userFullName != null)
+            qbUser.setFullName(userFullName);
+        else qbUser.setFullName(QBHelper.CHAT_NAME);
+        qbUser.setPassword(QBHelper.CHAT_PASSWORD);
+        QBHelper qbHelper = QBHelper.getInstance(context);
+        qbHelper.registerQBUser(qbUser, this);
     }
 
     @Override
@@ -663,5 +710,37 @@ public class UserCompleteProfile extends SocialConnectBaseActivity implements Ra
                 }
                 break;
         }
+    }
+
+    @Override
+    public void onSuccessResult(int id, boolean status, QBUser qbUser) {
+
+        switch (id) {
+            case QBHelper.REGISTER:
+                if (status) {
+                    profileUpdated = true;
+                    chatId = qbUser.getId();
+                    Logger.info(TAG, "================chat id===========" + chatId);
+                    updateUserProfile();
+                    toast("Registered successfully", false);
+                } else {
+                    toast("Registeration error", false);
+                }
+        }
+    }
+
+    @Override
+    public void onFailureResult(int id, boolean status, QBUser qbUser) {
+        switch (id) {
+            case QBHelper.REGISTER:
+                if (attempts <= 3) {
+                    attempts++;
+                    attemptUserChatAccountCreation();
+                } else navigateActivity();
+        }
+    }
+
+    private void navigateActivity() {
+        startActivity(currentActivity, UserDashboardActivity.class);
     }
 }

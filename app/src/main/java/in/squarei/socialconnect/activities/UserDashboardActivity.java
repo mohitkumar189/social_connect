@@ -271,8 +271,9 @@ public class UserDashboardActivity extends SocialConnectBaseActivity implements 
                 break;
             case R.id.nav_user_chat:
                 drawer.closeDrawer(navigationView);
-                switchContent(R.id.fragment_container, userChatsFragment, false, false, "userChatsFragment");
-                settingTitle(getResources().getString(R.string.chat_fragment));
+                startActivity(currentActivity, UserChatActivity.class);
+                //  switchContent(R.id.fragment_container, userChatsFragment, false, false, "userChatsFragment");
+                // settingTitle(getResources().getString(R.string.chat_fragment));
                 break;
             case R.id.nav_user_friends:
                 drawer.closeDrawer(navigationView);
@@ -281,13 +282,15 @@ public class UserDashboardActivity extends SocialConnectBaseActivity implements 
                 break;
             case R.id.nav_user_notice:
                 drawer.closeDrawer(navigationView);
-                switchContent(R.id.fragment_container, userNoticeFragment, false, false, "userNoticeFragment");
-                settingTitle(getResources().getString(R.string.notice_fragment));
+                startActivity(currentActivity, NotificationActivity.class);
+                //  switchContent(R.id.fragment_container, userNoticeFragment, false, false, "userNoticeFragment");
+                //   settingTitle(getResources().getString(R.string.notice_fragment));
                 break;
             case R.id.nav_user_updates:
                 drawer.closeDrawer(navigationView);
-                switchContent(R.id.fragment_container, userUpdatesFragment, false, false, "userUpdatesFragment");
-                settingTitle(getResources().getString(R.string.update_fragment));
+                startActivity(currentActivity, UserUpdateActivity.class);
+                //   switchContent(R.id.fragment_container, userUpdatesFragment, false, false, "userUpdatesFragment");
+                //  settingTitle(getResources().getString(R.string.update_fragment));
                 break;
             case R.id.nav_logout:
                 SharedPreferenceUtils.getInstance(context).putBoolean(IS_LOGIN, false);

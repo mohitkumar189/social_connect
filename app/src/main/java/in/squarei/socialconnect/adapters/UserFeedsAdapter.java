@@ -37,10 +37,10 @@ public class UserFeedsAdapter extends RecyclerView.Adapter<UserFeedsAdapter.MyVi
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(context)
-                .inflate(R.layout.top_view_users_post, parent, false);
-
+                .inflate(R.layout.row_users_post, parent, false);
         return new UserFeedsAdapter.MyViewHolder(itemView);
     }
+
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
@@ -61,6 +61,7 @@ public class UserFeedsAdapter extends RecyclerView.Adapter<UserFeedsAdapter.MyVi
     public int getItemCount() {
         return userFeedsData.size();
     }
+
 
     class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView tvPostedBy, tvPostTitle, tvUserComments, tvUserLikes, tvUserShares;

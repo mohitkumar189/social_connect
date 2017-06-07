@@ -2,8 +2,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/screen_background"
-    tools:context="in.squarei.socialconnect.fragments.appIntro.FragmentTwoAppIntro">
 
+    tools:context="in.squarei.socialconnect.fragments.appIntro.FragmentTwoAppIntro">
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:src="@drawable/intro_2"/>
 
 </FrameLayout>
