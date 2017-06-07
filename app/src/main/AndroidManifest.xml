@@ -92,7 +92,8 @@
         <activity android:name=".activities.UserUpdateActivity" />
         <activity android:name=".activities.UserChatActivity" />
         <activity android:name=".activities.useraccesspackage.UserPinResetActivity" />
-        <activity android:name=".activities.useraccesspackage.UserPinEnterActivity"></activity>
+        <activity android:name=".activities.useraccesspackage.UserPinEnterActivity" />
+        <activity android:name=".activities.ChatDetailActivity"></activity>
     </application>
 
 </manifest>

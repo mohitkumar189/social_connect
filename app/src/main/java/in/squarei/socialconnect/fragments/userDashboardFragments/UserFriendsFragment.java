@@ -66,6 +66,8 @@ public class UserFriendsFragment extends SocialConnectBaseFragment implements Ur
 
     @Override
     protected void initViews() {
+        usersListData = new ArrayList<>();
+        usersSuggestionListData = new ArrayList<>();
         recyclerViewFriendsList = (RecyclerView) currentActivity.findViewById(R.id.recyclerViewFriendsList);
         recyclerViewSuggestedFriendsList = (RecyclerView) currentActivity.findViewById(R.id.recyclerViewSuggestedFriendsList);
     }
@@ -89,8 +91,7 @@ public class UserFriendsFragment extends SocialConnectBaseFragment implements Ur
     }
 
     private void fetchAllFriendsData() {
-        usersListData = new ArrayList<>();
-        usersSuggestionListData = new ArrayList<>();
+
         Map<String, String> headerParams = new HashMap<>();
         clientiD = SharedPreferenceUtils.getInstance(context).getString(AppConstants.API_KEY);
 
@@ -210,7 +211,7 @@ public class UserFriendsFragment extends SocialConnectBaseFragment implements Ur
                             profilePic = userData.getString("profilePic");
                             updatedOn = userData.getString("updatedOn");
                             connectedOn = userData.getString("connectedOn");
-                            usersListData.add(new UsersListData(requestId, firstName + " " + lastName, null, profilePic, null, false));
+                            usersListData.add(new UsersListData(requestId, firstName + " " + lastName, null, profilePic, null, false, null));
                         }
                         userFriendListAdapter.notifyDataSetChanged();
                     }
@@ -250,7 +251,7 @@ public class UserFriendsFragment extends SocialConnectBaseFragment implements Ur
                             //        shared = userData.getString("shared");
                             prof_status = userData.getString("prof_status");
                             //    user_type = userData.getString("user_type");
-                            usersSuggestionListData.add(new UsersListData(userid, firstName + " " + lastName, prof_status, profilePic, "123", false));
+                            usersSuggestionListData.add(new UsersListData(userid, firstName + " " + lastName, prof_status, profilePic, "123", false, null));
                         }
                         userSuggestionFriendListAdapter = new UserFriendsSuggestionAdapter(usersSuggestionListData, context, this);
                         recyclerViewSuggestedFriendsList.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
@@ -296,7 +297,7 @@ public class UserFriendsFragment extends SocialConnectBaseFragment implements Ur
                             shared = userData.getString("shared");
                             prof_status = userData.getString("prof_status");
                             user_type = userData.getString("user_type");
-                            usersListData.add(new UsersListData(userid, firstName + " " + lastName, prof_status, profilePic, user_type, true));
+                            usersListData.add(new UsersListData(userid, firstName + " " + lastName, prof_status, profilePic, user_type, true, null));
 /*
                             if (user_type.equals("0")) {
                                 usersListData.add(new UsersListData(userid, firstName + " " + lastName, prof_status, profilePic, user_type, false));
@@ -342,23 +343,23 @@ public class UserFriendsFragment extends SocialConnectBaseFragment implements Ur
                 startActivity(intent);
                 break;
             case 2:
-              //  toast(context, "add");
+                //  toast(context, "add");
                 acceptFriendRequest(usersListData.get(position).getUserId());
                 break;
             case 3:
-              //  toast(context, "remove");
+                //  toast(context, "remove");
                 rejectFriendRequest(usersListData.get(position).getUserId());
                 break;
             case 5:
-               // toast(context, "send request");
+                // toast(context, "send request");
                 suggestionPosition = position;
                 sendFriendRequest(usersSuggestionListData.get(position).getUserId());
                 break;
             case 6:
-             //   toast(context, "remove suggestion");
+                //   toast(context, "remove suggestion");
                 usersSuggestionListData.remove(position);
                 userSuggestionFriendListAdapter.notifyDataSetChanged();
-             //   rejectFriendRequest(usersSuggestionListData.get(position).getUserId());
+                //   rejectFriendRequest(usersSuggestionListData.get(position).getUserId());
                 break;
         }
     }

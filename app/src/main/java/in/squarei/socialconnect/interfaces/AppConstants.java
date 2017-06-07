@@ -29,6 +29,8 @@ public interface AppConstants {
     String COMMUNITY_NAME = "communityName";
     String FIREBASE_TOKEN = "firebasetoken";
     String FIREBASE_STATUS = "firebasestatus";
+    String CHAT_ID_STATUS = "chatidstatus";
+    String CHAT_ID = "chatid";
 
     //Menu IDs
     int MENU_PROFILE_ID = 2000;

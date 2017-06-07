@@ -38,6 +38,8 @@ import in.squarei.socialconnect.utils.Logger;
 import in.squarei.socialconnect.utils.SharedPreferenceUtils;
 import in.squarei.socialconnect.utils.Validator;
 
+import static in.squarei.socialconnect.interfaces.AppConstants.CHAT_ID;
+import static in.squarei.socialconnect.interfaces.AppConstants.CHAT_ID_STATUS;
 import static in.squarei.socialconnect.interfaces.AppConstants.COMMUNITY_ID;
 import static in.squarei.socialconnect.interfaces.AppConstants.COMMUNITY_NAME;
 import static in.squarei.socialconnect.interfaces.AppConstants.COMMUNITY_STATUS;
@@ -65,6 +67,7 @@ public class UserLoginActivity extends SocialConnectBaseActivity implements UrlR
     private String userLastName;
     private String communityName;
     private String communityId;
+    private String chatid;
     // These are for dialog to enter OTP///
     private EditText editPassDigitOne, editPassDigitTwo, editPassDigitThree, editPassDigitFour;
 
@@ -217,6 +220,7 @@ public class UserLoginActivity extends SocialConnectBaseActivity implements UrlR
                         userLastName = jsonDataObject.getString("lastName");
                         communityId = jsonDataObject.getString("communityID");
                         communityName = jsonDataObject.getString("community");
+                        chatid = jsonDataObject.getString("chatid");
                         Logger.info(TAG, "===========================================USER PIN" + userpinPassword);
                         toast(message, false);
                         if (userpinPassword == "null" || userpinPassword.length() == 0) {
@@ -251,6 +255,13 @@ public class UserLoginActivity extends SocialConnectBaseActivity implements UrlR
                             if (userLastName != "null" || userLastName.length() != 0) {
                                 SharedPreferenceUtils.getInstance(context).putString(USER_LAST_NAME, userLastName);
                             }
+                        }
+                        if (chatid.length() > 4) {
+                            SharedPreferenceUtils.getInstance(context).putString(CHAT_ID, chatid);
+                            SharedPreferenceUtils.getInstance(context).putBoolean(CHAT_ID_STATUS, true);
+                        } else {
+                            SharedPreferenceUtils.getInstance(context).putBoolean(CHAT_ID_STATUS, false);
+
                         }
                         //  intent.putExtra("actionType", AppConstants.IntentTypes.SET_USER_PIN);
                         onLoginSuccess(intent); /// go to onlogin success and save required properties
