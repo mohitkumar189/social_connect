@@ -121,8 +121,11 @@ public abstract class SocialConnectBaseActivity extends AppCompatActivity
         }
 // Setting Navigation View//
         if (isNavigationView()) {
+            drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
             navigationView.setNavigationItemSelectedListener(this);
         } else {
+            drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+            // navigationView.setEnabled(false);
             navigationView.setVisibility(View.GONE);
         }
 

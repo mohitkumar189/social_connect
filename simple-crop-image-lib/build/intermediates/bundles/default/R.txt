@@ -12,7 +12,6 @@ int id rotateLeft 0x7f060002
 int id rotateRight 0x7f060003
 int id save 0x7f060004
 int layout cropimage 0x7f030000
-int layout main 0x7f030001
 int string cancel 0x7f040000
 int string no_storage_card 0x7f040001
 int string not_enough_space 0x7f040002

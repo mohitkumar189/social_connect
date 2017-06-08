@@ -43,6 +43,7 @@ import static in.squarei.socialconnect.interfaces.AppConstants.CHAT_ID_STATUS;
 import static in.squarei.socialconnect.interfaces.AppConstants.COMMUNITY_ID;
 import static in.squarei.socialconnect.interfaces.AppConstants.COMMUNITY_NAME;
 import static in.squarei.socialconnect.interfaces.AppConstants.COMMUNITY_STATUS;
+import static in.squarei.socialconnect.interfaces.AppConstants.EMAIL;
 import static in.squarei.socialconnect.interfaces.AppConstants.FIREBASE_STATUS;
 import static in.squarei.socialconnect.interfaces.AppConstants.PROFILE_STATUS;
 import static in.squarei.socialconnect.interfaces.AppConstants.USER_FIRST_NAME;
@@ -68,6 +69,7 @@ public class UserLoginActivity extends SocialConnectBaseActivity implements UrlR
     private String communityName;
     private String communityId;
     private String chatid;
+    private String email = null;
     // These are for dialog to enter OTP///
     private EditText editPassDigitOne, editPassDigitTwo, editPassDigitThree, editPassDigitFour;
 
@@ -213,8 +215,10 @@ public class UserLoginActivity extends SocialConnectBaseActivity implements UrlR
                     Logger.info(TAG, "Command result====" + jsonObject);
                     if (success == 1) {
                         JSONObject jsonDataObject = jsonObject.getJSONObject("data");
+                        Logger.info(TAG, "==========jsonDataObject=========" + jsonDataObject);
                         userId = jsonDataObject.getString("id");
                         apiKey = jsonDataObject.getString("apiKey");
+                        email = jsonDataObject.getString("email");
                         userpinPassword = jsonDataObject.getString("pinPassword");
                         userFirstName = jsonDataObject.getString("firstName");
                         userLastName = jsonDataObject.getString("lastName");
@@ -257,11 +261,16 @@ public class UserLoginActivity extends SocialConnectBaseActivity implements UrlR
                             }
                         }
                         if (chatid.length() > 4) {
-                            SharedPreferenceUtils.getInstance(context).putString(CHAT_ID, chatid);
+                            SharedPreferenceUtils.getInstance(context).putInteger(CHAT_ID, Integer.parseInt(chatid));
                             SharedPreferenceUtils.getInstance(context).putBoolean(CHAT_ID_STATUS, true);
                         } else {
                             SharedPreferenceUtils.getInstance(context).putBoolean(CHAT_ID_STATUS, false);
 
+                        }
+
+                        if (jsonDataObject.getString("email") != null) {
+                            Logger.info(TAG, "=============saved email==============" + jsonDataObject.getString("email"));
+                            SharedPreferenceUtils.getInstance(context).putString(EMAIL, jsonDataObject.getString("email"));
                         }
                         //  intent.putExtra("actionType", AppConstants.IntentTypes.SET_USER_PIN);
                         onLoginSuccess(intent); /// go to onlogin success and save required properties

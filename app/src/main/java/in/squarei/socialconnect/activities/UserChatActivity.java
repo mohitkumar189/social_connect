@@ -9,6 +9,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.quickblox.users.model.QBUser;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,6 +23,8 @@ import java.util.Map;
 import in.squarei.socialconnect.R;
 import in.squarei.socialconnect.adapters.ChatAdapter;
 import in.squarei.socialconnect.adapters.UserFriendsListAdapter;
+import in.squarei.socialconnect.chat.QBHelper;
+import in.squarei.socialconnect.chat.QBHelperCallback;
 import in.squarei.socialconnect.interfaces.AppConstants;
 import in.squarei.socialconnect.interfaces.ItemClickListener;
 import in.squarei.socialconnect.modals.UsersListData;
@@ -31,7 +35,7 @@ import in.squarei.socialconnect.utils.Logger;
 import in.squarei.socialconnect.utils.SharedPreferenceUtils;
 import in.squarei.socialconnect.utils.Validator;
 
-public class UserChatActivity extends SocialConnectBaseActivity implements ItemClickListener, UrlResponseListener {
+public class UserChatActivity extends SocialConnectBaseActivity implements ItemClickListener, UrlResponseListener, QBHelperCallback {
     private RecyclerView recyclerView;
     private List<String> chatData;
     private ChatAdapter chatAdapter;
@@ -159,7 +163,17 @@ public class UserChatActivity extends SocialConnectBaseActivity implements ItemC
     public void onResponseReceived(ApiURLS.ApiId apiId, String stringResponse) {
         if (apiId == ApiURLS.ApiId.USER_FRIENDS_LIST) {
             updateUsersList(stringResponse);
+            createSession();
         }
+    }
+
+    private void createSession() {
+        QBUser qbUser = new QBUser();
+        qbUser.setEmail(SharedPreferenceUtils.getInstance(context).getString(AppConstants.EMAIL));
+        qbUser.setPassword(QBHelper.CHAT_PASSWORD);
+        Logger.info(TAG, "============QBUSER============" + qbUser);
+        QBHelper.getInstance(context).loginAndSessionCreate(qbUser, this);
+        //   QBHelper.getInstance(context).monitorSession(qbUser);
     }
 
     @Override
@@ -214,4 +228,13 @@ public class UserChatActivity extends SocialConnectBaseActivity implements ItemC
         }
     }
 
+    @Override
+    public void onSuccessResult(int id, boolean status, QBUser qbUser) {
+
+    }
+
+    @Override
+    public void onFailureResult(int id, boolean status, QBUser qbUser) {
+
+    }
 }

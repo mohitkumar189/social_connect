@@ -27,6 +27,7 @@ public interface AppConstants {
     String COMMUNITY_STATUS = "communitySet";
     String COMMUNITY_ID = "communityId";
     String COMMUNITY_NAME = "communityName";
+    String EMAIL = "email";
     String FIREBASE_TOKEN = "firebasetoken";
     String FIREBASE_STATUS = "firebasestatus";
     String CHAT_ID_STATUS = "chatidstatus";

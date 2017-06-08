@@ -8,9 +8,9 @@
     <color name="green">#5ba228</color>
     <color name="text_hint_color">#8e8e8e</color>
     <color name="text_input_color">#3c3c3c</color>
-    <color name="text_color">#2c2c2c</color>
+    <color name="text_color">#4d4d4d</color>
     <color name="background">#dbdee3</color>
-    <color name="text_color_grey">#9ea1aa</color>
+    <color name="text_color_grey">#8f98a1</color>
     <color name="view_color">#c2c2c2</color>
 
 </resources>

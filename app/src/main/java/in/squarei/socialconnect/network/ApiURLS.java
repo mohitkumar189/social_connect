@@ -14,7 +14,7 @@ public class ApiURLS {
     public static final int REQUEST_PUT = Request.Method.PUT;
     public static final int REQUEST_DELETE = Request.Method.DELETE;
 
-    public static final String BASE_URL = "http://squarei.in/api/v1/";
+    public static final String BASE_URL = "http://www.squarei.in/api/v1/";
 
     public static final String LOGIN_URL = BASE_URL + "login"; //RequestMethod===>POST
     public static final String REGISTER_URL = BASE_URL + "register ";

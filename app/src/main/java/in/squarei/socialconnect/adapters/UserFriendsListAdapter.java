@@ -85,8 +85,8 @@ public class UserFriendsListAdapter extends RecyclerView.Adapter<UserFriendsList
             tvUserType.setText(usersListData.getUserType());
             Picasso.with(ctx)
                     .load(usersListData.getUserProfilePic())
-                    .placeholder(ctx.getResources().getDrawable(R.drawable.man)) //this is optional the image to display while the url image is downloading
-                    .error(ctx.getResources().getDrawable(R.drawable.man))         //this is also optional if some error has occurred in downloading the image this image would be displayed
+                    .placeholder(ctx.getResources().getDrawable(R.drawable.user)) //this is optional the image to display while the url image is downloading
+                    .error(ctx.getResources().getDrawable(R.drawable.user))         //this is also optional if some error has occurred in downloading the image this image would be displayed
                     .into(ivUserProfile);
 
             if (!usersListData.isFriend()) {

@@ -52,4 +52,5 @@
     <dimen name="margin_18">18dp</dimen>
     <dimen name="dp_8">8dp</dimen>
     <dimen name="dp14">14dp</dimen>
+    <dimen name="dp3">3dp</dimen>
 </resources>

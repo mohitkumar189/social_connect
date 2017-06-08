@@ -225,7 +225,7 @@ public class FriendProfileActivity extends SocialConnectBaseActivity implements 
                         String mobilePolicy = phone.getString("policy");
                         String profileStatus = profileData.getString("prof_status");
                         String privacy = profileData.getString("privacy");
-                        String email = profileData.getString("alternateEmail");
+                        String email = profileData.getString("email");
 
                         tvUserName.setText(firstName + " " + lastName);
                         if (profileStatus != null) tvUserStatus.setText(profileStatus);
@@ -237,7 +237,7 @@ public class FriendProfileActivity extends SocialConnectBaseActivity implements 
                         Picasso.with(context)
                                 .load(profilePic)
                                 .placeholder(context.getResources().getDrawable(R.drawable.user)) //this is optional the image to display while the url image is downloading
-                                .error(context.getResources().getDrawable(R.drawable.man))         //this is also optional if some error has occurred in downloading the image this image would be displayed
+                                .error(context.getResources().getDrawable(R.drawable.user))         //this is also optional if some error has occurred in downloading the image this image would be displayed
                                 .into(ivUserProfilePic);
                     } else {
 
