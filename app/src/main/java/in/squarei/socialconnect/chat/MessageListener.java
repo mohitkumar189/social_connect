@@ -6,6 +6,8 @@ package in.squarei.socialconnect.chat;
 
 public interface MessageListener {
     void onSent();
-    void onFailed();
+
+    void onReceived(String message);
+
     void onError();
 }

@@ -1,12 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+
+<!--
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tabs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:tabMode="scrollable"
+            app:tabGravity="fill"/>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"  />
+</android.support.design.widget.CoordinatorLayout>
+
+
+-->
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <FrameLayout
-        android:id="@+id/fragment_container"
+
+    <!--
+        <FrameLayout
+            android:id="@+id/fragment_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/tabs"> </FrameLayout>-->
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewpager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_below="@+id/tabs" />
+
 
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/scrollview"
@@ -15,7 +65,7 @@
         android:background="#99222222"
         android:fillViewport="true"
         android:scrollbars="none"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -34,7 +84,7 @@
                     android:layout_height="40dp"
                     android:layout_gravity="center_horizontal"
                     android:padding="@dimen/dp5"
-                    android:src="@drawable/home" />
+                    android:src="@drawable/home_home" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -62,7 +112,7 @@
                     android:layout_height="40dp"
                     android:layout_gravity="center_horizontal"
                     android:padding="@dimen/dp5"
-                    android:src="@drawable/chat" />
+                    android:src="@drawable/chat_home" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -90,7 +140,7 @@
                     android:layout_height="40dp"
                     android:layout_gravity="center_horizontal"
                     android:padding="@dimen/dp5"
-                    android:src="@drawable/friends" />
+                    android:src="@drawable/friends_home" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -135,7 +185,7 @@
                 android:background="@color/view_color" />
 
             <LinearLayout
-                android:id="@+id/ll_work"
+                android:id="@+id/ll_updates"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -152,7 +202,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:text="Work"
+                    android:text="Updates"
                     android:textColor="@color/white" />
 
             </LinearLayout>
@@ -163,7 +213,7 @@
                 android:background="@color/view_color" />
 
             <LinearLayout
-                android:id="@+id/ll_setting"
+                android:id="@+id/ll_profile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -174,13 +224,13 @@
                     android:layout_height="40dp"
                     android:layout_gravity="center_horizontal"
                     android:padding="@dimen/dp5"
-                    android:src="@drawable/setting" />
+                    android:src="@drawable/profile_home" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:text="Setting"
+                    android:text="Profile"
                     android:textColor="@color/white" />
 
             </LinearLayout>
@@ -195,7 +245,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="@dimen/dp_10">
+                android:padding="@dimen/dp_10"
+                android:visibility="gone">
 
                 <ImageView
                     android:layout_width="40dp"
@@ -216,7 +267,8 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/view_color" />
+                android:background="@color/view_color"
+                android:visibility="gone" />
         </LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>
@@ -229,6 +281,6 @@
         android:layout_toRightOf="@+id/scrollview"
         android:scaleType="fitXY"
         android:src="@drawable/image_arrow"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
 </RelativeLayout>

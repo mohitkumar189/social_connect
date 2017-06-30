@@ -6,13 +6,16 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:name=".socialConnectApplication.SocialConnectApplication"
         android:allowBackup="true"
+        android:hardwareAccelerated="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name="eu.janmuller.android.simplecropimage.CropImage" />
@@ -20,6 +23,9 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@mipmap/ic_launcher" />
+        <meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="AIzaSyAT6k_aK8ZpsLQjNJH4R_GLqiG_4rpitVk" />
         <!--
              Set color used with incoming notification messages. This is used when no color is set for the incoming
              notification message. See README(https://goo.gl/6BKBk7) for more.
@@ -47,7 +53,8 @@
         <activity
             android:name=".activities.useraccesspackage.UserPassActivity"
             android:noHistory="true"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".activities.useraccesspackage.AppIntroActivity"
             android:noHistory="true"
@@ -84,16 +91,63 @@
             android:name=".activities.UserProfileActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
-        <activity android:name=".activities.FriendProfileActivity" />
-        <activity android:name=".activities.UploadPostActivity" />
-        <activity android:name=".activities.useraccesspackage.EnterOTPActivity" />
-        <activity android:name=".activities.useraccesspackage.UserCompleteProfile" />
-        <activity android:name=".activities.NotificationActivity" />
-        <activity android:name=".activities.UserUpdateActivity" />
-        <activity android:name=".activities.UserChatActivity" />
-        <activity android:name=".activities.useraccesspackage.UserPinResetActivity" />
-        <activity android:name=".activities.useraccesspackage.UserPinEnterActivity" />
-        <activity android:name=".activities.ChatDetailActivity"></activity>
+        <activity
+            android:name=".activities.FriendProfileActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".activities.UploadPostActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".activities.useraccesspackage.EnterOTPActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".activities.useraccesspackage.UserCompleteProfile"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".activities.NotificationActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".activities.UserUpdateActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".activities.UserChatActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".activities.useraccesspackage.UserPinResetActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".activities.useraccesspackage.UserPinEnterActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".activities.ChatDetailActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".activities.LandmarkCityActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme">
+            <intent-filter>
+                <action android:name="in.squarei.socialconnect.services" />
+            </intent-filter>
+        </activity>
+
+        <service android:name=".services.LocationService" />
+
+        <activity
+            android:name=".activities.ActivityLandmarkCityDetail"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity android:name=".activities.CrmActivity" />
+        <activity android:name=".activities.DsrActivity"></activity>
     </application>
 
 </manifest>

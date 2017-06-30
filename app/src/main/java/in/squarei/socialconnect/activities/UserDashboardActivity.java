@@ -3,16 +3,22 @@ package in.squarei.socialconnect.activities;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AlertDialog;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -21,6 +27,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.HeaderViewListAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -33,6 +40,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import in.squarei.socialconnect.R;
+import in.squarei.socialconnect.adapters.ViewPagerAdapter;
 import in.squarei.socialconnect.fragments.userDashboardFragments.UserChatsFragment;
 import in.squarei.socialconnect.fragments.userDashboardFragments.UserFeedsFragment;
 import in.squarei.socialconnect.fragments.userDashboardFragments.UserFriendsFragment;
@@ -43,6 +51,7 @@ import in.squarei.socialconnect.network.ApiURLS;
 import in.squarei.socialconnect.network.UrlResponseListener;
 import in.squarei.socialconnect.network.VolleyNetworkRequestHandler;
 import in.squarei.socialconnect.utils.CommonUtils;
+import in.squarei.socialconnect.utils.CustomTypefaceSpan;
 import in.squarei.socialconnect.utils.Logger;
 import in.squarei.socialconnect.utils.SharedPreferenceUtils;
 
@@ -56,7 +65,7 @@ import static in.squarei.socialconnect.interfaces.AppConstants.USER_FIRST_NAME;
 import static in.squarei.socialconnect.interfaces.AppConstants.USER_LAST_NAME;
 import static in.squarei.socialconnect.network.ApiURLS.USER_UPDATE;
 
-public class UserDashboardActivity extends SocialConnectBaseActivity implements UrlResponseListener {
+public class UserDashboardActivity extends SocialConnectBaseActivity implements UrlResponseListener, TabLayout.OnTabSelectedListener {
 
     private static final String TAG = "UserDashboardActivity";
     String[] PERMISSIONS = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_NETWORK_STATE,
@@ -75,6 +84,9 @@ public class UserDashboardActivity extends SocialConnectBaseActivity implements 
     private ImageView image_show;
     private NestedScrollView scrollview;
     private TextView tvNavUserCommunityName;
+    private TabLayout tabs;
+    private ViewPager viewpager;
+    private LinearLayout ll_profile, ll_updates, ll_notice, ll_friends, ll_chat, ll_home;
 
     public static boolean hasPermissions(Context context, String... permissions) {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
@@ -87,6 +99,33 @@ public class UserDashboardActivity extends SocialConnectBaseActivity implements 
         return true;
     }
 
+    private void changeFonts() {
+        Menu m = navigationView.getMenu();
+        for (int i = 0; i < m.size(); i++) {
+            MenuItem mi = m.getItem(i);
+
+            //for aapplying a font to subMenu ...
+            SubMenu subMenu = mi.getSubMenu();
+            if (subMenu != null && subMenu.size() > 0) {
+                for (int j = 0; j < subMenu.size(); j++) {
+                    MenuItem subMenuItem = subMenu.getItem(j);
+                    applyFontToMenuItem(subMenuItem);
+                }
+            }
+
+            //the method we have create in activity
+            applyFontToMenuItem(mi);
+        }
+    }
+
+    private void applyFontToMenuItem(MenuItem mi1) {
+        Typeface font = Typeface.createFromAsset(context.getAssets(), "gotham.ttf");
+        SpannableString mNewTitle = new SpannableString(mi1.getTitle());
+        mNewTitle.setSpan(new CustomTypefaceSpan("", font), 0, mNewTitle.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        mi1.setTitle(mNewTitle);
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,10 +134,12 @@ public class UserDashboardActivity extends SocialConnectBaseActivity implements 
         if (!hasPermissions(this, PERMISSIONS)) {
             ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
         }
-        switchContent(R.id.fragment_container, userFeedsFragment, true, false, "userFeedFragment");
+        //  switchContent(R.id.fragment_container, userFeedsFragment, true, false, "userFeedFragment");
         navigationView.setCheckedItem(R.id.nav_user_feeds);
-        settingTitle(getResources().getString(R.string.feed_fragment));
-        checkForProfileCompleteDialog();
+      //  settingTitle(getResources().getString(R.string.feed_fragment));
+        settingTitle("LANDMARK CITY");
+        //checkForProfileCompleteDialog();
+        changeFonts();
     }
 
     private void checkForProfileCompleteDialog() {
@@ -142,7 +183,6 @@ public class UserDashboardActivity extends SocialConnectBaseActivity implements 
         });
     }
 
-
     private void settingNavigationView() {
         navigationView.getMenu().clear();
         //  navigationView.removeAllViews();
@@ -179,8 +219,18 @@ public class UserDashboardActivity extends SocialConnectBaseActivity implements 
 
     @Override
     protected void initViews() {
+        tabs = (TabLayout) findViewById(R.id.tabs);
+        viewpager = (ViewPager) findViewById(R.id.viewpager);
+        tabs.setupWithViewPager(viewpager);
+        ll_profile = (LinearLayout) findViewById(R.id.ll_profile);
+        ll_updates = (LinearLayout) findViewById(R.id.ll_updates);
+        ll_notice = (LinearLayout) findViewById(R.id.ll_notice);
+        ll_friends = (LinearLayout) findViewById(R.id.ll_friends);
+        ll_chat = (LinearLayout) findViewById(R.id.ll_chat);
+        ll_home = (LinearLayout) findViewById(R.id.ll_home);
+
         String token = FirebaseInstanceId.getInstance().getToken();
-        fragment_container = (FrameLayout) findViewById(R.id.fragment_container);
+        //fragment_container = (FrameLayout) findViewById(R.id.fragment_container);
         Logger.info(TAG, "============Token==========" + token);
         scrollview = (NestedScrollView) findViewById(R.id.scrollview);
         image_show = (ImageView) findViewById(R.id.image_show);
@@ -197,13 +247,26 @@ public class UserDashboardActivity extends SocialConnectBaseActivity implements 
 
         //  image_show.bringToFront();
         // scrollview.bringToFront();
+        setupViewPager();
+
+        tabs.addOnTabSelectedListener(this);
+    }
+
+    private void setupViewPager() {
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        adapter.addFragment(new UserFeedsFragment(), "LANDMARK CITY");
+        adapter.addFragment(new UserChatsFragment(), "CHATS");
+        adapter.addFragment(new UserFriendsFragment(), "FRIENDS");
+        adapter.addFragment(new UserNoticeFragment(), "NOTICES");
+        adapter.addFragment(new UserUpdatesFragment(), "UPDATES");
+        viewpager.setAdapter(adapter);
     }
 
     @Override
     protected void initContext() {
         context = UserDashboardActivity.this;
         currentActivity = UserDashboardActivity.this;
-        initObjects();
+        //  initObjects();
     }
 
     private void initObjects() {
@@ -225,6 +288,12 @@ public class UserDashboardActivity extends SocialConnectBaseActivity implements 
 
     @Override
     protected void initListners() {
+        ll_profile.setOnClickListener(this);
+        ll_updates.setOnClickListener(this);
+        ll_notice.setOnClickListener(this);
+        ll_friends.setOnClickListener(this);
+        ll_chat.setOnClickListener(this);
+        ll_home.setOnClickListener(this);
     }
 
     @Override
@@ -244,7 +313,7 @@ public class UserDashboardActivity extends SocialConnectBaseActivity implements 
 
     @Override
     protected boolean isTabs() {
-        return false;
+        return true;
     }
 
     @Override
@@ -260,43 +329,49 @@ public class UserDashboardActivity extends SocialConnectBaseActivity implements 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.nav_user_profile:
-                drawer.closeDrawer(navigationView);
-                startActivity(this, UserProfileActivity.class);
-                break;
             case R.id.nav_user_feeds:
                 drawer.closeDrawer(navigationView);
-                switchContent(R.id.fragment_container, userFeedsFragment, false, false, "userFeedFragment");
+                viewpager.setCurrentItem(0);
+                //   switchContent(R.id.fragment_container, userFeedsFragment, false, false, "userFeedFragment");
                 settingTitle(getResources().getString(R.string.feed_fragment));
                 break;
             case R.id.nav_user_chat:
                 drawer.closeDrawer(navigationView);
-                startActivity(currentActivity, UserChatActivity.class);
+                //  startActivity(currentActivity, UserChatActivity.class);
+                viewpager.setCurrentItem(1);
+
                 //  switchContent(R.id.fragment_container, userChatsFragment, false, false, "userChatsFragment");
                 // settingTitle(getResources().getString(R.string.chat_fragment));
                 break;
             case R.id.nav_user_friends:
                 drawer.closeDrawer(navigationView);
-                switchContent(R.id.fragment_container, userFriendsFragment, false, false, "userFriendsFragment");
+                viewpager.setCurrentItem(2);
+                //switchContent(R.id.fragment_container, userFriendsFragment, false, false, "userFriendsFragment");
                 settingTitle(getResources().getString(R.string.friends_fragment));
                 break;
             case R.id.nav_user_notice:
                 drawer.closeDrawer(navigationView);
-                startActivity(currentActivity, NotificationActivity.class);
+                //  startActivity(currentActivity, NotificationActivity.class);
+                viewpager.setCurrentItem(3);
                 //  switchContent(R.id.fragment_container, userNoticeFragment, false, false, "userNoticeFragment");
                 //   settingTitle(getResources().getString(R.string.notice_fragment));
                 break;
             case R.id.nav_user_updates:
                 drawer.closeDrawer(navigationView);
-                startActivity(currentActivity, UserUpdateActivity.class);
+                //  startActivity(currentActivity, UserUpdateActivity.class);
+                viewpager.setCurrentItem(4);
                 //   switchContent(R.id.fragment_container, userUpdatesFragment, false, false, "userUpdatesFragment");
                 //  settingTitle(getResources().getString(R.string.update_fragment));
                 break;
+            case R.id.nav_user_profile:
+                drawer.closeDrawer(navigationView);
+                startActivity(this, UserProfileActivity.class);
+                break;
             case R.id.nav_logout:
                 SharedPreferenceUtils.getInstance(context).putBoolean(IS_LOGIN, false);
-                SharedPreferenceUtils.getInstance(context).putBoolean(PROFILE_STATUS, false);
-                SharedPreferenceUtils.getInstance(context).putString(USER_FIRST_NAME, "");
-                SharedPreferenceUtils.getInstance(context).putString(USER_LAST_NAME, "");
+                //  SharedPreferenceUtils.getInstance(context).putBoolean(PROFILE_STATUS, false);
+                // SharedPreferenceUtils.getInstance(context).putString(USER_FIRST_NAME, "");
+                // SharedPreferenceUtils.getInstance(context).putString(USER_LAST_NAME, "");
                 startActivity(currentActivity, SplashActivity.class);
                 finish();
                 break;
@@ -309,21 +384,51 @@ public class UserDashboardActivity extends SocialConnectBaseActivity implements 
 
     @Override
     public void onClick(View v) {
-
         switch (v.getId()) {
             case R.id.image_show:
-                if (isVisible) {
-                    // scrollview.setVisibility(View.GONE);
-                    hideAnimation();
-                    isVisible = false;
-                } else {
-                    //  scrollview.setVisibility(View.VISIBLE);
-                    showAnimation();
-                    isVisible = true;
-                }
+                hideHome();
                 break;
+            case R.id.ll_profile:
+                startActivity(this, UserProfileActivity.class);
+                hideHome();
+                break;
+            case R.id.ll_updates:
+                viewpager.setCurrentItem(4);
+                hideHome();
+                break;
+            case R.id.ll_notice:
+                viewpager.setCurrentItem(3);
+                hideHome();
+                break;
+            case R.id.ll_friends:
+                viewpager.setCurrentItem(2);
+                hideHome();
+                break;
+            case R.id.ll_chat:
+                viewpager.setCurrentItem(1);
+                hideHome();
+                break;
+            case R.id.ll_home:
+                viewpager.setCurrentItem(0);
+                hideHome();
+                break;
+
         }
     }
+
+
+    private void hideHome() {
+        if (isVisible) {
+            // scrollview.setVisibility(View.GONE);
+            hideAnimation();
+            isVisible = false;
+        } else {
+            //  scrollview.setVisibility(View.VISIBLE);
+            showAnimation();
+            isVisible = true;
+        }
+    }
+
 
     private void showAnimation() {
         Animation anim;
@@ -348,6 +453,7 @@ public class UserDashboardActivity extends SocialConnectBaseActivity implements 
         scrollview.startAnimation(anim);
         image_show.startAnimation(anim);
     }
+
 
     private void hideAnimation() {
         Animation anim;
@@ -468,4 +574,45 @@ public class UserDashboardActivity extends SocialConnectBaseActivity implements 
         }
     }
 
+    @Override
+    public void onTabSelected(TabLayout.Tab tab) {
+        // tab.getPosition();
+        toolbar.setTitle(tab.getText());
+    }
+
+    @Override
+    public void onTabUnselected(TabLayout.Tab tab) {
+
+    }
+
+    @Override
+    public void onTabReselected(TabLayout.Tab tab) {
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.dashboard_menu, menu);//Menu Resource, Menu
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.lCity:
+                //Toast.makeText(getApplicationContext(), "Item 1 Selected", Toast.LENGTH_LONG).show();
+                startActivity(currentActivity, ActivityLandmarkCityDetail.class);
+                return true;
+            case R.id.dsr:
+                //Toast.makeText(getApplicationContext(), "Item 1 Selected", Toast.LENGTH_LONG).show();
+                startActivity(currentActivity, DsrActivity.class);
+                return true;
+            case R.id.crm:
+                //Toast.makeText(getApplicationContext(), "Item 1 Selected", Toast.LENGTH_LONG).show();
+                startActivity(currentActivity, CrmActivity.class);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 }

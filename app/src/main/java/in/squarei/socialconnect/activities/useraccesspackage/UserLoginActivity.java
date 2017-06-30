@@ -55,7 +55,7 @@ public class UserLoginActivity extends SocialConnectBaseActivity implements UrlR
 
     private static final String TAG = "UserLoginActivity";
     private AlertDialog deleteDialog;
-    private String[] PERMISSIONS = {Manifest.permission.ACCESS_NETWORK_STATE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+    private String[] PERMISSIONS = {Manifest.permission.ACCESS_NETWORK_STATE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION};
     private int PERMISSION_ALL = 1;
     private EditText editLoginId, editLoginPassword;
     private Button buttonLogin;
@@ -265,7 +265,6 @@ public class UserLoginActivity extends SocialConnectBaseActivity implements UrlR
                             SharedPreferenceUtils.getInstance(context).putBoolean(CHAT_ID_STATUS, true);
                         } else {
                             SharedPreferenceUtils.getInstance(context).putBoolean(CHAT_ID_STATUS, false);
-
                         }
 
                         if (jsonDataObject.getString("email") != null) {

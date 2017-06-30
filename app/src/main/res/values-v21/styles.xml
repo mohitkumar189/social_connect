@@ -4,6 +4,7 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="android:windowBackground">@color/white</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">false</item>
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="android:colorPrimary">@color/colorPrimary</item>
@@ -15,6 +16,8 @@
         <item name="textAllCaps">false</item>
         <item name="actionBarStyle">@style/ActionBarStyle</item>
         <item name="actionButtonStyle">@style/AppTheme.Widget.ActionButton</item>
-
+        <item name="android:windowTranslucentStatus">false</item>
+        <item name="android:statusBarColor">@color/colorPrimaryDark</item>
     </style>
+
 </resources>

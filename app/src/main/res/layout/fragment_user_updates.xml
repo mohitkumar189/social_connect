@@ -1,56 +1,66 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/recyclerView"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
+    android:layout_margin="@dimen/dp_5" />
+
+
+    <!--
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        tools:context="in.squarei.socialconnect.fragments.userDashboardFragments.UserChatsFragment">
-
-        <ImageView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="110dp"
-            android:padding="@dimen/dp_10"
-            android:src="@drawable/lock_error" />
-
-        <TextView
+        android:layout_height="match_parent">
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/margin_8"
-            android:gravity="center"
-            android:text="Sorry,"
-            android:textSize="@dimen/dp_30" />
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            tools:context="in.squarei.socialconnect.fragments.userDashboardFragments.UserChatsFragment">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/margin_8"
-            android:gravity="center"
-            android:text="This feature isn't available."
-            android:textSize="@dimen/dp_25" />
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="110dp"
+                android:padding="@dimen/dp_10"
+                android:src="@drawable/lock_error" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/margin_8"
-            android:gravity="center"
-            android:text="Thanks for coming to check out our app. \n Currently, This feature isn't available to anyone."
-            android:textSize="@dimen/dp_15" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/margin_8"
+                android:gravity="center"
+                android:text="Sorry,"
+                android:textSize="@dimen/dp_30" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/margin_8"
-            android:gravity="center"
-            android:text="So, please e-mail us at info@squarei.in and contact: +91-120 6999900 or contact to community admin"
-            android:textSize="@dimen/dp_15" />
-    </LinearLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/margin_8"
+                android:gravity="center"
+                android:text="This feature isn't available."
+                android:textSize="@dimen/dp_25" />
 
-</ScrollView>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/margin_8"
+                android:gravity="center"
+                android:text="Thanks for coming to check out our app. \n Currently, This feature isn't available to anyone."
+                android:textSize="@dimen/dp_15" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/margin_8"
+                android:gravity="center"
+                android:text="So, please e-mail us at info@squarei.in and contact: +91-120 6999900 or contact to community admin"
+                android:textSize="@dimen/dp_15" />
+        </LinearLayout>
+
+    </ScrollView>-->
+

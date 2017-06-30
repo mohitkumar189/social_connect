@@ -89,6 +89,8 @@ public abstract class SocialConnectBaseActivity extends AppCompatActivity
 
     @Override
     public void setContentView(@LayoutRes int layoutResID) {
+     //   getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+       // getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         View viewHolder = getLayoutInflater().inflate(R.layout.activity_social_connect_base, null);
 
         FrameLayout activityLayout = (FrameLayout) viewHolder.findViewById(R.id.activity_container);

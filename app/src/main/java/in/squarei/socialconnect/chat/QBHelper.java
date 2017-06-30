@@ -21,7 +21,9 @@ import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
 
+import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.XMPPException;
 
 import java.util.Date;
 
@@ -49,6 +51,12 @@ public class QBHelper {
     private static final String MESSAGE = "Please wait...";
 
     private QBHelper() {
+        Logger.info(TAG, "===QBHelper() constructor====");
+        chatService = QBChatService.getInstance();
+        chatService.setUseStreamManagement(true);
+        if (chatService != null) {
+            incomingMessagesManager = chatService.getIncomingMessagesManager();
+        }
 
     }
 
@@ -70,24 +78,24 @@ public class QBHelper {
         return QBSessionManager.getInstance().getSessionParameters() != null;
     }
 
-    public void logoutChat(final QBChatService cService) {
-        try {
-            cService.logout(new QBEntityCallback() {
+    public static QBUser getCurrentUser() {
+        return QBChatService.getInstance().getUser();
+    }
 
-                @Override
-                public void onSuccess(Object o, Bundle bundle) {
-                    cService.destroy();
+    public void addConnectionListener(ConnectionListener listener) {
+        chatService.addConnectionListener(listener);
+    }
 
-                }
+    public void removeConnectionListener(ConnectionListener listener) {
+        chatService.removeConnectionListener(listener);
+    }
 
-                @Override
-                public void onError(QBResponseException errors) {
+    public void leaveChatDialog(QBChatDialog chatDialog) throws XMPPException, SmackException.NotConnectedException {
+        chatDialog.leave();
+    }
 
-                }
-            });
-        } catch (Exception e) {
-
-        }
+    public void destroy() {
+        chatService.destroy();
     }
 
     public void registerQBUser(QBUser user, final QBHelperCallback qbHelperCallback) {
@@ -114,14 +122,14 @@ public class QBHelper {
         });
     }
 
-    public void loginAndSessionCreate(QBUser qbUser, final QBHelperCallback qbHelperCallback) {
-        Logger.info(TAG, "===loginAndSessionCreate===");
-
+    public void signin(QBUser qbUser, final QBHelperCallback qbHelperCallback) {
+        Logger.info(TAG, "===signin and session===");
+        monitorSession(qbUser);
         //  progressDialog.show();
         QBUsers.signIn(qbUser).performAsync(new QBEntityCallback<QBUser>() {
             @Override
             public void onSuccess(QBUser user, Bundle args) {
-                Logger.info(TAG, "===loginAndSessionCreate===onSuccess" + user + "args " + args);
+                Logger.info(TAG, "===session created successfully===onSuccess" + user + "args " + args);
                 if (progressDialog.isShowing())
                     progressDialog.dismiss();
                 // success
@@ -130,7 +138,7 @@ public class QBHelper {
 
             @Override
             public void onError(QBResponseException error) {
-                Logger.info(TAG, "===loginAndSessionCreate===onError" + error);
+                Logger.info(TAG, "===session failed===onError" + error);
                 if (progressDialog.isShowing())
                     progressDialog.dismiss();
                 // error
@@ -140,58 +148,8 @@ public class QBHelper {
     }
 
     public QBChatDialog startChat(int idMe, int idOther) {
-        if (chatDialog == null) {
-            chatDialog = DialogUtils.buildPrivateDialog(idOther);
-        }
-        if (chatService != null) {
-            incomingMessagesManager = chatService.getIncomingMessagesManager();
-            registerMessageListener();
-        } else {
 
-        }
-        return chatDialog;
-    }
-
-    public void connectToChat(final QBUser qbUser, final QBHelperCallback qbHelperCallback) {
-        Logger.info(TAG, "===connectToChat===");
-        //    progressDialog.show();
-        // initialize Chat service
-        chatService = QBChatService.getInstance();
-        chatService.login(qbUser, new QBEntityCallback() {
-            @Override
-            public void onSuccess(Object o, Bundle bundle) {
-                Logger.info(TAG, "===connectToChat===onError" + o + "args :" + bundle);
-                if (progressDialog.isShowing())
-                    progressDialog.dismiss();
-                qbHelperCallback.onSuccessResult(CHAT_RESULT, true, qbUser);
-            }
-
-            @Override
-            public void onError(QBResponseException e) {
-                Logger.info(TAG, "===connectToChat===onError" + e);
-                if (progressDialog.isShowing())
-                    progressDialog.dismiss();
-                qbHelperCallback.onFailureResult(CHAT_RESULT, true, qbUser);
-            }
-        });
-    }
-
-    private void registerMessageListener() {
-        incomingMessagesManager.addDialogMessageListener(
-                new QBChatDialogMessageListener() {
-                    @Override
-                    public void processMessage(String dialogId, QBChatMessage message, Integer senderId) {
-                    }
-
-                    @Override
-                    public void processError(String dialogId, QBChatException exception, QBChatMessage message, Integer senderId) {
-
-                    }
-                });
-    }
-
-    private void sendMessage(QBChatDialog d, final String message, final MessageListener messageListener) {
-
+/*
         QBRestChatService.createChatDialog(d).performAsync(new QBEntityCallback<QBChatDialog>() {
             @Override
             public void onSuccess(QBChatDialog result, Bundle params) {
@@ -199,19 +157,120 @@ public class QBHelper {
                 chatMessage.setBody(message);
                 chatMessage.setProperty(PROPERTY_SAVE_TO_HISTORY, "1");
                 chatMessage.setDateSent(new Date().getTime() / 1000);
+                Logger.info(TAG, "message to be sent===" + chatMessage);
 
                 try {
                     result.sendMessage(chatMessage);
                     messageListener.onSent();
 
+                    Logger.info(TAG, "===========message Sent======");
                 } catch (SmackException.NotConnectedException e) {
-                    messageListener.onFailed();
+                    Logger.info(TAG, "===========message not sent======" + e);
+                    //  messageListener.onFailed();
                 }
             }
 
             @Override
             public void onError(QBResponseException responseException) {
                 messageListener.onError();
+                Logger.info(TAG, "===========QBResponseException======" + responseException.getMessage());
+            }
+        });*/
+
+
+        if (chatDialog == null) {
+            chatDialog = DialogUtils.buildPrivateDialog(idOther);
+            Logger.info(TAG, "===startChat dialog===" + idOther);
+
+        }
+        return chatDialog;
+    }
+
+    public void connectToChat(final QBUser qbUser, final QBHelperCallback qbHelperCallback) {
+        Logger.info(TAG, "===connectToChat method()===" + qbUser);
+        //    progressDialog.show();
+        // initialize Chat service
+        chatService = QBChatService.getInstance();
+        if (!checkQBUserLogin()) {
+            chatService.login(qbUser, new QBEntityCallback() {
+                @Override
+                public void onSuccess(Object o, Bundle bundle) {
+                    Logger.info(TAG, "===connectToChat method()===onError" + o + "args :" + bundle);
+                    if (progressDialog.isShowing())
+                        progressDialog.dismiss();
+                    qbHelperCallback.onSuccessResult(CHAT_RESULT, true, qbUser);
+                }
+
+                @Override
+                public void onError(QBResponseException e) {
+                    Logger.info(TAG, "===connectToChat method()===onError" + e);
+                    if (progressDialog.isShowing())
+                        progressDialog.dismiss();
+                    qbHelperCallback.onFailureResult(CHAT_RESULT, true, qbUser);
+                }
+            });
+        }
+    }
+
+    public void registerMessageListener(final MessageListener messageListener) {
+        Logger.info(TAG, "=======Registering message listener====");
+        if (incomingMessagesManager != null) {
+            incomingMessagesManager.addDialogMessageListener(
+                    new QBChatDialogMessageListener() {
+                        @Override
+                        public void processMessage(String dialogId, QBChatMessage message, Integer senderId) {
+                            messageListener.onReceived(message.getBody());
+                        }
+
+                        @Override
+                        public void processError(String dialogId, QBChatException exception, QBChatMessage message, Integer senderId) {
+
+                        }
+                    });
+        }
+        Logger.info(TAG, "=======Registered message listener====");
+    }
+
+    public void sendMessage(QBChatDialog d, final String message, final MessageListener messageListener) {
+
+/*        QBChatMessage chatMessage = new QBChatMessage();
+        chatMessage.setBody(message);
+        chatMessage.setProperty(PROPERTY_SAVE_TO_HISTORY, "1");
+        chatMessage.setDateSent(new Date().getTime() / 1000);
+        Logger.info(TAG, "message to be sent===" + chatMessage);
+
+        try {
+            d.sendMessage(chatMessage);
+            messageListener.onSent();
+            Logger.info(TAG, "===========message Sent======");
+        } catch (SmackException.NotConnectedException e) {
+            Logger.info(TAG, "===========message not sent======" + e);
+            //  messageListener.onFailed();
+        }*/
+        QBRestChatService.createChatDialog(d).performAsync(new QBEntityCallback<QBChatDialog>() {
+            @Override
+            public void onSuccess(QBChatDialog result, Bundle params) {
+                QBChatMessage chatMessage = new QBChatMessage();
+                chatMessage.setBody(message);
+                chatMessage.setProperty(PROPERTY_SAVE_TO_HISTORY, "1");
+                chatMessage.setDateSent(new Date().getTime() / 1000);
+                Logger.info(TAG, "message to be sent===" + chatMessage);
+
+                try {
+                    result.sendMessage(chatMessage);
+                    messageListener.onSent();
+
+                    Logger.info(TAG, "===========message Sent======");
+                } catch (SmackException.NotConnectedException e) {
+                    Logger.info(TAG, "===========message not sent======" + e);
+                    //  messageListener.onFailed();
+                }
+            }
+
+            @Override
+            public void onError(QBResponseException responseException) {
+                messageListener.onError();
+                Logger.info(TAG, "===========QBResponseException======" + responseException);
             }
         });
     }
@@ -236,6 +295,7 @@ public class QBHelper {
             public void onSessionDeleted() {
                 //calls when user signed Out or session was deleted
                 Log.i("tag:", "onSessionDeleted()");
+                signin(qbUser, null);
             }
 
             @Override
@@ -249,7 +309,7 @@ public class QBHelper {
             public void onSessionExpired() {
                 //calls when session is expired
                 Log.i("tag:", "onSessionExpired()");
-                QBHelper.getInstance(context).loginAndSessionCreate(qbUser, null);
+                signin(qbUser, null);
             }
         });
     }

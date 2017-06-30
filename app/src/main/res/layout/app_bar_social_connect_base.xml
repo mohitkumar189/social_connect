@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/baseCoordinatorLayout"
@@ -9,20 +8,21 @@
     tools:context="in.squarei.socialconnect.activities.SocialConnectBaseActivity">
 
     <android.support.design.widget.AppBarLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:theme="@style/AppTheme.AppBarOverlay">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
 
-    <include layout="@layout/base_toolbar"/>
+        <include layout="@layout/base_toolbar" />
 
         <android.support.design.widget.TabLayout
             android:id="@+id/tabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:tabGravity="fill"
-            app:tabIndicatorColor="@color/colorPrimaryDark"
+            app:tabIndicatorColor="@color/white"
             app:tabMode="scrollable"
-            app:tabSelectedTextColor="@color/colorPrimaryDark" />
+            app:tabSelectedTextColor="@color/white"
+            app:tabTextColor="#1c3e3c" />
     </android.support.design.widget.AppBarLayout>
 
     <include layout="@layout/content_social_connect_base" />

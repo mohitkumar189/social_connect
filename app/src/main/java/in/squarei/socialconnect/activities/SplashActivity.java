@@ -1,26 +1,19 @@
 package in.squarei.socialconnect.activities;
 
-import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 
-import in.squarei.socialconnect.activities.useraccesspackage.AppIntroActivity;
+import in.squarei.socialconnect.R;
 import in.squarei.socialconnect.activities.useraccesspackage.UserLoginActivity;
-import in.squarei.socialconnect.activities.useraccesspackage.UserPassActivity;
 import in.squarei.socialconnect.broadcastreceivers.SmsListener;
 import in.squarei.socialconnect.interfaces.AppConstants;
-import in.squarei.socialconnect.R;
 import in.squarei.socialconnect.utils.Logger;
 import in.squarei.socialconnect.utils.SharedPreferenceUtils;
 
 import static in.squarei.socialconnect.interfaces.AppConstants.IS_INTRO_COMPLETED;
-import static in.squarei.socialconnect.interfaces.AppConstants.PIN_STATUS;
-import static in.squarei.socialconnect.interfaces.AppConstants.USER_PIN;
 import static java.lang.Thread.sleep;
 
 public class SplashActivity extends SocialConnectBaseActivity implements SmsListener.OnSmsReceivedListener {
@@ -34,6 +27,7 @@ public class SplashActivity extends SocialConnectBaseActivity implements SmsList
         Logger.info(TAG, "======onCreate()======");
         hideStatusBar();
         setContentView(R.layout.activity_splash);
+        SharedPreferenceUtils.getInstance(context).putString(AppConstants.API_KEY, "8887e71887f2f2b8dc191ff238ad5a4f");
 
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -41,9 +35,9 @@ public class SplashActivity extends SocialConnectBaseActivity implements SmsList
                 Logger.info(TAG, "======Timer finished======");
                 SharedPreferenceUtils sharedPreferenceUtils = SharedPreferenceUtils.getInstance(context);
                 if (sharedPreferenceUtils.getBoolean(IS_INTRO_COMPLETED)) {
-                    if (sharedPreferenceUtils.getBoolean(PIN_STATUS)) {
+/*                    if (sharedPreferenceUtils.getBoolean(PIN_STATUS)) {
                         // open activity to enter the pin
-                        Intent intent = new Intent(currentActivity, UserPassActivity.class);
+                        Intent intent = new Intent(currentActivity, UserDashboardActivity.class);
                         intent.putExtra("actionType", AppConstants.IntentTypes.ENTER_USER_PIN);
                         intent.putExtra("userPin", sharedPreferenceUtils.getString(USER_PIN));
                         startActivity(intent);
@@ -51,9 +45,10 @@ public class SplashActivity extends SocialConnectBaseActivity implements SmsList
                         // open Login activity
                         startActivity(currentActivity, UserLoginActivity.class);
 
-                    }
+                    }*/
+                    startActivity(currentActivity, UserDashboardActivity.class);
                 } else {
-                    startActivity(currentActivity, AppIntroActivity.class);
+                    startActivity(currentActivity, UserDashboardActivity.class);
                 }
                 //  navigateUser();
             }

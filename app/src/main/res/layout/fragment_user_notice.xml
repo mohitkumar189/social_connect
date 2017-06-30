@@ -1,3 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/recyclerView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="@dimen/dp_5" /><!--
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -49,3 +55,4 @@
         android:text="So, please e-mail us at info@squarei.in and contact: +91-120 6999900 or contact to community admin"
         android:textSize="@dimen/dp_15" />
 </LinearLayout>
+-->

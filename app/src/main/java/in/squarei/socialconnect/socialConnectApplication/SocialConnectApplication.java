@@ -13,6 +13,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.quickblox.auth.session.QBSettings;
 import com.quickblox.chat.QBChatService;
+import com.quickblox.core.StoringMechanism;
 
 /**
  * Created by mohit kumar on 4/26/2017.
@@ -22,10 +23,11 @@ public class SocialConnectApplication extends Application {
     public static String TAG = "dummy";
     private static SocialConnectApplication mInstance;
     private static RequestQueue mRequestQueue;
-    static final String APP_ID = "58797";
-    static final String AUTH_KEY = "GQvaneLOvfejcT2";
-    static final String AUTH_SECRET = "9s-3sjBfpERHpmZ";
+    static final String APP_ID = "58745";
+    static final String AUTH_KEY = "VkrtNaAC2sugSvN";
+    static final String AUTH_SECRET = "LG9bmKc22KWOukU";
     static final String ACCOUNT_KEY = "8w8vcW2doGTDwjek4-pF";
+    public static QBChatService qbChatService;
 
     public static synchronized SocialConnectApplication getInstance() {
         return mInstance;
@@ -45,6 +47,7 @@ public class SocialConnectApplication extends Application {
     }
 
     private void init() {
+        QBSettings.getInstance().setStoringMehanism(StoringMechanism.UNSECURED);
         QBSettings.getInstance().init(getApplicationContext(), APP_ID, AUTH_KEY, AUTH_SECRET);
         QBSettings.getInstance().setAccountKey(ACCOUNT_KEY);
 
@@ -55,6 +58,9 @@ public class SocialConnectApplication extends Application {
         chatServiceConfigurationBuilder.setKeepAlive(true); //Sets connection socket's keepAlive option.
         chatServiceConfigurationBuilder.setUseTls(true); //Sets the TLS security mode used when making the connection. By default TLS is disabled.
         QBChatService.setConfigurationBuilder(chatServiceConfigurationBuilder);
+
+        qbChatService = QBChatService.getInstance();
+        qbChatService.setUseStreamManagement(true);
     }
 
     @Override
@@ -103,7 +109,6 @@ public class SocialConnectApplication extends Application {
 
             }
         });
-
         return request;
     }
 

@@ -87,6 +87,7 @@ public class UserFeedsFragment extends SocialConnectBaseFragment implements UrlR
     protected void initContext() {
         currentActivity = getActivity();
         context = getActivity();
+        userFeedData = new ArrayList<>();
     }
 
     @Override
@@ -260,7 +261,6 @@ public class UserFeedsFragment extends SocialConnectBaseFragment implements UrlR
                 if (!error) {
                     JSONObject commandResult = jsonObject.getJSONObject("commandResult");
                     int success = commandResult.getInt("success");
-                    userFeedData = new ArrayList<>();
                     if (success == 1) {
                         JSONArray data = commandResult.getJSONArray("data");
                         for (int i = 0; i < data.length(); i++) {

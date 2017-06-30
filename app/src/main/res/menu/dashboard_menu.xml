@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/lCity"
+        android:title="Landmark City" />
+    <item
+        android:id="@+id/crm"
+        android:title="CRM" />
+    <item
+        android:id="@+id/dsr"
+        android:title="DSR" />
+</menu>

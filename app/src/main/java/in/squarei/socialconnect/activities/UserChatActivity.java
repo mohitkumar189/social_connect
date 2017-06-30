@@ -9,6 +9,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.quickblox.auth.session.QBSessionManager;
+import com.quickblox.chat.QBChatService;
+import com.quickblox.core.QBEntityCallback;
+import com.quickblox.core.exception.QBResponseException;
+import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
 
 import org.json.JSONArray;
@@ -43,14 +48,21 @@ public class UserChatActivity extends SocialConnectBaseActivity implements ItemC
     private UserFriendsListAdapter userFriendListAdapter;
     private String clientiD;
     private final String TAG = "UserChatActivity";
+    private QBUser qbUser = new QBUser();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_chat);
-        prepareData();
+        //    prepareData();
         setTitle("Chat");
         fetchAllFriendsData();
+        if (!checkSignIn())
+            loginUser(null);
+    }
+
+    private boolean checkSignIn() {
+        return QBSessionManager.getInstance().getSessionParameters() != null;
     }
 
     @Override
@@ -163,16 +175,55 @@ public class UserChatActivity extends SocialConnectBaseActivity implements ItemC
     public void onResponseReceived(ApiURLS.ApiId apiId, String stringResponse) {
         if (apiId == ApiURLS.ApiId.USER_FRIENDS_LIST) {
             updateUsersList(stringResponse);
-            createSession();
+            // createSession();
         }
     }
 
-    private void createSession() {
-        QBUser qbUser = new QBUser();
+    private void loginUser(QBUser user) {
         qbUser.setEmail(SharedPreferenceUtils.getInstance(context).getString(AppConstants.EMAIL));
         qbUser.setPassword(QBHelper.CHAT_PASSWORD);
         Logger.info(TAG, "============QBUSER============" + qbUser);
-        QBHelper.getInstance(context).loginAndSessionCreate(qbUser, this);
+        QBUsers.signIn(qbUser).performAsync(new QBEntityCallback<QBUser>() {
+            @Override
+            public void onSuccess(QBUser user, Bundle args) {
+                // success
+                Logger.info(TAG, "login success====>");
+                loginToChat(qbUser);
+            }
+
+            @Override
+            public void onError(QBResponseException error) {
+                // error
+                Logger.info(TAG, "login error====>");
+            }
+        });
+    }
+
+    private void loginToChat(QBUser user) {
+        // initialize Chat service
+        QBChatService chatService = QBChatService.getInstance();
+
+        chatService.login(qbUser, new QBEntityCallback() {
+
+            @Override
+            public void onSuccess(Object o, Bundle bundle) {
+                Logger.info(TAG, "login success to chat====>");
+            }
+
+            @Override
+            public void onError(QBResponseException error) {
+                // errror
+                Logger.info(TAG, "login error to the chat====>");
+            }
+        });
+    }
+
+    private void createSession() {
+        Logger.info(TAG, "============creating session============");
+        qbUser.setEmail(SharedPreferenceUtils.getInstance(context).getString(AppConstants.EMAIL));
+        qbUser.setPassword(QBHelper.CHAT_PASSWORD);
+        Logger.info(TAG, "============QBUSER============" + qbUser);
+        QBHelper.getInstance(context).signin(qbUser, this);
         //   QBHelper.getInstance(context).monitorSession(qbUser);
     }
 
@@ -230,11 +281,28 @@ public class UserChatActivity extends SocialConnectBaseActivity implements ItemC
 
     @Override
     public void onSuccessResult(int id, boolean status, QBUser qbUser) {
+        if (id == QBHelper.LOGIN) {
+            // make login to chat service
+            Logger.info(TAG, "=========successfully setup======");
+            if (!QBHelper.getInstance(context).checkQBUserLogin()) {
+                Logger.info(TAG, "=========attempting chat login======");
+                QBHelper.getInstance(context).connectToChat(qbUser, this);
+            } else {
+                Logger.info(TAG, "=======already logged in chat======");
+            }
 
+        } else if (id == QBHelper.CHAT_RESULT) {
+            Logger.info(TAG, "===========Login to chat success======");
+        }
     }
 
     @Override
     public void onFailureResult(int id, boolean status, QBUser qbUser) {
-
+        if (id == QBHelper.CHAT_RESULT) {
+            Logger.info(TAG, "===========Login to chat failed======");
+        } else if (id == QBHelper.LOGIN) {
+            // make login to chat service
+            Logger.info(TAG, "=======signin success======");
+        }
     }
 }
